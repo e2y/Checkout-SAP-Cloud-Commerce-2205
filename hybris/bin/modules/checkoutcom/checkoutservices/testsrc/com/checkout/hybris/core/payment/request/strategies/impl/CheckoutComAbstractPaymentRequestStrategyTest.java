@@ -1,20 +1,17 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.Phone;
+import com.checkout.sdk.common.Phone;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.enums.MadaBin;
-import com.checkout.hybris.core.enums.PaymentActionType;
 import com.checkout.hybris.core.enums.PaymentTypes;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.merchantconfiguration.BillingDescriptor;
-import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.*;
+import com.checkout.sdk.payments.*;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
@@ -22,18 +19,15 @@ import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;
 import de.hybris.platform.core.model.user.CustomerModel;
-import de.hybris.platform.enumeration.EnumerationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static java.util.Optional.of;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -53,26 +47,20 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     private static final double TOTAL_PRICE = 100D;
     private static final String GBP = "GBP";
     private static final Long CHECKOUT_COM_TOTAL_PRICE = 10000L;
-    private static final String TOKEN = "TOKEN";
+
     private static final String CUSTOMER_EMAIL = "email@email.com";
     private static final String CART_REFERENCE = "CART_REFERENCE";
-    private static final String NUMBER = "213423423";
     private static final String CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_SUCCESS = "/successUrl";
     private static final String CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_FAILURE = "/failureUrl";
     private static final String SITE_ID = "SITE_ID";
     private static final String TOWN = "Town";
     private static final String LINE_1 = "Line 1";
-    private static final String SUBSCRIPTION_ID = "subscriptionId";
 
     @Spy
     private CheckoutComAbstractPaymentRequestStrategy testObj;
 
     @Mock
     private CartModel cartModelMock;
-    @Mock
-    private CheckoutComCreditCardPaymentInfoModel paymentInfoMock;
-    @Mock
-    private EnumerationService enumerationServiceMock;
     @Mock
     private CMSSiteService cmsSiteServiceMock;
     @Mock
@@ -108,9 +96,8 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     @Captor
     private ArgumentCaptor<RiskRequest> riskRequestCaptor;
     @Captor
-    private ArgumentCaptor<com.checkout.payments.BillingDescriptor> billingDescriptorCaptor;
+    private ArgumentCaptor<com.checkout.sdk.payments.BillingDescriptor> billingDescriptorCaptor;
 
-    private final Map<String, Object> metadataMap = new HashMap<>();
 
     @Before
     public void setUp() {
@@ -118,23 +105,18 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
                 CheckoutComAbstractPaymentRequestStrategy.class,
                 Mockito.CALLS_REAL_METHODS);
 
-        Whitebox.setInternalState(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
-        Whitebox.setInternalState(testObj, "checkoutComPhoneNumberStrategy", checkoutComPhoneNumberStrategyMock);
-        Whitebox.setInternalState(testObj, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
-        Whitebox.setInternalState(testObj, "checkoutComPaymentRequestStrategyMapper", checkoutComPaymentRequestStrategyMapperMock);
-        Whitebox.setInternalState(testObj, "cmsSiteService", cmsSiteServiceMock);
-        Whitebox.setInternalState(testObj, "checkoutComMerchantConfigurationService",
-                                  checkoutComMerchantConfigurationServiceMock);
-        Whitebox.setInternalState(testObj, "checkoutComCartModelToPaymentL2AndL3Converter",
-                                  checkoutComCartModelToPaymentL2AndL3ConverterMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComPhoneNumberStrategy", checkoutComPhoneNumberStrategyMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComPaymentRequestStrategyMapper", checkoutComPaymentRequestStrategyMapperMock);
+        ReflectionTestUtils.setField(testObj, "cmsSiteService", cmsSiteServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComCartModelToPaymentL2AndL3Converter", checkoutComCartModelToPaymentL2AndL3ConverterMock);
 
         setUpCart();
         setUpAddress();
         setUpConfiguration();
 
-        when(paymentRequestMock.getMetadata()).thenReturn(metadataMap);
-        when(enumerationServiceMock.getEnumerationValues(MadaBin.class)).thenReturn(emptyList());
-        when(paymentInfoMock.getCardToken()).thenReturn(TOKEN);
         when(currencyModelMock.getIsocode()).thenReturn(GBP);
         when(customerModelMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL);
         when(customerModelMock.getDisplayName()).thenReturn(DISPLAY_CUSTOMER_NAME);
@@ -146,10 +128,7 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     }
 
     private void setUpConfiguration() {
-        when(checkoutComMerchantConfigurationServiceMock.getPaymentAction()).thenReturn(PaymentActionType.AUTHORIZE);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(GBP, TOTAL_PRICE)).thenReturn(CHECKOUT_COM_TOTAL_PRICE);
-        when(checkoutComMerchantConfigurationServiceMock.isAttemptNoThreeDSecure()).thenReturn(true);
-        when(checkoutComMerchantConfigurationServiceMock.isThreeDSEnabled()).thenReturn(true);
         when(checkoutComUrlServiceMock.getFullUrl(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_SUCCESS, true)).thenReturn(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_SUCCESS);
         when(checkoutComUrlServiceMock.getFullUrl(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_FAILURE, true)).thenReturn(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_FAILURE);
         when(cmsSiteServiceMock.getCurrentSite()).thenReturn(currentSiteMock);
@@ -166,7 +145,6 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
         when(cartAddressModelMock.getRegion().getName()).thenReturn(UK_STATE);
         when(cartAddressModelMock.getTown()).thenReturn(TOWN);
         when(cartAddressModelMock.getPostalcode()).thenReturn(POST_CODE);
-        when(phoneMock.getNumber()).thenReturn(NUMBER);
     }
 
     private void setUpCart() {
@@ -174,13 +152,13 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
         when(cartModelMock.getUser()).thenReturn(customerModelMock);
         when(cartModelMock.getCheckoutComPaymentReference()).thenReturn(CART_REFERENCE);
         when(cartModelMock.getDeliveryAddress()).thenReturn(cartAddressModelMock);
-        when(cartModelMock.getPaymentAddress()).thenReturn(cartAddressModelMock);
         when(cartModelMock.getCurrency()).thenReturn(currencyModelMock);
-        when(cartModelMock.getPaymentInfo()).thenReturn(paymentInfoMock);
     }
 
     @Test
     public void registerStrategy_ShouldRegisterTheStrategy() {
+        when(testObj.getStrategyKey()).thenReturn(CheckoutComPaymentType.IDEAL);
+
         testObj.registerStrategy();
 
         verify(checkoutComPaymentRequestStrategyMapperMock).addStrategy(any(CheckoutComPaymentType.class), any(CheckoutComPaymentRequestStrategy.class));
@@ -195,8 +173,6 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     public void createPaymentRequest_WhenNoMadaCard_ShouldCreateTheRequestProperlyWithIdSource() {
         doNothing().when(testObj).populatePaymentRequest(any(CartModel.class), any(PaymentRequest.class));
         doReturn(paymentRequestMock).when(testObj).getRequestSourcePaymentRequest(any(CartModel.class), anyString(), anyLong());
-        when(paymentInfoMock.isSaved()).thenReturn(true);
-        when(paymentInfoMock.getSubscriptionId()).thenReturn(SUBSCRIPTION_ID);
 
         final PaymentRequest<RequestSource> result = testObj.createPaymentRequest(cartModelMock);
 
@@ -221,8 +197,8 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
         verify(paymentRequestMock).setFailureUrl(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_FAILURE);
 
         verify(paymentRequestMock).setBillingDescriptor(billingDescriptorCaptor.capture());
-        assertEquals(billingDescriptorCaptor.getValue().getName(), BILLING_DESCRIPTOR_NAME);
-        assertEquals(billingDescriptorCaptor.getValue().getCity(), BILLING_DESCRIPTOR_CITY);
+        assertEquals(BILLING_DESCRIPTOR_NAME, billingDescriptorCaptor.getValue().getName());
+        assertEquals(BILLING_DESCRIPTOR_CITY, billingDescriptorCaptor.getValue().getCity());
 
         verify(paymentRequestMock).setRisk(riskRequestCaptor.capture());
         assertTrue(riskRequestCaptor.getValue().isEnabled());
@@ -244,7 +220,7 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
         verify(paymentRequestMock).setSuccessUrl(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_SUCCESS);
         verify(paymentRequestMock).setFailureUrl(CHECKOUT_COM_PAYMENT_REDIRECT_PAYMENT_FAILURE);
 
-        verify(paymentRequestMock, never()).setBillingDescriptor(any(com.checkout.payments.BillingDescriptor.class));
+        verify(paymentRequestMock, never()).setBillingDescriptor(any(com.checkout.sdk.payments.BillingDescriptor.class));
 
         verify(paymentRequestMock).setRisk(riskRequestCaptor.capture());
         assertTrue(riskRequestCaptor.getValue().isEnabled());

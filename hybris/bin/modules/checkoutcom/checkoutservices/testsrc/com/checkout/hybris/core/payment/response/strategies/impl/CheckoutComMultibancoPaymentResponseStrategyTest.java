@@ -1,10 +1,10 @@
 package com.checkout.hybris.core.payment.response.strategies.impl;
 
-import com.checkout.common.Link;
+import com.checkout.sdk.common.Link;
 import com.checkout.hybris.core.authorisation.AuthorizeResponse;
 import com.checkout.hybris.core.model.CheckoutComAPMPaymentInfoModel;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import com.google.common.collect.ImmutableMap;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;

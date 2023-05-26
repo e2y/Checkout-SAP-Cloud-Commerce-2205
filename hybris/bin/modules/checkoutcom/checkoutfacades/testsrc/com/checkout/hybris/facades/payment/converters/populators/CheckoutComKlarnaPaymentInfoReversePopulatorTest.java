@@ -32,7 +32,6 @@ public class CheckoutComKlarnaPaymentInfoReversePopulatorTest {
 
     @Test
     public void populate_ShouldPopulateTargetCorrectly() {
-        when(checkoutComAPMConfigurationServiceMock.isApmUserDataRequired(KLARNA.name())).thenReturn(true);
         source.setType(KLARNA.name());
         source.setAuthorizationToken(KLARNA_AUTH_TOKEN_VALUE);
 

@@ -1,12 +1,12 @@
 package com.checkout.hybris.core.payment.commands.impl;
 
-import com.checkout.CheckoutApiException;
-import com.checkout.common.ApiResponseInfo;
+import com.checkout.sdk.CheckoutApiException;
+import com.checkout.sdk.common.ApiResponseInfo;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
-import com.checkout.payments.CaptureResponse;
+import com.checkout.sdk.payments.CaptureResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.payment.commands.request.CaptureRequest;
 import de.hybris.platform.payment.commands.result.CaptureResult;
@@ -54,7 +54,7 @@ public class CheckoutComCaptureCommandTest {
     @Mock
     private CaptureRequest captureRequestMock;
     @Mock
-    private com.checkout.payments.CaptureRequest captureRequest;
+    private com.checkout.sdk.payments.CaptureRequest captureRequest;
     @Mock
     private CaptureResponse captureResponseMock;
     @Mock
@@ -69,8 +69,6 @@ public class CheckoutComCaptureCommandTest {
         when(captureRequestMock.getMerchantTransactionCode()).thenReturn(MERCHANT_TRANSACTION_CODE);
         when(checkoutComRequestFactoryMock.createCapturePaymentRequest(new BigDecimal(AMOUNT), PAYMENT_REFERENCE, currency.getCurrencyCode())).thenReturn(captureRequest);
         when(timeServiceMock.getCurrentTime()).thenReturn(DATE);
-        when(captureRequest.getAmount()).thenReturn(10000l);
-        when(captureRequest.getReference()).thenReturn(PAYMENT_REFERENCE);
         when(checkoutComPaymentIntegrationServiceMock.capturePayment(captureRequest, PAYMENT_ID)).thenReturn(captureResponseMock);
         when(captureResponseMock.getActionId()).thenReturn(ACTION_ID);
         when(checkoutComPaymentTransactionServiceMock.getPaymentReferenceFromTransactionEntryCode(MERCHANT_TRANSACTION_CODE)).thenReturn(PAYMENT_REFERENCE);

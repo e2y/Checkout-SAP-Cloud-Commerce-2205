@@ -1,6 +1,7 @@
 package com.checkout.hybris.core.payment.request;
 
-import com.checkout.payments.*;
+
+import com.checkout.sdk.payments.*;
 import de.hybris.platform.core.model.order.CartModel;
 
 import java.math.BigDecimal;

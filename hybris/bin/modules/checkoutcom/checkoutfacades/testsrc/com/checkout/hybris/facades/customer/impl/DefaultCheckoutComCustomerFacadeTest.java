@@ -39,6 +39,8 @@ public class DefaultCheckoutComCustomerFacadeTest {
 
     private static final String GUEST_CHECKOUT_EMAIL = "guestGooglePayExpressUser@checkout.com";
     private static final String GUEST_APPLE_PAY_EXPRESS_CHECKOUT_EMAIL = "guestApplePayExpressUser@checkout.com";
+    private static final String USD = "USD";
+    private static final String US = "US";
 
     @Spy
     @InjectMocks
@@ -103,32 +105,20 @@ public class DefaultCheckoutComCustomerFacadeTest {
 
         when(customerModelMock.getName()).thenReturn(GUEST_CHECKOUT_EMAIL);
         when(customerModelMock.getUid()).thenReturn(GUEST_CHECKOUT_EMAIL);
-        when(customerModelMock.getSessionLanguage()).thenReturn(languageModelMock);
-        when(customerModelMock.getSessionCurrency()).thenReturn(currencyModelMock);
         when(modelServiceMock.create(CustomerModel.class)).thenReturn(customerModelMock);
 
         when(customerModelMock.getName()).thenReturn(GUEST_CHECKOUT_EMAIL);
         when(customerModelMock.getUid()).thenReturn(GUEST_CHECKOUT_EMAIL);
         when(customerModelMock.getType()).thenReturn(CustomerType.GUEST);
-        when(customerModelMock.getSessionLanguage()).thenReturn(languageModelMock);
-        when(customerModelMock.getSessionCurrency()).thenReturn(currencyModelMock);
         when(modelServiceMock.create(CustomerModel.class)).thenReturn(customerModelMock);
 
-        when(currencyModelMock.getIsocode()).thenReturn("USD");
-        when(currencyModelMock.getName()).thenReturn("USD");
-
         when(customerDataMock.getUid()).thenReturn(GUEST_CHECKOUT_EMAIL);
-        when(customerDataMock.getName()).thenReturn(GUEST_CHECKOUT_EMAIL);
-        when(customerDataMock.getFirstName()).thenReturn(GUEST_CHECKOUT_EMAIL);
-        when(customerDataMock.getLastName()).thenReturn(GUEST_CHECKOUT_EMAIL);
 
-        when(currencyDataMock.getIsocode()).thenReturn("USD");
-        when(currencyDataMock.getName()).thenReturn("USD");
+        when(currencyDataMock.getIsocode()).thenReturn(USD);
         when(customerDataMock.getCurrency()).thenReturn(currencyDataMock);
         when(storeSessionFacadeMock.getDefaultCurrency()).thenReturn(currencyDataMock);
 
-        when(languageDataMock.getIsocode()).thenReturn("US");
-        when(languageDataMock.getName()).thenReturn("United States");
+        when(languageDataMock.getIsocode()).thenReturn(US);
         when(customerDataMock.getLanguage()).thenReturn(languageDataMock);
         when(storeSessionFacadeMock.getDefaultLanguage()).thenReturn(languageDataMock);
 
@@ -137,8 +127,6 @@ public class DefaultCheckoutComCustomerFacadeTest {
         when(commonI18NServiceMock.getCurrentLanguage()).thenReturn(languageModelMock);
         when(commonI18NServiceMock.getCurrentCurrency()).thenReturn(currencyModelMock);
 
-        when(cartModelMock.getPaymentCost()).thenReturn(10.0d);
-        when(cartModelMock.getTotalPrice()).thenReturn(150.0d);
         when(cartModelMock.getUser()).thenReturn(customerModelMock);
 
         when(cartServiceMock.getSessionCart()).thenReturn(cartModelMock);
@@ -181,7 +169,6 @@ public class DefaultCheckoutComCustomerFacadeTest {
 
     @Test
     public void isApplePayExpressGuestCustomer_WhenRegisteredCustomer_ShouldReturnFalse() {
-        when(customerModelMock.getName()).thenReturn(GUEST_APPLE_PAY_EXPRESS_CHECKOUT_EMAIL);
         when(customerModelMock.getType()).thenReturn(CustomerType.REGISTERED);
 
         final boolean result = testObj.isApplePayExpressGuestCustomer();
@@ -227,9 +214,8 @@ public class DefaultCheckoutComCustomerFacadeTest {
 
     @Test
     public void recalculateExpressCheckoutCart_ShouldRecalculateCart() {
-        when(commerceCartParameterMock.getCart()).thenReturn(cartModelMock);
-
         testObj.recalculateExpressCheckoutCart();
+
         verify(commerceCartCalculationStrategyMock).calculateCart(commerceCartParameterArgumentCaptor.capture());
 
         final CommerceCartParameter commerceCartParameter = commerceCartParameterArgumentCaptor.getValue();

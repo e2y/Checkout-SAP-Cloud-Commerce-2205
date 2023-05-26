@@ -2,7 +2,7 @@ package com.checkout.hybris.facades.payment.token.request.converters.mappers;
 
 import com.checkout.hybris.facades.beans.WalletPaymentAdditionalAuthInfo;
 import com.checkout.hybris.facades.enums.WalletPaymentType;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 
 /**
  * Converts a wallet the payload from wallet widget into a specific WalletTokenRequest

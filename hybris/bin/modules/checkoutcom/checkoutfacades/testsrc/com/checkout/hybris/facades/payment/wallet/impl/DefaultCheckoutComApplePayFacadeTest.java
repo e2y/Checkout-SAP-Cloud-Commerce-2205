@@ -81,8 +81,6 @@ public class DefaultCheckoutComApplePayFacadeTest {
         when(checkoutComMerchantConfigurationFacadeMock.getApplePaySettings()).thenReturn(Optional.of(applePaySettingsMock));
         when(cartFacadeMock.getSessionCart()).thenReturn(cartMock);
         when(cartMock.getTotalPrice()).thenReturn(priceData);
-        when(cartMock.getDeliveryAddress()).thenReturn(addressDataMock);
-        when(checkoutComApplePayAddressConverterMock.convert(addressDataMock)).thenReturn(applePayContactMock);
         when(applePaySettingsMock.getMerchantName()).thenReturn(MERCHANT_NAME);
         when(applePaySettingsMock.getSupportedNetworks()).thenReturn(SUPPORTED_NETWORKS);
         when(applePaySettingsMock.getMerchantCapabilities()).thenReturn(MERCHANT_CAPABILITIES);

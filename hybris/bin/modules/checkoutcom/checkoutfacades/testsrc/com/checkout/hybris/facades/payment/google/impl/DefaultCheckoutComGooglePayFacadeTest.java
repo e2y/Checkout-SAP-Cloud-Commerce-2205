@@ -77,27 +77,17 @@ public class DefaultCheckoutComGooglePayFacadeTest {
 
     @Before
     public void setUp() {
-        when(transactionInfoDataMock.getCurrencyCode()).thenReturn("USD");
-        when(transactionInfoDataMock.getTotalPrice()).thenReturn("100.0d");
-
         when(intermediateAddressMock.getCountryCode()).thenReturn(US_COUNTRY_CODE);
 
-        when(countryModelMock.getName()).thenReturn("country_name");
         when(countryModelMock.getIsocode()).thenReturn(US_COUNTRY_CODE);
-        when(cartModelMock.getPaymentCost()).thenReturn(10.0d);
-        when(cartModelMock.getTotalPrice()).thenReturn(150.0d);
 
         when(cartServiceMock.getSessionCart()).thenReturn(cartModelMock);
-        when(cartServiceMock.hasSessionCart()).thenReturn(Boolean.TRUE);
 
         createGooglePayIntermediatePaymentData();
         when(checkoutComGooglePayConversionFacadeMock.getGooglePayTransactionInfo(cartFacadeMock.getSessionCart()))
                 .thenReturn(transactionInfoDataMock);
         when(deliveryServiceMock.getDeliveryCountriesForOrder(cartServiceMock.getSessionCart()))
                 .thenReturn(List.of(countryModelMock));
-        when(googlePaySelectionOptionMock.getId()).thenReturn("selection_option_id");
-        when(googlePaySelectionOptionMock.getLabel()).thenReturn("selection_option_label");
-        when(googlePaySelectionOptionMock.getDescription()).thenReturn("selection_option_description");
         final ArrayList supportedDeliveryModes = new ArrayList();
         supportedDeliveryModes.add(deliveryModeDataMock);
         when(checkoutComGooglePayConversionFacadeMock.getGooglePaySelectionOptions(supportedDeliveryModes))
@@ -115,12 +105,6 @@ public class DefaultCheckoutComGooglePayFacadeTest {
 
     @Test
     public void getGooglePayMerchantConfiguration_whenGooglePaySettingsAreNotMissing_ShouldReturnGooglePayMerchantSettings() {
-        when(googlePaySettingsDataMock.getMerchantId()).thenReturn("merchant_id_test");
-        when(googlePaySettingsDataMock.getEnvironment()).thenReturn("TEST");
-
-        when(merchantConfigurationMock.getMerchantId()).thenReturn("merchant_id_test");
-        when(merchantConfigurationMock.getMerchantName()).thenReturn("merchant_name_test");
-
         when(checkoutComGooglePayConversionFacadeMock.getGooglePayMerchantConfiguration(googlePaySettingsDataMock)).thenReturn(merchantConfigurationMock);
         when(checkoutComMerchantConfigurationFacadeMock.getGooglePaySettings()).thenReturn(Optional.of(googlePaySettingsDataMock));
 

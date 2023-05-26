@@ -4,7 +4,7 @@ import com.checkout.hybris.core.authorisation.AuthorizeResponse;
 import com.checkout.hybris.core.model.CheckoutComAPMPaymentInfoModel;
 import com.checkout.hybris.core.payment.response.strategies.CheckoutComPaymentResponseStrategy;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import org.apache.commons.lang.StringUtils;
 

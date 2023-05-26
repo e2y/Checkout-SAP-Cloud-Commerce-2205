@@ -6,11 +6,9 @@ import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurati
 import com.checkout.hybris.core.model.CheckoutComAPMConfigurationModel;
 import com.checkout.hybris.core.model.CheckoutComFawryConfigurationModel;
 import com.checkout.hybris.core.model.CheckoutComGlobalAPMConfigurationModel;
-import com.checkout.hybris.core.model.CheckoutComMerchantConfigurationModel;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import de.hybris.bootstrap.annotations.UnitTest;
-import de.hybris.platform.basecommerce.model.site.BaseSiteModel;
 import de.hybris.platform.core.model.c2l.CountryModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.media.MediaModel;
@@ -32,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.checkout.common.Currency.EUR;
-import static com.checkout.common.Currency.GBP;
+import static com.checkout.sdk.common.Currency.EUR;
+import static com.checkout.sdk.common.Currency.GBP;
 import static com.checkout.hybris.core.payment.enums.CheckoutComPaymentType.FAWRY;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -170,8 +168,6 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void isApmAvailable_WhenApmRestrictedForDifferentCountry_ShouldReturnFalse() {
-        when(apmConfiguration1Mock.getRestrictedCurrencies()).thenReturn(emptySet());
-
         final boolean result = testObj.isApmAvailable(apmConfiguration1Mock, UK.getCountry(), EUR);
 
         assertFalse(result);
@@ -179,8 +175,6 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void isApmAvailable_WhenApmRestrictedForDifferentCurrency_ShouldReturnFalse() {
-        when(apmConfiguration1Mock.getRestrictedCountries()).thenReturn(emptySet());
-
         final boolean result = testObj.isApmAvailable(apmConfiguration1Mock, UK.getCountry(), GBP);
 
         assertFalse(result);

@@ -76,10 +76,6 @@ public class DefaultCheckoutComWalletOrderFacadeTest {
         when(checkoutFlowFacadeMock.authorizePayment()).thenReturn(authorizeResponseDataMock);
         when(authorizeResponseDataMock.getIsSuccess()).thenReturn(true);
         when(checkoutFlowFacadeMock.placeOrder()).thenReturn(orderDataMock);
-        when(i18nServiceMock.getCurrentLocale()).thenReturn(ENGLISH);
-        when(messageSourceMock.getMessage("checkout.error.authorization.failed", null, ENGLISH)).thenReturn(AUTHORIZATION_FAILED_ERROR_MSG);
-        when(messageSourceMock.getMessage("checkout.placeOrder.failed", null, ENGLISH)).thenReturn(PLACE_ORDER_FAILED_ERROR_MSG);
-        doNothing().when(checkoutComPlaceOrderCartValidatorMock).validate(eq(cartDataMock), any());
     }
 
     @Test

@@ -82,7 +82,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
         when(currencyModelMock.getIsocode()).thenReturn(CURRENCY_CODE);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_AMOUNT_DOUBLE)).thenReturn(CHECKOUTCOM_AMOUNT_LONG);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_DISCOUNT_AMOUNT_DOUBLE)).thenReturn(CHECKOUTCOM_DISCOUNT_AMOUNT_LONG);
-        when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TOTAL_PRICE_AMOUNT_DOUBLE)).thenReturn(CHECKOUTCOM_TOTAL_PRICE_AMOUNT_LONG);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_PAYMENT_COST_AMOUNT_DOUBLE)).thenReturn(CHECKOUTCOM_PAYMENT_COST_AMOUNT_LONG);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TAXPERCENT_AMOUNT_DOUBLE)).thenReturn(0L).thenReturn(CHECKOUTCOM_TAXPERCENT_AMOUNT_LONG);
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TAXAMOUNT_DOUBLE)).thenReturn(0L).thenReturn(CHECKOUTCOM_TAXAMOUNT_LONG);
@@ -93,24 +92,17 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
         when(entry2Mock.getBasePrice()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
         when(entry1Mock.getQuantity()).thenReturn(1l);
         when(entry2Mock.getQuantity()).thenReturn(1l);
-        when(entry1Mock.getTotalPrice()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
-        when(entry2Mock.getTotalPrice()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
-        when(entry2Mock.getTaxValues()).thenReturn(Collections.singletonList(taxValueMock));
         when(taxValueMock.getValue()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
-        when(taxValueMock.getAppliedValue()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
         when(entry1Mock.getProduct()).thenReturn(productModelMock);
         when(entry2Mock.getProduct()).thenReturn(productModelMock);
         when(productModelMock.getName()).thenReturn(PRODUCT_NAME);
         when(sourceMock.getDeliveryCost()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
         when(sourceMock.getDeliveryMode()).thenReturn(deliveryModeMock);
         when(deliveryModeMock.getName()).thenReturn(DELIVERY_NAME);
-        when(discountModelMock.getName()).thenReturn(DISCOUNT_NAME);
-        when(discountModelMock.getValue()).thenReturn(CHECKOUTCOM_DISCOUNT_AMOUNT_DOUBLE);
         when(sourceMock.getTotalDiscounts()).thenReturn(CHECKOUTCOM_DISCOUNT_AMOUNT_DOUBLE);
         when(sourceMock.getDiscounts()).thenReturn(Collections.singletonList(discountModelMock));
         when(sourceMock.getTotalPrice()).thenReturn(CHECKOUTCOM_TOTAL_PRICE_AMOUNT_DOUBLE);
         when(sourceMock.getPaymentCost()).thenReturn(CHECKOUTCOM_PAYMENT_COST_AMOUNT_DOUBLE);
-        doNothing().when(checkoutComKlarnaDiscountAmountStrategyMock).applyDiscountsToKlarnaOrderLines(sourceMock, Arrays.asList(product1Mock, product2Mock));
     }
 
     @Test
@@ -183,8 +175,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     public void populateShippingLine_ShouldNotSetTaxRateIfTax_WhenLessThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
 
-        when(sourceMock.getTotalTax()).thenReturn(100.00d * -1);
-
         testObj.populateShippingLine(sourceMock, CURRENCY_CODE, productRequestDtos, 0.00d);
 
         assertThat(productRequestDtos).isNotEmpty();
@@ -198,7 +188,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     public void populateShippingLine_ShouldSetTaxRate_WhenIfTaxIsGreaterThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
 
-        doReturn(50L).when(checkoutComCurrencyServiceMock).convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TAX_RATE_DOUBLE);
         when(sourceMock.getTotalTaxValues()).thenReturn(List.of(taxValueMock));
 
         testObj.populateShippingLine(sourceMock, CURRENCY_CODE, productRequestDtos, CHECKOUTCOM_TAX_RATE_DOUBLE);
@@ -238,8 +227,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     public void populateOrderDiscount_ShouldSetTaxRate_WhenIfTaxIsGreaterThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
 
-        doReturn(50L).when(checkoutComCurrencyServiceMock).convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TAX_RATE_DOUBLE);
-
         when(sourceMock.getTotalTaxValues()).thenReturn(List.of(taxValueMock));
         testObj.populateOrderDiscount(sourceMock, CURRENCY_CODE, productRequestDtos, CHECKOUTCOM_TAX_RATE_DOUBLE);
 
@@ -253,8 +240,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     @Test
     public void populateOrderDiscount_ShouldNotSetTaxRateIfTax_WhenLessThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
-
-        when(sourceMock.getTotalTax()).thenReturn(100.00d * -1);
 
         testObj.populateOrderDiscount(sourceMock, CURRENCY_CODE, productRequestDtos, 0.00d);
 
@@ -293,7 +278,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     public void populatePaymentCost_ShouldSetTaxRate_WhenIfTaxIsGreaterThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
 
-        doReturn(50L).when(checkoutComCurrencyServiceMock).convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_TAX_RATE_DOUBLE);
         when(sourceMock.getTotalTaxValues()).thenReturn(List.of(taxValueMock));
 
         testObj.populatePaymentCost(sourceMock, CURRENCY_CODE, productRequestDtos, CHECKOUTCOM_TAX_RATE_DOUBLE);
@@ -306,8 +290,6 @@ public class CheckoutComKlarnaProductsRequestDtoPopulatorTest {
     @Test
     public void populatePaymentCost_ShouldNotSetTaxRateIfTax_WhenLessThanZero() {
         final List<KlarnaProductRequestDto> productRequestDtos = new ArrayList<>();
-
-        when(sourceMock.getTotalTax()).thenReturn(100.00d * -1);
 
         testObj.populatePaymentCost(sourceMock, CURRENCY_CODE, productRequestDtos, 0.00d);
 

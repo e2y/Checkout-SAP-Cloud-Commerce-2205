@@ -6,10 +6,9 @@ import com.checkout.hybris.core.model.CheckoutComBenefitPayPaymentInfoModel;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
-import com.checkout.payments.AlternativePaymentSourceResponse;
-import com.checkout.payments.CardSourceResponse;
-import com.checkout.payments.GetPaymentResponse;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.AlternativePaymentSourceResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import org.junit.Before;
@@ -41,8 +40,6 @@ public class CheckoutComBenefitPayPaymentResponseStrategyTest {
     private CheckoutComPaymentIntegrationService checkoutComPaymentIntegrationServiceMock;
     @Mock
     private GetPaymentResponse getPaymentResponseMock;
-    @Mock
-    private CardSourceResponse cardSourceResponseMock;
     @Mock
     private PaymentInfoModel paymentInfoMock;
     @Mock
@@ -84,8 +81,6 @@ public class CheckoutComBenefitPayPaymentResponseStrategyTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void handlePendingPaymentResponse_WhenPaymentResponseIdIsNull_ShouldThrowException() {
-        when(getPaymentResponseMock.getId()).thenReturn(null);
-
         testObj.handlePendingPaymentResponse(pendingResponseMock, apmPaymentInfoMock);
     }
 
@@ -96,8 +91,6 @@ public class CheckoutComBenefitPayPaymentResponseStrategyTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void handlePendingPaymentResponse_WhenResponseIsNotSupported_ShouldThrowException() {
-        when(getPaymentResponseMock.getSource()).thenReturn(cardSourceResponseMock);
-
         testObj.handlePendingPaymentResponse(pendingResponseMock, apmPaymentInfoMock);
     }
 

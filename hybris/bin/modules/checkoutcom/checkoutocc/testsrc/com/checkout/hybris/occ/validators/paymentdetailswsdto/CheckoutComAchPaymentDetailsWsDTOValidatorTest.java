@@ -106,7 +106,6 @@ public class CheckoutComAchPaymentDetailsWsDTOValidatorTest {
 
     @Test
     public void validate_WhenAccountTypeEmpty_ShouldReturnError() {
-        when(enumerationServiceMock.getEnumerationValue(AchAccountType.class, "  ")).thenThrow(new UnknownIdentifierException("Account type not found"));
         paymentDetailsWsDTO.setAccountType(BLANK_STRING);
 
         testObj.validate(paymentDetailsWsDTO, errors);

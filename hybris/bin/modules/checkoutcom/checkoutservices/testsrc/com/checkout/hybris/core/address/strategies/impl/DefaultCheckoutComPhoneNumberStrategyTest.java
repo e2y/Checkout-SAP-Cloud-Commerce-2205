@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.address.strategies.impl;
 
-import com.checkout.common.Phone;
+import com.checkout.sdk.common.Phone;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.user.AddressModel;
 import org.junit.Test;

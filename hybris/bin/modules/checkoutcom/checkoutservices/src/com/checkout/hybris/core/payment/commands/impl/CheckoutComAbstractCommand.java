@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.payment.commands.impl;
 
-import com.checkout.CheckoutApiException;
+import com.checkout.sdk.CheckoutApiException;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import de.hybris.platform.payment.commands.result.AbstractResult;
 import de.hybris.platform.payment.dto.TransactionStatusDetails;

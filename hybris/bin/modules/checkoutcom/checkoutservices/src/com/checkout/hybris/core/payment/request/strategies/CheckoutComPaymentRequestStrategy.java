@@ -1,7 +1,7 @@
 package com.checkout.hybris.core.payment.request.strategies;
 
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
 import de.hybris.platform.core.model.order.CartModel;
 
 /**

@@ -60,9 +60,6 @@ public class CheckoutComPaymentStatusOrderCancelDenialStrategyTest {
 
     @Test
     public void getCancelDenialReason_WhenIsAuthorizationPending_ShouldReturnTheDecision() {
-        when(paymentServiceMock.isCapturePending(orderModelMock)).thenReturn(true);
-        when(paymentServiceMock.isAutoCapture(orderModelMock)).thenReturn(false);
-
         final OrderCancelDenialReason result = testObj.getCancelDenialReason(orderCancelConfigModelMock, orderModelMock, principalModelMock, false, false);
 
         assertEquals(denialReason, result);
@@ -71,7 +68,6 @@ public class CheckoutComPaymentStatusOrderCancelDenialStrategyTest {
     @Test
     public void getCancelDenialReason_WhenIsCaptureNotPending_ShouldReturnTheDecision() {
         when(paymentServiceMock.isAuthorizationPending(orderModelMock)).thenReturn(false);
-        when(paymentServiceMock.isAutoCapture(orderModelMock)).thenReturn(false);
 
         final OrderCancelDenialReason result = testObj.getCancelDenialReason(orderCancelConfigModelMock, orderModelMock, principalModelMock, false, false);
 

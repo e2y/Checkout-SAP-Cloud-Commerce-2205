@@ -59,7 +59,7 @@ public class MagicValuesCheckoutComAchFacadeTest {
 	}
 
 	private void ensuringSuperCallToSetPaymentInfoDoesNothing() {
-		doNothing().when(testObj).callSuperSetPaymentInfoAchToCart(any(AchBankInfoDetailsData.class));
+		doNothing().when(testObj).callSuperSetPaymentInfoAchToCart(any());
 	}
 
 	private void ensuringStrategyIsFound() {

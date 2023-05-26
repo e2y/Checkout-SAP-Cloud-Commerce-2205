@@ -1,16 +1,16 @@
 package com.checkout.hybris.occ.strategies;
 
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
 import de.hybris.bootstrap.annotations.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,9 +35,8 @@ public class CheckoutComOccAbstractPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
-        Whitebox.setInternalState(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
     }
-
     @Test
     public void populateRedirectUrls_ShouldSetOccRedirectUrls() {
         when(checkoutComUrlServiceMock.getFullUrl(CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_SUCCESS, true)).thenReturn(CHECKOUT_COM_OCC_FULL_REDIRECT_SUCCESS);

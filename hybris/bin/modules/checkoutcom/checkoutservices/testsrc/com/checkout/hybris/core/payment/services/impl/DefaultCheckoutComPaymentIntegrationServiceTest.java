@@ -1,6 +1,7 @@
 package com.checkout.hybris.core.payment.services.impl;
 
-import com.checkout.CheckoutApi;
+import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
+import com.checkout.sdk.CheckoutApi;
 import com.checkout.hybris.core.enums.EnvironmentType;
 import com.checkout.hybris.core.klarna.capture.request.KlarnaCaptureRequestDto;
 import com.checkout.hybris.core.klarna.capture.response.KlarnaCaptureResponseDto;
@@ -15,14 +16,13 @@ import com.checkout.hybris.core.order.daos.CheckoutComOrderDao;
 import com.checkout.hybris.core.payment.daos.CheckoutComPaymentInfoDao;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.services.CheckoutComApiService;
-import com.checkout.payments.*;
-import com.checkout.sources.SourceProcessed;
-import com.checkout.sources.SourceRequest;
-import com.checkout.sources.SourceResponse;
-import com.checkout.sources.SourcesClient;
-import com.checkout.tokens.TokenResponse;
-import com.checkout.tokens.TokensClient;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.payments.*;
+import com.checkout.sdk.sources.SourceRequest;
+import com.checkout.sdk.sources.SourceResponse;
+import com.checkout.sdk.sources.SourcesClient;
+import com.checkout.sdk.tokens.TokenResponse;
+import com.checkout.sdk.tokens.TokensClient;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 import com.google.common.collect.ImmutableList;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.basecommerce.model.site.BaseSiteModel;
@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.exceptions.base.MockitoException;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -47,7 +48,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.checkout.hybris.core.payment.enums.CheckoutComPaymentType.APPLEPAY;
 import static java.util.Optional.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -66,7 +66,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     private static final String ACTION_ID = "action_id";
     private static final String SESSION_ID = "session_id";
     private static final String CLIENT_TOKEN = "token";
-    private static final String WALLET_TOKEN_VALUE = "walletToken";
     private static final String KLARNA_SESSION_URL = "https://prod.url/%s/credit-sessions";
     private static final String KLARNA_CAPTURE_URL = "https://prod.url/%s/captures";
     private static final String KLARNA_VOID_URL = "https://prod.url/%s/void";
@@ -95,8 +94,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     private CompletableFuture<PaymentResponse> completableFutureAuthMock;
     @Mock
     private PaymentResponse paymentResponseMock;
-    @Mock
-    private PaymentProcessed paymentProcessedMock;
     @Mock
     private CompletableFuture<GetPaymentResponse> completableFutureGetPaymentMock;
     @Mock
@@ -130,8 +127,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     @Mock
     private SourceResponse sourceResponseMock;
     @Mock
-    private SourceProcessed sourceProcessedMock;
-    @Mock
     private WalletTokenRequest walletTokenRequestMock;
     @Mock
     private TokenResponse tokenResponseMock;
@@ -164,6 +159,8 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     @Mock
     private CheckoutComApiService checkoutComApiServiceMock;
     @Mock
+    private CheckoutComPaymentInfoService paymentInfoServiceMock;
+    @Mock
     private PaymentInfoModel originalPaymentInfoMock;
     @Mock
     private Map<String, Object> metaDataMapMock;
@@ -174,7 +171,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
 
     @Before
     public void setUp() throws ExecutionException, InterruptedException {
-        when(checkoutComMerchantConfigurationServiceMock.getSecretKey()).thenReturn(SECRET_KEY);
         when(checkoutComMerchantConfigurationServiceMock.getEnvironment()).thenReturn(EnvironmentType.TEST);
         when(checkoutComMerchantConfigurationServiceMock.getPublicKey()).thenReturn(PUBLIC_KEY);
         when(checkoutComMerchantConfigurationServiceMock.getPublicKeyForSite(SITE_ID)).thenReturn(PUBLIC_KEY);
@@ -186,8 +182,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
         when(paymentsClientMock.voidAsync(PAYMENT_ID, voidRequestMock)).thenReturn(completableFutureVoidResponseMock);
         when(tokensClientMock.requestAsync(walletTokenRequestMock)).thenReturn(completableFutureTokenResponseMock);
         when(completableFutureTokenResponseMock.get()).thenReturn(tokenResponseMock);
-        when(tokenResponseMock.getToken()).thenReturn(WALLET_TOKEN_VALUE);
-        when(tokenResponseMock.getType()).thenReturn(APPLEPAY.name());
         when(checkoutApiMock.sourcesClient()).thenReturn(sourceClientMock);
         when(sourceClientMock.requestAsync(sourceRequestMock)).thenReturn(completableFutureSourceResponseMock);
         when(captureRequestMock.getReference()).thenReturn(ORDER_REFERENCE);
@@ -200,12 +194,9 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
         when(completableFutureVoidResponseMock.get()).thenReturn(voidResponseMock);
         when(completableFutureGetPaymentMock.get()).thenReturn(getPaymentResponseMock);
         when(completableFutureSourceResponseMock.get()).thenReturn(sourceResponseMock);
-        when(sourceResponseMock.getSource()).thenReturn(sourceProcessedMock);
-        when(paymentResponseMock.getPayment()).thenReturn(paymentProcessedMock);
         when(orderDaoMock.findAbstractOrderForPaymentReferenceNumber(ORDER_REFERENCE)).thenReturn(of(orderMock));
         when(orderMock.getSite()).thenReturn(baseSiteModelMock);
         when(baseSiteModelMock.getUid()).thenReturn(SITE_ID);
-        when(klarnaSessionResponseEntityMock.getStatusCode()).thenReturn(HttpStatus.CREATED);
         when(klarmePaymentInfoMock.getOwner()).thenReturn(orderMock);
         when(klarmePaymentInfoMock.getOriginal()).thenReturn(originalPaymentInfoMock);
         when(paymentInfoMock.getOriginal()).thenReturn(originalPaymentInfoMock);
@@ -273,6 +264,8 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
         final GetPaymentResponse result = testObj.getPaymentDetails(CKO_SESSION_ID);
 
         assertEquals(getPaymentResponseMock, result);
+        verify(paymentInfoServiceMock).saveResponseInOrderByPaymentReference(any(), anyString());
+        verify(paymentInfoServiceMock).logInfoOut(anyString());
     }
 
     @Test
@@ -415,22 +408,17 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
 
         doReturn(KLARNA_SESSION_URL).when(testObj).getKlarnaApiUrlForEnvironment(null, "checkoutservices.klarna.createsession.api.url");
         when(restTemplateMock.postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class))).thenReturn(klarnaSessionResponseEntityMock);
-        when(klarnaSessionResponseEntityMock.getBody()).thenReturn(klarnaSessionResponseDto);
         doThrow(new HttpClientErrorException(HttpStatus.CONFLICT)).when(restTemplateMock).postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class));
-        when(klarnaSessionResponseEntityMock.getBody()).thenReturn(klarnaSessionResponseDto);
 
         testObj.createKlarnaSession(klarnaSessionRequestDtoMock);
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = MockitoException.class)
     public void createKlarnaSession_WhenConnectException_ShouldThrowExecutionException() throws ExecutionException {
         final KlarnaSessionResponseDto klarnaSessionResponseDto = new KlarnaSessionResponseDto();
         klarnaSessionResponseDto.setClientToken(CLIENT_TOKEN);
         klarnaSessionResponseDto.setSessionId(SESSION_ID);
 
-        doReturn(KLARNA_SESSION_URL).when(testObj).getKlarnaApiUrlForEnvironment(null, "checkoutservices.klarna.createsession.api.url");
-        when(restTemplateMock.postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class))).thenReturn(klarnaSessionResponseEntityMock);
-        when(klarnaSessionResponseEntityMock.getBody()).thenReturn(klarnaSessionResponseDto);
         doThrow(ConnectException.class).when(restTemplateMock).postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class));
         when(klarnaSessionResponseEntityMock.getBody()).thenReturn(klarnaSessionResponseDto);
 
@@ -472,18 +460,14 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
         doReturn(KLARNA_CAPTURE_URL).when(testObj).getKlarnaApiUrlForEnvironment(SITE_ID, "checkoutservices.klarna.capture.api.url");
 
         doThrow(new HttpClientErrorException(HttpStatus.CONFLICT)).when(restTemplateMock).postForEntity(anyString(), any(HttpEntity.class), eq(KlarnaCaptureResponseDto.class));
-        when(klarnaCaptureResponseEntityMock.getBody()).thenReturn(klarnaCaptureResponseDto);
 
         testObj.captureKlarnaPayment(captureRequestMock, PAYMENT_ID, SITE_ID);
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = MockitoException.class)
     public void captureKlarnaPayment_WhenConnectException_ShouldThrowExecutionException() throws ExecutionException {
         final KlarnaCaptureResponseDto klarnaCaptureResponseDto = new KlarnaCaptureResponseDto();
         klarnaCaptureResponseDto.setActionId(ACTION_ID);
-
-        doReturn(klarnaCaptureRequestMock).when(testObj).createKlarnaCaptureRequest(captureRequestMock);
-        doReturn(KLARNA_CAPTURE_URL).when(testObj).getKlarnaApiUrlForEnvironment(SITE_ID, "checkoutservices.klarna.capture.api.url");
 
         doThrow(ConnectException.class).when(restTemplateMock).postForEntity(anyString(), any(HttpEntity.class), eq(KlarnaCaptureResponseDto.class));
         when(klarnaCaptureResponseEntityMock.getBody()).thenReturn(klarnaCaptureResponseDto);
@@ -526,18 +510,14 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
         doReturn(KLARNA_VOID_URL).when(testObj).getKlarnaApiUrlForEnvironment(SITE_ID, "checkoutservices.klarna.void.api.url");
 
         doThrow(new HttpClientErrorException(HttpStatus.CONFLICT)).when(restTemplateMock).postForEntity(anyString(), any(HttpEntity.class), eq(KlarnaVoidResponseDto.class));
-        when(klarnaVoidResponseEntityMock.getBody()).thenReturn(klarnaVoidResponseDto);
 
         testObj.voidKlarnaPayment(voidRequestMock, PAYMENT_ID, SITE_ID);
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = MockitoException.class)
     public void voidKlarnaPayment_WhenConnectException_ShouldThrowExecutionException() throws ExecutionException {
         final KlarnaVoidResponseDto klarnaVoidResponseDto = new KlarnaVoidResponseDto();
         klarnaVoidResponseDto.setActionId(ACTION_ID);
-
-        doReturn(klarnaVoidRequestMock).when(testObj).createKlarnaVoidRequest(voidRequestMock);
-        doReturn(KLARNA_VOID_URL).when(testObj).getKlarnaApiUrlForEnvironment(SITE_ID, "checkoutservices.klarna.void.api.url");
 
         doThrow(ConnectException.class).when(restTemplateMock).postForEntity(anyString(), any(HttpEntity.class), eq(KlarnaVoidResponseDto.class));
         when(klarnaVoidResponseEntityMock.getBody()).thenReturn(klarnaVoidResponseDto);

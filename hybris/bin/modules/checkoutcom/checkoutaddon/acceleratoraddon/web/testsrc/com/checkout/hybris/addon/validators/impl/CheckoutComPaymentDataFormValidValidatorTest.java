@@ -63,7 +63,6 @@ public class CheckoutComPaymentDataFormValidValidatorTest {
     @Test
     public void validate_WhenValidPaymentType_ShouldCallTheCorrectValidator() {
         when(paymentResolverMock.resolvePaymentMethod(FAWRY.name())).thenReturn(FAWRY);
-        doNothing().when(checkoutComFawryPaymentDataFormValidatorMock).validate(FAWRY, errors);
 
         testObj.validate(paymentDataForm, errors);
 

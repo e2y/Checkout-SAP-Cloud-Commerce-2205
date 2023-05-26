@@ -3,7 +3,7 @@ package com.checkout.hybris.core.payment.commands.impl;
 import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
-import com.checkout.payments.VoidResponse;
+import com.checkout.sdk.payments.VoidResponse;
 import de.hybris.platform.payment.commands.VoidCommand;
 import de.hybris.platform.payment.commands.request.VoidRequest;
 import de.hybris.platform.payment.commands.result.AbstractResult;
@@ -71,7 +71,7 @@ public class CheckoutComVoidCommand extends CheckoutComAbstractCommand implement
     }
 
     protected VoidResult voidAuthorization(final VoidRequest voidRequest, final String paymentReferenceNumber) throws InterruptedException, ExecutionException {
-        final com.checkout.payments.VoidRequest voidPaymentRequest = checkoutComRequestFactory.createVoidPaymentRequest(paymentReferenceNumber);
+        final com.checkout.sdk.payments.VoidRequest voidPaymentRequest = checkoutComRequestFactory.createVoidPaymentRequest(paymentReferenceNumber);
 
         final VoidResponse voidResponse = checkoutComPaymentIntegrationService.voidPayment(voidPaymentRequest, voidRequest.getRequestId());
 

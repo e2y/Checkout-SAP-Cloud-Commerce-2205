@@ -9,9 +9,9 @@ import com.checkout.hybris.core.payment.response.mappers.CheckoutComPaymentRespo
 import com.checkout.hybris.core.payment.response.strategies.CheckoutComPaymentResponseStrategy;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
-import com.checkout.payments.AlternativePaymentSourceResponse;
-import com.checkout.payments.GetPaymentResponse;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.AlternativePaymentSourceResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.PaymentPending;
 import com.google.common.base.Preconditions;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import org.apache.commons.lang.StringUtils;

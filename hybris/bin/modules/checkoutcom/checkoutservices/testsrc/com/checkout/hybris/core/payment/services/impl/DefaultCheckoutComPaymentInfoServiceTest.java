@@ -1,30 +1,38 @@
 package com.checkout.hybris.core.payment.services.impl;
 
 import com.checkout.hybris.core.address.services.CheckoutComAddressService;
-import com.checkout.hybris.core.model.CheckoutComAPMPaymentInfoModel;
-import com.checkout.hybris.core.model.CheckoutComBenefitPayPaymentInfoModel;
-import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
-import com.checkout.hybris.core.model.CheckoutComFawryPaymentInfoModel;
+import com.checkout.hybris.core.enums.EnvironmentType;
+import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
+import com.checkout.hybris.core.model.*;
+import com.checkout.hybris.core.order.daos.CheckoutComOrderDao;
 import com.checkout.hybris.core.payment.daos.CheckoutComPaymentInfoDao;
-import com.checkout.payments.CardSourceResponse;
+import com.checkout.sdk.payments.CardSourceResponse;
 import com.google.common.collect.ImmutableList;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.commerceservices.service.data.CommerceCheckoutParameter;
+import de.hybris.platform.core.GenericSearchConstants;
 import de.hybris.platform.core.model.order.AbstractOrderModel;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import de.hybris.platform.core.model.user.AddressModel;
 import de.hybris.platform.core.model.user.CustomerModel;
+import de.hybris.platform.servicelayer.config.ConfigurationService;
+import de.hybris.platform.servicelayer.internal.dao.GenericDao;
 import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.session.SessionService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.junit.Assert.*;
@@ -36,11 +44,14 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
 
     private static final String SITE_ID = "electronics";
     private static final String CART_CODE = "CART_CODE";
-    private static final String USER_ID = "USER_ID";
     private static final String QR_CODE_DATA_VALUE = "gesbyhnfuerwfluihltgsbdkljnkwb5tfrcduegw";
     private static final String PAYMENT_1_CODE = "payment1Code";
     private static final String PAYMENT_2_CODE = "payment2Code";
     private static final String SUBSCRIPTION_ID = "subscriptionID";
+    public static final String RESPONSE = "response";
+    public static final String REQUEST = "request";
+    public static final String PAYMENT_REFERENCE = "paymentReference";
+    public static final String PAYLOAD = "payload";
 
     @Spy
     @InjectMocks
@@ -49,6 +60,15 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
     @Mock
     private ModelService modelServiceMock;
     @Mock
+    private CheckoutComAddressService addressServiceMock;
+    @Mock
+    private CheckoutComPaymentInfoDao checkoutComPaymentInfoDaoMock;
+    @Mock
+    private CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationServiceMock;
+    @Mock
+    private CheckoutComOrderDao checkoutComOrderDaoMock;
+
+    @Mock
     private CartModel cartModelMock;
     @Mock
     private CheckoutComCreditCardPaymentInfoModel checkoutComCreditCardPaymentInfoModelMock;
@@ -56,8 +76,6 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
     private PaymentInfoModel paymentInfoModelMock;
     @Mock
     private CustomerModel userMock;
-    @Mock
-    private CheckoutComAddressService addressServiceMock;
     @Mock
     private AddressModel paymentAddressMock;
     @Mock
@@ -69,25 +87,23 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
     @Mock
     private CheckoutComCreditCardPaymentInfoModel cardPaymentInfoMock, userPaymentInfo1Mock, userPaymentInfo2Mock;
     @Mock
+    private PayloadModel payloadModelMock;
+    @Mock
     private CardSourceResponse sourceMock;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private OrderModel orderMock;
     @Mock
     private CheckoutComFawryPaymentInfoModel fawryPaymentInfoMock;
-    @Mock
-    private CheckoutComPaymentInfoDao checkoutComPaymentInfoDaoMock;
+
+
 
     @Before
     public void setUp() {
         when(cartModelMock.getUser()).thenReturn(userMock);
         when(cartModelMock.getCode()).thenReturn(CART_CODE);
-        when(checkoutComCreditCardPaymentInfoModelMock.getItemtype()).thenReturn(CheckoutComCreditCardPaymentInfoModel._TYPECODE);
-        when(redirectApmPaymentInfoMock.getItemtype()).thenReturn(CheckoutComAPMPaymentInfoModel._TYPECODE);
-        when(benefitPayPaymentInfoMock.getItemtype()).thenReturn(CheckoutComBenefitPayPaymentInfoModel._TYPECODE);
         when(cartModelMock.getPaymentInfo()).thenReturn(paymentInfoModelMock);
         doReturn(modelServiceMock).when(testObj).callSuperModelService();
         when(paymentInfoModelMock.getItemtype()).thenReturn(PaymentInfoModel._TYPECODE);
-        when(userMock.getUid()).thenReturn(USER_ID);
         when(cartModelMock.getPaymentAddress()).thenReturn(paymentAddressMock);
         when(orderMock.getPaymentInfo()).thenReturn(cardPaymentInfoMock);
         when(cardPaymentInfoMock.getCode()).thenReturn(PAYMENT_1_CODE);
@@ -96,7 +112,6 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
         when(userMock.getPaymentInfos()).thenReturn(ImmutableList.of(userPaymentInfo1Mock, userPaymentInfo2Mock));
         when(sourceMock.getId()).thenReturn(SUBSCRIPTION_ID);
         when(cartModelMock.getUser()).thenReturn(userMock);
-        when(userMock.getUid()).thenReturn(USER_ID);
         when(userMock.getPaymentInfos()).thenReturn(ImmutableList.of(userPaymentInfo1Mock, userPaymentInfo2Mock));
         when(userPaymentInfo1Mock.getCode()).thenReturn(PAYMENT_1_CODE);
         when(userPaymentInfo2Mock.getCode()).thenReturn(PAYMENT_2_CODE);
@@ -170,8 +185,6 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createPaymentInfo_ForGenericPaymentInfo_ShouldThrowException() {
-        doReturn(clonedAddressMock).when(testObj).cloneAndSetBillingAddressFromCart(cartModelMock, paymentInfoModelMock);
-
         testObj.createPaymentInfo(paymentInfoModelMock, cartModelMock);
     }
 
@@ -399,8 +412,6 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addPaymentId_WhenPaymentInfoIsNull_ShouldThrowException() {
-        when(cartModelMock.getPaymentInfo()).thenReturn(null);
-
         testObj.addPaymentId(PAYMENT_1_CODE, null);
     }
 
@@ -455,5 +466,56 @@ public class DefaultCheckoutComPaymentInfoServiceTest {
         testObj.getPaymentInfosByPaymentId(PAYMENT_1_CODE);
 
         verify(checkoutComPaymentInfoDaoMock).findPaymentInfosByPaymentId(PAYMENT_1_CODE);
+    }
+
+    @Test
+    public void saveRequestAndResponseInOrder_shouldCallModelService() {
+        when(orderMock.getRequestsPayload()).thenReturn(Collections.emptyList());
+        when(orderMock.getResponsesPayload()).thenReturn(Collections.emptyList());
+        doReturn(payloadModelMock).when(testObj).createPayloadModel(anyString());
+
+
+        testObj.saveRequestAndResponseInOrder(orderMock, REQUEST, RESPONSE);
+
+        verify(modelServiceMock).save(orderMock);
+    }
+
+    @Test
+    public void saveResponseInOrderByPaymentReference_shouldCallModelService_whenOrderIsFound() {
+        when(orderMock.getRequestsPayload()).thenReturn(Collections.emptyList());
+        when(orderMock.getResponsesPayload()).thenReturn(Collections.emptyList());
+        doReturn(payloadModelMock).when(testObj).createPayloadModel(anyString());
+        doReturn(Optional.of(orderMock))
+                .when(checkoutComOrderDaoMock).findAbstractOrderForPaymentReferenceNumber(PAYMENT_REFERENCE);
+
+        testObj.saveResponseInOrderByPaymentReference(PAYMENT_REFERENCE, RESPONSE);
+
+        verify(modelServiceMock).save(orderMock);
+    }
+
+    @Test
+    public void logInfoOutput_shouldLogInfo_whenEnvironmentEqualsTest() {
+        when(checkoutComMerchantConfigurationServiceMock.getEnvironment()).thenReturn(EnvironmentType.TEST);
+        testObj.logInfoOut(PAYLOAD);
+
+        verify(checkoutComMerchantConfigurationServiceMock).getEnvironment();
+    }
+
+    @Test
+    public void logInfoOutput_shouldLogInfo_whenEnvironmentEqualsPROD() {
+        when(checkoutComMerchantConfigurationServiceMock.getEnvironment()).thenReturn(EnvironmentType.PRODUCTION);
+        testObj.logInfoOut(PAYLOAD);
+
+        verify(checkoutComMerchantConfigurationServiceMock).getEnvironment();
+    }
+
+    @Test
+    public void createPayloadModel_shouldCreatePayloadModel() {
+        when(modelServiceMock.create(PayloadModel.class)).thenReturn(payloadModelMock);
+
+        testObj.createPayloadModel(PAYLOAD);
+
+        verify(payloadModelMock).setPayload(PAYLOAD);
+        verify(modelServiceMock).save(payloadModelMock);
     }
 }

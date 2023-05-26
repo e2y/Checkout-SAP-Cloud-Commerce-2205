@@ -1,8 +1,8 @@
 package com.checkout.hybris.core.payment.services.impl;
 
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
-import com.checkout.instruments.InstrumentsClient;
-import com.checkout.instruments.UpdateInstrumentRequest;
+import com.checkout.sdk.instruments.InstrumentsClient;
+import com.checkout.sdk.instruments.UpdateInstrumentRequest;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.payment.CreditCardPaymentInfoModel;
 import org.junit.Before;

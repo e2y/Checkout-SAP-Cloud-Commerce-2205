@@ -310,7 +310,7 @@
     <alias name="defaultCheckoutComApplePayTokenRequestConverter"
            alias="checkoutComApplePayTokenRequestConverter"/>
     <bean id="defaultCheckoutComApplePayTokenRequestConverter" parent="abstractPopulatingConverter">
-        <property name="targetClass" value="com.checkout.tokens.WalletTokenRequest"/>
+        <property name="targetClass" value="com.checkout.sdk.tokens.WalletTokenRequest"/>
         <property name="populators">
             <list>
                 <ref bean="checkoutComApplePayTokenRequestPopulator"/>
@@ -325,7 +325,7 @@
     <alias name="defaultCheckoutComGooglePayTokenRequestConverter"
            alias="checkoutComGooglePayTokenRequestConverter"/>
     <bean id="defaultCheckoutComGooglePayTokenRequestConverter" parent="abstractPopulatingConverter">
-        <property name="targetClass" value="com.checkout.tokens.WalletTokenRequest"/>
+        <property name="targetClass" value="com.checkout.sdk.tokens.WalletTokenRequest"/>
         <property name="populators">
             <list>
                 <ref bean="checkoutComGooglePayTokenRequestPopulator"/>

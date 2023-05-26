@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.Address;
+import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.enums.PaymentTypes;
@@ -11,8 +11,9 @@ import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentReques
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.*;
-import com.checkout.sources.SourceProcessed;
+
+import com.checkout.sdk.payments.*;
+import com.checkout.sdk.sources.SourceProcessed;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;
@@ -126,8 +127,8 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
                 checkoutComMerchantConfigurationService.getBillingDescriptor();
         final Boolean includeBillingDescriptor = billingDescriptorMerchantConfiguration.getIncludeBillingDescriptor();
         if (Boolean.TRUE.equals(includeBillingDescriptor)) {
-            final com.checkout.payments.BillingDescriptor billingDescriptor =
-                    new com.checkout.payments.BillingDescriptor();
+            final com.checkout.sdk.payments.BillingDescriptor billingDescriptor =
+                    new com.checkout.sdk.payments.BillingDescriptor();
             billingDescriptor.setName(billingDescriptorMerchantConfiguration.getBillingDescriptorName());
             billingDescriptor.setCity(billingDescriptorMerchantConfiguration.getBillingDescriptorCity());
             request.setBillingDescriptor(billingDescriptor);

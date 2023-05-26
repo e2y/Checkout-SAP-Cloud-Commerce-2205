@@ -1,10 +1,8 @@
 package com.checkout.hybris.core.currency.services.impl;
 
-import com.checkout.payments.PaymentProcessed;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.servicelayer.i18n.CommonI18NService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,15 +32,6 @@ public class DefaultCheckoutComCurrencyServiceTest {
     private CurrencyModel currencyModelMock;
     @Mock
     private CommonI18NService commonI18NServiceMock;
-    @Mock
-    private PaymentProcessed paymentProcessedMock;
-
-    @Before
-    public void setUp() {
-        when(currencyModelMock.getIsocode()).thenReturn(GBP);
-        when(paymentProcessedMock.getAmount()).thenReturn(CHECKOUTCOM_AMOUNT);
-        when(paymentProcessedMock.getCurrency()).thenReturn(GBP);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void convertAmountIntoPennies_WhenCurrencyIsNull_ShouldThrowException() {

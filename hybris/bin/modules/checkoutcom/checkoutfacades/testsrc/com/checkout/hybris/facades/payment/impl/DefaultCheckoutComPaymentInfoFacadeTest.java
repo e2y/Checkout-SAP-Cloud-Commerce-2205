@@ -11,7 +11,7 @@ import com.checkout.hybris.core.payment.resolvers.CheckoutComPaymentTypeResolver
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
 import com.checkout.hybris.facades.beans.*;
 import com.checkout.hybris.facades.payment.converters.CheckoutComApmMappedPaymentInfoReverseConverter;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.commercefacades.order.data.CCPaymentInfoData;
 import de.hybris.platform.commercefacades.order.data.CartData;
@@ -84,7 +84,6 @@ public class DefaultCheckoutComPaymentInfoFacadeTest {
         when(cartServiceMock.getSessionCart()).thenReturn(cartModelMock);
         when(cartServiceMock.hasSessionCart()).thenReturn(true);
         when(cartDataMock.getPaymentInfo()).thenReturn(ccPaymentInfoDataMock);
-        when(cartDataMock.getCheckoutComPaymentInfo()).thenReturn(null);
         when(ccPaymentInfoDataMock.getPaymentToken()).thenReturn("token");
         when(apmPaymentInfoDataMock.getType()).thenReturn(CheckoutComPaymentType.BENEFITPAY.name());
         when(checkoutComPaymentTypeResolverMock.resolvePaymentMethod(CheckoutComPaymentType.BENEFITPAY.name())).thenReturn(CheckoutComPaymentType.BENEFITPAY);
@@ -107,7 +106,6 @@ public class DefaultCheckoutComPaymentInfoFacadeTest {
 
     @Test
     public void addPaymentInfoToCart_WhenCCPaymentInfoDataAndCardTypeNull_ShouldDoNothing() {
-        doNothing().when(paymentInfoServiceMock).createPaymentInfo(checkoutComCreditCardPaymentInfoModelMock, cartModelMock);
 
         testObj.addPaymentInfoToCart(ccPaymentInfoDataMock);
 

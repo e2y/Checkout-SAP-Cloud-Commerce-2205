@@ -37,14 +37,11 @@ public class CheckoutComPlaceOrderCartValidatorTest {
     public void setUp() {
         errors = new BeanPropertyBindingResult(cartDataMock, CartData.class.getSimpleName());
 
-        when(checkoutFlowFacadeMock.hasCheckoutCart()).thenReturn(true);
         when(checkoutFlowFacadeMock.hasNoPaymentInfo()).thenReturn(false);
         when(checkoutFlowFacadeMock.hasNoDeliveryAddress()).thenReturn(false);
         when(checkoutFlowFacadeMock.hasNoDeliveryMode()).thenReturn(false);
         when(checkoutComPaymentInfoFacadeMock.isTokenMissingOnCardPaymentInfo(cartDataMock)).thenReturn(false);
-        when(checkoutFlowFacadeMock.getSubscriptionPciOption()).thenReturn(CheckoutPciOptionEnum.DEFAULT);
         when(checkoutFlowFacadeMock.containsTaxValues()).thenReturn(true);
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(cartDataMock);
         when(cartDataMock.isCalculated()).thenReturn(true);
     }
 

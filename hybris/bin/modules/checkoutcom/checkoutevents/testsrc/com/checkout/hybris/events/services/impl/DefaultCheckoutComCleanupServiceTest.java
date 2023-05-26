@@ -26,8 +26,6 @@ import static org.mockito.Mockito.when;
 public class DefaultCheckoutComCleanupServiceTest {
 
     private static final int BATCH_SIZE = 2;
-    private static final int AGE_IN_MONTHS = 24;
-    private static final String ITEM_TYPE_CODE = "ACHConsent";
 
     @InjectMocks
     private DefaultCheckoutComCleanupService testObj;
@@ -47,9 +45,7 @@ public class DefaultCheckoutComCleanupServiceTest {
 
     @Test
     public void doCleanUp_WhenItemTypeCodeAndAgeGiven_ShouldFindItemsAndRemoveThem() {
-        when(checkoutComCleanupCronJobMock.getItemTypeCode()).thenReturn(ITEM_TYPE_CODE);
         when(checkoutComCleanupCronJobMock.getBatchSize()).thenReturn(BATCH_SIZE);
-        when(checkoutComCleanupCronJobMock.getItemRemovalAge()).thenReturn(AGE_IN_MONTHS);
         when(checkoutComCleanupDaoMock.findItemsToCleanup(checkoutComCleanupCronJobMock)).thenReturn(new ArrayList<>(Arrays.asList(item1Mock, item2Mock)));
 
         testObj.doCleanUp(checkoutComCleanupCronJobMock);

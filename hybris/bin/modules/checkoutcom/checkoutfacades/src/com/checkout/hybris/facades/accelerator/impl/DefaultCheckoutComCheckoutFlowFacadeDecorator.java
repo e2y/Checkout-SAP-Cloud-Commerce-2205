@@ -13,10 +13,11 @@ import com.checkout.hybris.facades.accelerator.CheckoutComCheckoutFlowFacade;
 import com.checkout.hybris.facades.beans.AuthorizeResponseData;
 import com.checkout.hybris.facades.beans.CheckoutComPaymentInfoData;
 import com.checkout.hybris.facades.constants.CheckoutFacadesConstants;
-import com.checkout.payments.PaymentProcessed;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.PaymentResponse;
-import com.checkout.payments.RequestSource;
+import com.checkout.sdk.GsonSerializer;
+import com.checkout.sdk.payments.PaymentProcessed;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.PaymentResponse;
+import com.checkout.sdk.payments.RequestSource;
 import de.hybris.platform.acceleratorfacades.flow.CheckoutFlowFacade;
 import de.hybris.platform.commercefacades.order.data.CartData;
 import de.hybris.platform.core.model.order.CartModel;
@@ -43,6 +44,7 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecorator extends CheckoutComAb
     protected final CheckoutComPaymentInfoService paymentInfoService;
     protected final CheckoutComPaymentService paymentService;
     protected final Converter<AuthorizeResponse, AuthorizeResponseData> authorizeResponseConverter;
+
 
     public DefaultCheckoutComCheckoutFlowFacadeDecorator(final CheckoutFlowFacade checkoutFlowFacade,
                                                          final CheckoutComAddressService addressService,
@@ -97,6 +99,13 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecorator extends CheckoutComAb
         try {
             final PaymentRequest<RequestSource> request = checkoutComRequestFactory.createPaymentRequest(cart);
             paymentResponse = checkoutComPaymentIntegrationService.authorizePayment(request);
+            final GsonSerializer gsonSerializer = new GsonSerializer();
+            final String requestJson = gsonSerializer.toJson(request);
+            final String responseJson = gsonSerializer.toJson(paymentResponse);
+            //Parse response and request
+            paymentInfoService.saveRequestAndResponseInOrder(cart, requestJson, responseJson);
+            paymentInfoService.logInfoOut(requestJson);
+            paymentInfoService.logInfoOut(responseJson);
         } catch (final CheckoutComPaymentIntegrationException | IllegalArgumentException e) {
             LOG.error("Exception during authorization", e);
             authorizeResponseData.setIsSuccess(false);

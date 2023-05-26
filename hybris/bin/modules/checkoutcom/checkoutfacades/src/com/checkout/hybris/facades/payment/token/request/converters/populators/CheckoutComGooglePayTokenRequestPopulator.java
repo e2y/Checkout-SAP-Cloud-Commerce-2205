@@ -1,7 +1,7 @@
 package com.checkout.hybris.facades.payment.token.request.converters.populators;
 
 import com.checkout.hybris.facades.beans.GooglePayPaymentToken;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 import de.hybris.platform.converters.Populator;
 import de.hybris.platform.servicelayer.dto.converter.ConversionException;
 

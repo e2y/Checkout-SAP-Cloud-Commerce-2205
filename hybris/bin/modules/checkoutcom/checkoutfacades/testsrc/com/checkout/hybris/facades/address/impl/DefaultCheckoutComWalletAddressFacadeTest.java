@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.*;
 
@@ -56,8 +56,9 @@ public class DefaultCheckoutComWalletAddressFacadeTest {
 
     @Before
     public void setUp() {
-        Whitebox.setInternalState(testObj, "checkoutComGooglePayAddressReverseConverter", checkoutComGooglePayAddressReverseConverterMock);
-        Whitebox.setInternalState(testObj, "checkoutComApplePayAddressReverseConverter", checkoutComApplePayAddressReverseConverterMock);
+
+        ReflectionTestUtils.setField(testObj, "checkoutComGooglePayAddressReverseConverter", checkoutComGooglePayAddressReverseConverterMock);
+        ReflectionTestUtils.setField(testObj, "checkoutComApplePayAddressReverseConverter", checkoutComApplePayAddressReverseConverterMock);
 
         when(checkoutCustomerStrategyMock.getCurrentUserForCheckout()).thenReturn(customerMock);
         when(customerMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL);

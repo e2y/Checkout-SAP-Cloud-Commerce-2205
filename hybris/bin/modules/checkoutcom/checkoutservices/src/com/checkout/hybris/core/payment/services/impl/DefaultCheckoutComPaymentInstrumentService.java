@@ -1,11 +1,11 @@
 package com.checkout.hybris.core.payment.services.impl;
 
-import com.checkout.CheckoutApi;
+import com.checkout.sdk.CheckoutApi;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.services.CheckoutComApiService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInstrumentsService;
-import com.checkout.instruments.InstrumentsClient;
-import com.checkout.instruments.UpdateInstrumentRequest;
+import com.checkout.sdk.instruments.InstrumentsClient;
+import com.checkout.sdk.instruments.UpdateInstrumentRequest;
 import de.hybris.platform.core.model.order.payment.CreditCardPaymentInfoModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

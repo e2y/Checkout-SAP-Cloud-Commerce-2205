@@ -67,11 +67,9 @@ public class CheckoutComAbstractOrderPopulatorTest {
         when(sourceMock.getPaymentInfo()).thenReturn(checkoutComApmPaymentInfoMock);
         when(checkoutComPaymentTypeResolverMock.resolvePaymentType(checkoutComApmPaymentInfoMock)).thenReturn(CheckoutComPaymentType.BENEFITPAY);
         when(checkoutComApmPaymentInfoPopulatorMapperMock.findPopulator(CheckoutComPaymentType.BENEFITPAY)).thenReturn(checkoutComPaymentInfoPopulatorMock);
-        doNothing().when(checkoutComPaymentInfoPopulatorMock).populate(checkoutComApmPaymentInfoMock, checkoutComPaymentInfoDataMock);
         when(sourceMock.getStore()).thenReturn(baseStoreMock);
         when(baseStoreMock.getName()).thenReturn(BASE_STORE_NAME);
         when(sourceMock.getUser()).thenReturn(customerMock);
-        when(customerMock.getContactEmail()).thenReturn(EMAIL_TEST_VALUE);
     }
 
     @Test(expected = IllegalArgumentException.class)

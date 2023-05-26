@@ -3,7 +3,7 @@ package com.checkout.hybris.facades.payment.token.request.converters.mappers.imp
 import com.checkout.hybris.facades.beans.WalletPaymentAdditionalAuthInfo;
 import com.checkout.hybris.facades.enums.WalletPaymentType;
 import com.checkout.hybris.facades.payment.token.request.converters.mappers.CheckoutComMappedPaymentTokenRequestConverter;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 import de.hybris.platform.servicelayer.dto.converter.Converter;
 import org.springframework.util.Assert;
 

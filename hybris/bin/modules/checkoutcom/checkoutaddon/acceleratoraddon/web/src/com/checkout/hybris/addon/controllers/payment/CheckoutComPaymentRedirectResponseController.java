@@ -4,7 +4,7 @@ import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationE
 import com.checkout.hybris.facades.accelerator.CheckoutComCheckoutFlowFacade;
 import com.checkout.hybris.facades.payment.CheckoutComPaymentFacade;
 import com.checkout.hybris.facades.payment.CheckoutComPaymentInfoFacade;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.platform.acceleratorstorefrontcommons.annotations.RequireHardLogIn;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.AbstractCheckoutController;
 import de.hybris.platform.acceleratorstorefrontcommons.controllers.util.GlobalMessages;

@@ -101,22 +101,18 @@ public class DefaultCheckoutComPlaidLinkFacadeTest {
         assertThat(result).isEqualTo(achBankInfoDetailsDataMock);
     }
 
-    private class PairMatcher extends ArgumentMatcher<Pair<ItemPublicTokenExchangeResponse,
-        PlaidLinkCreationResponse>> {
+    private class PairMatcher implements ArgumentMatcher<Pair<ItemPublicTokenExchangeResponse, PlaidLinkCreationResponse>> {
         private final Pair<ItemPublicTokenExchangeResponse,
             PlaidLinkCreationResponse> originalPair;
 
-        public PairMatcher(final Pair<ItemPublicTokenExchangeResponse,
-            PlaidLinkCreationResponse> pair) {
+        public PairMatcher(final Pair<ItemPublicTokenExchangeResponse, PlaidLinkCreationResponse> pair) {
             this.originalPair = pair;
         }
 
         @Override
-        public boolean matches(final Object o) {
-            final Pair<ItemPublicTokenExchangeResponse, PlaidLinkCreationResponse> pair =
-                (Pair<ItemPublicTokenExchangeResponse, PlaidLinkCreationResponse>) o;
+        public boolean matches(final Pair<ItemPublicTokenExchangeResponse, PlaidLinkCreationResponse> pair) {
             return pair.getLeft().equals(originalPair.getLeft())
-                && pair.getRight().equals(originalPair.getRight());
+                    && pair.getRight().equals(originalPair.getRight());
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.checkout.hybris.core.payment.commands.impl;
 
-import com.checkout.CheckoutApiException;
-import com.checkout.common.ApiResponseInfo;
+import com.checkout.sdk.CheckoutApiException;
+import com.checkout.sdk.common.ApiResponseInfo;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
-import com.checkout.payments.RefundRequest;
-import com.checkout.payments.RefundResponse;
+import com.checkout.sdk.payments.RefundRequest;
+import com.checkout.sdk.payments.RefundResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.payment.commands.request.FollowOnRefundRequest;
 import de.hybris.platform.payment.commands.result.RefundResult;
@@ -70,8 +70,6 @@ public class CheckoutComRefundCommandTest {
         when(refundRequestMock.getMerchantTransactionCode()).thenReturn(MERCHANT_TRANSACTION_CODE);
         when(checkoutComRequestFactoryMock.createRefundPaymentRequest(new BigDecimal(AMOUNT), PAYMENT_REFERENCE, currency.getCurrencyCode())).thenReturn(refundRequest);
         when(timeServiceMock.getCurrentTime()).thenReturn(DATE);
-        when(refundRequest.getAmount()).thenReturn(10000l);
-        when(refundRequest.getReference()).thenReturn(PAYMENT_REFERENCE);
         when(checkoutComPaymentIntegrationServiceMock.refundPayment(refundRequest, PAYMENT_ID)).thenReturn(refundResponseMock);
         when(refundResponseMock.getActionId()).thenReturn(ACTION_ID);
         when(checkoutComPaymentTransactionServiceMock.getPaymentReferenceFromTransactionEntryCode(MERCHANT_TRANSACTION_CODE)).thenReturn(PAYMENT_REFERENCE);
