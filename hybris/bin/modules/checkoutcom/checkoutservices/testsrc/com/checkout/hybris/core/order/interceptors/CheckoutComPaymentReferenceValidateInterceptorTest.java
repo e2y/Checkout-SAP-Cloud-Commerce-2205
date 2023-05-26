@@ -31,7 +31,6 @@ public class CheckoutComPaymentReferenceValidateInterceptorTest {
     @Test(expected = InterceptorException.class)
     public void onValidate_PaymentReferenceEmptyAndAbstractOrderNew_ShouldThrowInterceptorException() throws InterceptorException {
         when(contextMock.isNew(cartModelMock)).thenReturn(true);
-        when(contextMock.isModified(cartModelMock)).thenReturn(false);
         when(cartModelMock.getCheckoutComPaymentReference()).thenReturn(" ");
 
         testObj.onValidate(cartModelMock, contextMock);
@@ -40,7 +39,6 @@ public class CheckoutComPaymentReferenceValidateInterceptorTest {
     @Test(expected = InterceptorException.class)
     public void onValidate_PaymentReferenceNullAndAbstractOrderNew_ShouldThrowInterceptorException() throws InterceptorException {
         when(contextMock.isNew(cartModelMock)).thenReturn(true);
-        when(contextMock.isModified(cartModelMock)).thenReturn(false);
         when(cartModelMock.getCheckoutComPaymentReference()).thenReturn(null);
 
         testObj.onValidate(cartModelMock, contextMock);
@@ -69,7 +67,6 @@ public class CheckoutComPaymentReferenceValidateInterceptorTest {
     @Test
     public void onValidate_PaymentReferenceNotEmptyOrNullAndAbstractOrderNew_ShouldNotFail() throws InterceptorException {
         when(contextMock.isNew(cartModelMock)).thenReturn(true);
-        when(contextMock.isModified(cartModelMock)).thenReturn(false);
         when(cartModelMock.getCheckoutComPaymentReference()).thenReturn("paymentReference");
 
         testObj.onValidate(cartModelMock, contextMock);

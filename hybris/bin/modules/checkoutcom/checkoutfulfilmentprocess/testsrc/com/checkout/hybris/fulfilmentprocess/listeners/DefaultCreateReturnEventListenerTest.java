@@ -99,9 +99,6 @@ public class DefaultCreateReturnEventListenerTest {
 
     @Test
     public void startBusinessProcess_ShouldCreateAndStartBusinessProcess() {
-        doReturn(baseStoreMock).when(testObj).getBaseStore(returnRequestMock);
-        when(eventMock.getReturnRequest()).thenReturn(returnRequestMock);
-        when(baseStoreMock.getCreateReturnProcessCode()).thenReturn(PROCESS_CODE);
         when(returnRequestMock.getCode()).thenReturn(RETURN_REQUEST_CODE);
         when(businessProcessServiceMock.createProcess(anyString(), eq(PROCESS_CODE))).thenReturn(businessProcessMock);
 

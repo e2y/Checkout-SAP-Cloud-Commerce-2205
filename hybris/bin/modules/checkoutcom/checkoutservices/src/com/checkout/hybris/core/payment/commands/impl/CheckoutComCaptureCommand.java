@@ -3,7 +3,7 @@ package com.checkout.hybris.core.payment.commands.impl;
 import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
-import com.checkout.payments.CaptureResponse;
+import com.checkout.sdk.payments.CaptureResponse;
 import de.hybris.platform.payment.commands.CaptureCommand;
 import de.hybris.platform.payment.commands.request.CaptureRequest;
 import de.hybris.platform.payment.commands.result.AbstractResult;
@@ -71,7 +71,7 @@ public class CheckoutComCaptureCommand extends CheckoutComAbstractCommand implem
     }
 
     protected CaptureResult capture(final CaptureRequest captureRequest, final String paymentReferenceNumber) throws InterruptedException, ExecutionException {
-        final com.checkout.payments.CaptureRequest capturePaymentRequest = checkoutComRequestFactory.createCapturePaymentRequest(captureRequest.getTotalAmount(), paymentReferenceNumber, captureRequest.getCurrency().getCurrencyCode());
+        final com.checkout.sdk.payments.CaptureRequest capturePaymentRequest = checkoutComRequestFactory.createCapturePaymentRequest(captureRequest.getTotalAmount(), paymentReferenceNumber, captureRequest.getCurrency().getCurrencyCode());
 
         final CaptureResponse captureResponse = checkoutComPaymentIntegrationService.capturePayment(capturePaymentRequest, captureRequest.getRequestId());
 

@@ -88,7 +88,6 @@ public class CheckoutComGooglePayOrderControllerTest {
         when(authorisationRequestMock.getBillingAddress()).thenReturn(paymentContactMock);
         when(authorisationRequestMock.getShippingAddress()).thenReturn(paymentContactMock);
         when(authorisationRequestMock.getEmail()).thenReturn(EMAIL_ADDRESS);
-        when(paymentContactMock.getEmail()).thenReturn(EMAIL_ADDRESS);
         when(paymentContactMock.getName()).thenReturn(GIVEN_NAME);
         when(authorisationRequestMock.getToken()).thenReturn(paymentTokenMock);
         when(checkoutComWalletOrderFacadeMock.placeWalletOrder(paymentTokenMock, GOOGLEPAY)).thenReturn(placeWalletOrderDataResponseMock);
@@ -98,10 +97,6 @@ public class CheckoutComGooglePayOrderControllerTest {
         doNothing().when(checkoutComPlaceOrderCartValidatorMock).validate(eq(cartDataMock), any());
         when(i18nServiceMock.getCurrentLocale()).thenReturn(Locale.ENGLISH);
         when(messageSourceMock.getMessage("checkout.placeOrder.failed", null, Locale.ENGLISH)).thenReturn("error msg");
-
-        when(intermediatePaymentDataMock.getShippingAddress()).thenReturn(intermediateAddressMock);
-        when(intermediatePaymentDataMock.getShippingOptionData()).thenReturn(selectionOptionDataMock);
-        when(intermediatePaymentDataMock.getCallbackTrigger()).thenReturn("callback_trigger_test");
     }
 
     @Test
@@ -135,8 +130,6 @@ public class CheckoutComGooglePayOrderControllerTest {
 
     @Test
     public void placeOrder_ShouldPlaceOrderWithGooglePay_WhenUserIsGuest() {
-        when(userFacadeMock.isAnonymousUser()).thenReturn(Boolean.TRUE);
-
         testObj.placeOrder(authorisationRequestMock, DEFAULT_LEVEL);
 
         verify(dataMapperMock).map(placeWalletOrderDataResponseMock, PlaceWalletOrderWsDTO.class, DEFAULT_LEVEL);

@@ -2,11 +2,11 @@ package com.checkout.hybris.core.payment.services;
 
 import com.checkout.hybris.core.klarna.session.request.KlarnaSessionRequestDto;
 import com.checkout.hybris.core.klarna.session.response.KlarnaSessionResponseDto;
-import com.checkout.payments.*;
-import com.checkout.sources.SourceRequest;
-import com.checkout.sources.SourceResponse;
-import com.checkout.tokens.TokenResponse;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.payments.*;
+import com.checkout.sdk.sources.SourceRequest;
+import com.checkout.sdk.sources.SourceResponse;
+import com.checkout.sdk.tokens.TokenResponse;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 
 import java.util.concurrent.ExecutionException;
 

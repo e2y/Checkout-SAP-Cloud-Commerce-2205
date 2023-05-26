@@ -8,10 +8,10 @@ import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationSe
 import com.checkout.hybris.facades.beans.WalletPaymentAdditionalAuthInfo;
 import com.checkout.hybris.facades.beans.WalletPaymentInfoData;
 import com.checkout.hybris.facades.payment.token.request.converters.mappers.CheckoutComMappedPaymentTokenRequestConverter;
-import com.checkout.payments.GetPaymentResponse;
-import com.checkout.payments.ResponseSource;
-import com.checkout.tokens.TokenResponse;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.ResponseSource;
+import com.checkout.sdk.tokens.TokenResponse;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.order.CartService;
@@ -130,9 +130,6 @@ public class DefaultCheckoutComPaymentFacadeTest {
 
     @Test
     public void doesSessionCartMatchAuthorizedCart_WhenTheCartMatches_ShouldReturnTrue() {
-        when(getPaymentResponse.getSource()).thenReturn(paymentSourceMock);
-        when(cartModelMock.getPaymentInfo()).thenReturn(checkoutComCreditCardPaymentInfoModelMock);
-
         final boolean result = testObj.doesSessionCartMatchAuthorizedCart(getPaymentResponse);
 
         final InOrder inOrder = inOrder(cartServiceMock);

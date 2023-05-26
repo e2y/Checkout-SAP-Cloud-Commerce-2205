@@ -1,6 +1,6 @@
 package com.checkout.hybris.facades.payment;
 
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.platform.commercefacades.order.data.CartData;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 

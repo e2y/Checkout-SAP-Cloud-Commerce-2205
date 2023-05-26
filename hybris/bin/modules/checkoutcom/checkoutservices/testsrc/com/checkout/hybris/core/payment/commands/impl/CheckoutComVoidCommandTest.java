@@ -1,12 +1,12 @@
 package com.checkout.hybris.core.payment.commands.impl;
 
-import com.checkout.CheckoutApiException;
-import com.checkout.common.ApiResponseInfo;
+import com.checkout.sdk.CheckoutApiException;
+import com.checkout.sdk.common.ApiResponseInfo;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
-import com.checkout.payments.VoidResponse;
+import com.checkout.sdk.payments.VoidResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.payment.commands.request.VoidRequest;
 import de.hybris.platform.payment.commands.result.VoidResult;
@@ -53,7 +53,7 @@ public class CheckoutComVoidCommandTest {
     @Mock
     private VoidRequest voidRequestMock;
     @Mock
-    private com.checkout.payments.VoidRequest voidRequest;
+    private com.checkout.sdk.payments.VoidRequest voidRequest;
     @Mock
     private VoidResponse voidResponseMock;
     @Mock
@@ -68,7 +68,6 @@ public class CheckoutComVoidCommandTest {
         when(voidRequestMock.getMerchantTransactionCode()).thenReturn(MERCHANT_TRANSACTION_CODE);
         when(checkoutComRequestFactoryMock.createVoidPaymentRequest(PAYMENT_REFERENCE)).thenReturn(voidRequest);
         when(timeServiceMock.getCurrentTime()).thenReturn(DATE);
-        when(voidRequest.getReference()).thenReturn(PAYMENT_REFERENCE);
         when(checkoutComPaymentIntegrationServiceMock.voidPayment(voidRequest, PAYMENT_ID)).thenReturn(voidResponseMock);
         when(voidResponseMock.getActionId()).thenReturn(ACTION_ID);
         when(checkoutComPaymentTransactionServiceMock.getPaymentReferenceFromTransactionEntryCode(MERCHANT_TRANSACTION_CODE)).thenReturn(PAYMENT_REFERENCE);

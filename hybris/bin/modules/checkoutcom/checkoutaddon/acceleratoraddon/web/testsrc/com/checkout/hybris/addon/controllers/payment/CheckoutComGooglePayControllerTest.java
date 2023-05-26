@@ -78,9 +78,6 @@ public class CheckoutComGooglePayControllerTest {
         when(shippingContactMock.getName()).thenReturn(CUSTOMER_NAME);
         doNothing().when(checkoutComWalletOrderFacadeMock).validateCartForPlaceOrder(checkoutComPlaceOrderCartValidatorMock);
         when(userFacadeMock.isAnonymousUser()).thenReturn(Boolean.TRUE);
-        when(googlePayIntermediatePaymentDataMock.getShippingAddress()).thenReturn(shippingAddressMock);
-        when(googlePayIntermediatePaymentDataMock.getShippingOptionData()).thenReturn(shippingOptionsDataMock);
-        when(shippingOptionsDataMock.getId()).thenReturn(SHIPPING_ID);
     }
 
     @Test

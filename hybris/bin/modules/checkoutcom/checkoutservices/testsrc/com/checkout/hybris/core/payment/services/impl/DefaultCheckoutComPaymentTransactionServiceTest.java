@@ -4,8 +4,7 @@ import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurati
 import com.checkout.hybris.core.model.CheckoutComAPMPaymentInfoModel;
 import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
-import com.checkout.payments.CardSourceResponse;
-import com.google.common.collect.ImmutableList;
+import com.checkout.sdk.payments.CardSourceResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.commerceservices.order.CommercePaymentProviderStrategy;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
@@ -29,8 +28,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.checkout.hybris.events.enums.CheckoutComPaymentEventType.PAYMENT_APPROVED;
-import static com.checkout.hybris.events.enums.CheckoutComPaymentEventType.PAYMENT_PENDING;
 import static de.hybris.platform.payment.dto.TransactionStatus.PENDING;
 import static de.hybris.platform.payment.dto.TransactionStatusDetails.SUCCESFULL;
 import static de.hybris.platform.payment.enums.PaymentTransactionType.*;
@@ -44,8 +41,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCheckoutComPaymentTransactionServiceTest {
 
-    private static final String USER_ID = "USER_ID";
-    private static final String SUBSCRIPTION_ID = "subscriptionID";
     private static final double ORDER_TOTAL = 10.0d;
     private static final String SITE_ID = "siteId";
     private static final double THRESHOLD = 0.05d;
@@ -59,8 +54,6 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
     private static final String SUCCESSFUL_TRANSACTION_STATUS_DETAILS = SUCCESFULL.toString();
     private static final String PAYMENT_TRANSACTION_ENTRY_CODE = "PAYMENT-REFERENCE-AUTHORIZATION-1";
     private static final String ACTION_ID = "actionId";
-    private static final String PAYMENT_1_CODE = "payment1Code";
-    private static final String PAYMENT_2_CODE = "payment2Code";
 
     @Spy
     @InjectMocks
@@ -113,25 +106,12 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
         when(orderMock.getPaymentTransactions()).thenReturn(singletonList(paymentTransaction1Mock));
         when(authorisationEntryMock.getType()).thenReturn(AUTHORIZATION);
         when(captureEntryMock.getType()).thenReturn(CAPTURE);
-        when(captureEntryMock.getAmount()).thenReturn(BigDecimal.valueOf(100.0d));
         when(checkoutComMerchantConfigurationServiceMock.getAuthorisationAmountValidationThreshold(SITE_ID)).thenReturn(THRESHOLD);
         when(orderMock.getTotalPrice()).thenReturn(ORDER_TOTAL);
         when(orderMock.getSite().getUid()).thenReturn(SITE_ID);
         when(commercePaymentProviderStrategyMock.getPaymentProvider()).thenReturn(PROVIDER);
         when(modelServiceMock.create(PaymentTransactionModel.class)).thenReturn(new PaymentTransactionModel());
         when(modelServiceMock.create(PaymentTransactionEntryModel.class)).thenReturn(new PaymentTransactionEntryModel());
-        when(currencyModelMock.getIsocode()).thenReturn("GBP");
-        when(cardPaymentInfoMock.getCode()).thenReturn(PAYMENT_1_CODE);
-        when(cartMock.getPaymentInfo()).thenReturn(cardPaymentInfoMock);
-        when(cartMock.getUser()).thenReturn(userMock);
-        when(userMock.getUid()).thenReturn(USER_ID);
-        when(userMock.getPaymentInfos()).thenReturn(ImmutableList.of(userPaymentInfo1Mock, userPaymentInfo2Mock));
-        when(userPaymentInfo1Mock.getCode()).thenReturn(PAYMENT_1_CODE);
-        when(userPaymentInfo2Mock.getCode()).thenReturn(PAYMENT_2_CODE);
-        when(cardPaymentInfoMock.getCode()).thenReturn(PAYMENT_1_CODE);
-        when(cardPaymentInfoMock.getUser()).thenReturn(userMock);
-        when(cartMock.getPaymentInfo()).thenReturn(cardPaymentInfoMock);
-        when(sourceMock.getId()).thenReturn(SUBSCRIPTION_ID);
     }
 
     @Test
@@ -246,8 +226,6 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
 
     @Test
     public void createPaymentTransactionEntry_WhenEverythingIsCorrect_ShouldReturnThePaymentTransactionEntry() {
-        when(paymentEventMock.getEventType()).thenReturn(PAYMENT_PENDING.getCode());
-
         testObj.createPaymentTransactionEntry(paymentTransaction1Mock, paymentEventMock, ACCEPTED_PAYMENT_STATUS, SUCCESSFUL_TRANSACTION_STATUS_DETAILS, AUTHORIZATION);
 
         verify(modelServiceMock).save(paymentTransactionEntryModelCaptor.capture());
@@ -450,27 +428,19 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
         when(paymentEventMock.getActionId()).thenReturn(ACTION_ID);
         when(paymentEventMock.getCurrency()).thenReturn(currencyModelMock);
         when(paymentEventMock.getAmount()).thenReturn(AMOUNT);
-        when(paymentEventMock.getEventType()).thenReturn(PAYMENT_APPROVED.toString());
     }
 
     private void setUpPaymentTransactionsAndTransactionEntries() {
         when(paymentTransaction1Mock.getCode()).thenReturn(PAYMENT_REFERENCE);
         when(paymentTransaction1Mock.getRequestId()).thenReturn(PAYMENT_ID);
         when(capturePaymentTransactionEntryMock.getType()).thenReturn(CAPTURE);
-        when(capturePendingPaymentTransactionEntryMock.getType()).thenReturn(CAPTURE);
-        when(capturePendingPaymentTransactionEntryMock.getTransactionStatus()).thenReturn(PENDING.toString());
         when(authorizationPendingPaymentTransactionEntryMock.getType()).thenReturn(AUTHORIZATION);
         when(authorizationPendingPaymentTransactionEntryMock.getTransactionStatus()).thenReturn(PENDING.toString());
-        when(rejectedAuthorizationPaymentTransactionEntryMock.getType()).thenReturn(AUTHORIZATION);
-        when(rejectedAuthorizationPaymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.REJECTED.toString());
         when(acceptedAuthorizationPaymentTransactionEntryMock.getType()).thenReturn(AUTHORIZATION);
         when(acceptedAuthorizationPaymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.ACCEPTED.toString());
-        when(acceptedAuthorizationPaymentTransactionEntryMock.getTransactionStatusDetails()).thenReturn(SUCCESFULL.toString());
         when(reviewAuthorizationPaymentTransactionEntryMock.getType()).thenReturn(AUTHORIZATION);
         when(reviewAuthorizationPaymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.REVIEW.toString());
         when(refundPaymentTransactionEntry1Mock.getType()).thenReturn(REFUND_FOLLOW_ON);
         when(refundPaymentTransactionEntry2Mock.getType()).thenReturn(REFUND_FOLLOW_ON);
-        when(cancelPaymentTransactionEntryMock.getType()).thenReturn(CANCEL);
-        when(acceptedAuthorizationPaymentTransactionEntryMock.getCurrency()).thenReturn(currencyModelMock);
     }
 }

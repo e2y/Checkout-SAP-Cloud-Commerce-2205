@@ -50,7 +50,6 @@ public class DefaultCheckoutComPaymentTypeResolverTest {
         when(otherPaymentInfoMock.getCode()).thenReturn("paymentInfoCode");
         when(otherPaymentInfoMock.getItemtype()).thenReturn("PaymentInfo");
         when(madaBin1Mock.getCode()).thenReturn(CARD_BIN);
-        when(madaBin2Mock.getCode()).thenReturn("7891011");
     }
 
     @Test

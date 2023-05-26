@@ -1,16 +1,16 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.AccountHolder;
-import com.checkout.common.AccountHolderType;
-import com.checkout.common.Phone;
+import com.checkout.sdk.common.AccountHolder;
+import com.checkout.sdk.common.AccountHolderType;
+import com.checkout.sdk.common.Phone;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.enums.AchAccountType;
 import com.checkout.hybris.core.model.CheckoutComAchPaymentInfoModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.payments.source.BankAccountSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.payments.source.BankAccountSource;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.c2l.CountryModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
@@ -121,7 +121,6 @@ public class CheckoutComNasAchPayPaymentRequestStrategyTest {
 
 		final CountryModel country = mock(CountryModel.class);
 		when(country.getIsocode()).thenReturn(countryIsocode);
-		when(country.getName()).thenReturn(countryName);
 
 		final RegionModel regionModel = mock(RegionModel.class);
 		when(regionModel.getName()).thenReturn(state);

@@ -4,7 +4,7 @@ package com.checkout.hybris.facades.payment;
 import com.checkout.hybris.facades.beans.WalletPaymentAdditionalAuthInfo;
 import com.checkout.hybris.facades.beans.WalletPaymentInfoData;
 import com.checkout.hybris.facades.enums.WalletPaymentType;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.platform.acceleratorfacades.payment.PaymentFacade;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 

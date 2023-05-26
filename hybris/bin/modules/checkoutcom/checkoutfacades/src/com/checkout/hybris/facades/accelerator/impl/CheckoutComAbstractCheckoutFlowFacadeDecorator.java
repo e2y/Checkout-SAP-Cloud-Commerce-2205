@@ -20,7 +20,7 @@ public abstract class CheckoutComAbstractCheckoutFlowFacadeDecorator extends Def
 
     protected CheckoutFlowFacade checkoutFlowFacade;
 
-    public CheckoutComAbstractCheckoutFlowFacadeDecorator(final CheckoutFlowFacade checkoutFlowFacade) {
+    protected CheckoutComAbstractCheckoutFlowFacadeDecorator(final CheckoutFlowFacade checkoutFlowFacade) {
         this.checkoutFlowFacade = checkoutFlowFacade;
     }
 
@@ -152,16 +152,6 @@ public abstract class CheckoutComAbstractCheckoutFlowFacadeDecorator extends Def
     @Override
     public boolean removeDeliveryMode() {
         return checkoutFlowFacade.removeDeliveryMode();
-    }
-
-    @Override
-    public List<CountryData> getDeliveryCountries() {
-        return checkoutFlowFacade.getDeliveryCountries();
-    }
-
-    @Override
-    public List<CountryData> getBillingCountries() {
-        return checkoutFlowFacade.getBillingCountries();
     }
 
     @Override

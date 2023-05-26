@@ -10,10 +10,10 @@ import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentReques
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.payments.ThreeDSRequest;
-import com.checkout.payments.TokenSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.payments.ThreeDSRequest;
+import com.checkout.sdk.payments.TokenSource;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;

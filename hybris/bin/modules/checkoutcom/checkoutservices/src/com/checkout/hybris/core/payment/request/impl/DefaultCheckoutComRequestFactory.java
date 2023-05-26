@@ -6,7 +6,8 @@ import com.checkout.hybris.core.payment.request.CheckoutComRequestFactory;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.payment.resolvers.CheckoutComPaymentTypeResolver;
-import com.checkout.payments.*;
+
+import com.checkout.sdk.payments.*;
 import com.google.common.collect.ImmutableMap;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;

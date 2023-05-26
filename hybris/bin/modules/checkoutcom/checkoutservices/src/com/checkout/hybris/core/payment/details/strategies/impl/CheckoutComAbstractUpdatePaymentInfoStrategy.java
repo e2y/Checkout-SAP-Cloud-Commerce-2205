@@ -1,7 +1,7 @@
 package com.checkout.hybris.core.payment.details.strategies.impl;
 
 import com.checkout.hybris.core.payment.details.strategies.CheckoutComUpdatePaymentInfoStrategy;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.order.CartService;
 

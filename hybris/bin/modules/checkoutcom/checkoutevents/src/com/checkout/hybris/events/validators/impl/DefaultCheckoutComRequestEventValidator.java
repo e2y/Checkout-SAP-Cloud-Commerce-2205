@@ -30,7 +30,6 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
     protected final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService;
     protected final CheckoutComPaymentEventService checkoutComPaymentEventService;
     protected final BaseSiteService baseSiteService;
-
     public DefaultCheckoutComRequestEventValidator(final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
                                                    final CheckoutComPaymentEventService checkoutComPaymentEventService,
                                                    final BaseSiteService baseSiteService) {
@@ -48,8 +47,7 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
         final String eventAuthorizationHeaderKey = request.getHeader("authorization");
         baseSiteService.setCurrentBaseSite(baseSiteService.getBaseSiteForUID(getSiteIdForTheEvent(eventBody)), false);
 
-        Optional.ofNullable(eventAuthorizationHeaderKey)
-                .ifPresent(evtAuthHeaderKey -> LOG.debug("Received event authorization header: [{}]; ", evtAuthHeaderKey));
+        LOG.debug("Received event authorization header: [{}]; ", eventAuthorizationHeaderKey);
         LOG.debug("Received event signature: [{}]; ", ckoSignature);
         LOG.debug("Received event body: [{}]", eventBody);
 

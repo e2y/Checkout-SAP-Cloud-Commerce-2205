@@ -33,9 +33,6 @@ public class CheckoutComCleanupJobTest {
 
     @Test
     public void perform_shouldCallCleanupService_andReturnSuccess() {
-        when(checkoutComCleanupCronJobMock.getItemTypeCode()).thenReturn(ITEM_TYPE_CODE);
-        when(checkoutComCleanupCronJobMock.getItemRemovalAge()).thenReturn(AGE_IN_SECONDS);
-
         final PerformResult result = testObj.perform(checkoutComCleanupCronJobMock);
 
         assertEquals(CronJobResult.SUCCESS, result.getResult());

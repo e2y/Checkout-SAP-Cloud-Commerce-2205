@@ -1,7 +1,7 @@
 package com.checkout.hybris.core.payment.services.impl;
 
-import com.checkout.CheckoutApi;
-import com.checkout.CheckoutApiImpl;
+import com.checkout.sdk.CheckoutApi;
+import com.checkout.sdk.CheckoutApiImpl;
 import com.checkout.hybris.core.enums.EnvironmentType;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.payment.services.CheckoutComApiService;

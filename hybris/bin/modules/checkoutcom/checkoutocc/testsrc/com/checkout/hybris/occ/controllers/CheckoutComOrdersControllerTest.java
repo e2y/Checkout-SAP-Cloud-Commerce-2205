@@ -9,10 +9,9 @@ import com.checkout.hybris.facades.payment.CheckoutComPaymentInfoFacade;
 import com.checkout.hybris.occ.exceptions.NoCheckoutCartException;
 import com.checkout.hybris.occ.exceptions.PlaceOrderException;
 import com.checkout.hybris.facades.cart.validators.impl.CheckoutComPlaceOrderCartValidator;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorfacades.order.AcceleratorCheckoutFacade;
-import de.hybris.platform.acceleratorservices.enums.CheckoutPciOptionEnum;
 import de.hybris.platform.commercefacades.order.CartFacade;
 import de.hybris.platform.commercefacades.order.CheckoutFacade;
 import de.hybris.platform.commercefacades.order.data.CartData;
@@ -167,7 +166,6 @@ public class CheckoutComOrdersControllerTest {
     @Test
     public void placeDirectOrder_WhenSecurityCodeIsPopulatedAndRequired__ShouldPlaceOrder() throws InvalidCartException,
             PaymentAuthorizationException, PlaceOrderException, NoCheckoutCartException {
-        when(checkoutFlowFacadeMock.getSubscriptionPciOption()).thenReturn(CheckoutPciOptionEnum.DEFAULT);
 
         final OrderWsDTO result = testObj.placeDirectOrder(DEFAULT_FIELD_SET);
 
@@ -178,7 +176,6 @@ public class CheckoutComOrdersControllerTest {
     @Test(expected = PlaceOrderException.class)
     public void placeDirectOrder_WhenPlaceOrderThrowsException_ShouldThrowException() throws InvalidCartException,
             PaymentAuthorizationException, PlaceOrderException, NoCheckoutCartException {
-        when(checkoutFlowFacadeMock.getSubscriptionPciOption()).thenReturn(CheckoutPciOptionEnum.DEFAULT);
         doThrow(InvalidCartException.class).when(acceleratorCheckoutFacadeCheckoutFacadeMock).placeOrder();
 
         testObj.placeDirectOrder(DEFAULT_FIELD_SET);

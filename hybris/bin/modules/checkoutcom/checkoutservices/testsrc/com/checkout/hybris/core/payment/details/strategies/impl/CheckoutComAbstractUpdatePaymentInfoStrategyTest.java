@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.payment.details.strategies.impl;
 
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
@@ -19,8 +19,6 @@ import static org.mockito.Mockito.when;
 @UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class CheckoutComAbstractUpdatePaymentInfoStrategyTest {
-
-    private static final String PAYMENT_ID = "paymentId";
 
     @Spy
     private CheckoutComAbstractUpdatePaymentInfoStrategy testObj;
@@ -55,7 +53,6 @@ public class CheckoutComAbstractUpdatePaymentInfoStrategyTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void processPaymentResponse_WhenPaymentInfoNull_ShouldThrowException() {
-        when(paymentResponseMock.getId()).thenReturn(PAYMENT_ID);
         when(cartMock.getPaymentInfo()).thenReturn(null);
 
         testObj.processPaymentResponse(paymentResponseMock);

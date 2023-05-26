@@ -1,9 +1,9 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.AccountHolder;
-import com.checkout.common.AccountHolderType;
-import com.checkout.common.AccountType;
-import com.checkout.common.Address;
+import com.checkout.sdk.common.AccountHolder;
+import com.checkout.sdk.common.AccountHolderType;
+import com.checkout.sdk.common.AccountType;
+import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
@@ -13,9 +13,9 @@ import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentReques
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.payments.source.BankAccountSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.payments.source.BankAccountSource;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;

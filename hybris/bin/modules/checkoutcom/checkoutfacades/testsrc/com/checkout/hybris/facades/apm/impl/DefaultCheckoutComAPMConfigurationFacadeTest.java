@@ -16,7 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static com.checkout.common.Currency.GBP;
+import static com.checkout.sdk.common.Currency.GBP;
 import static java.util.Locale.UK;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;

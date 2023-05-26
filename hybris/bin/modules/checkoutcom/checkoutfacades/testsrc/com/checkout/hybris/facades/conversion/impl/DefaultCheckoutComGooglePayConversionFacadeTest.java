@@ -63,10 +63,6 @@ public class DefaultCheckoutComGooglePayConversionFacadeTest {
                 "checkoutComGooglePayDeliveryModeToSelectionOptionConverter",
                 checkoutComGooglePayDeliveryModeToSelectionOptionConverterMock);
 
-        when(googlePayMerchantConfigurationDataMock.getMerchantId()).thenReturn("merchant_id");
-        when(googlePayTransactionInfoDataMock.getTotalPrice()).thenReturn("100");
-        when(googlePaySelectionOptionMock.getId()).thenReturn("test_id");
-
         when(checkoutComGooglePayPaymentRequestConverterMock.convert(googlePaySettingsDataMock))
                 .thenReturn(googlePayMerchantConfigurationDataMock);
         when(checkoutComGooglePayTransactionInfoConverterMock.convert(cartDataMock))

@@ -72,7 +72,6 @@ public class CheckoutComKlarnaSessionRequestDtoPopulatorTest {
         when(sourceMock.getPaymentAddress()).thenReturn(billingAddressMock);
         when(billingAddressMock.getCountry()).thenReturn(countryModelMock);
         when(countryModelMock.getIsocode()).thenReturn(COUNTRY_CODE);
-        when(sourceMock.getEntries()).thenReturn(Arrays.asList(entry1Mock, entry2Mock));
         when(checkoutComKlarnaProductsRequestDtoConverterMock.convert(sourceMock)).thenReturn(Arrays.asList(product1Mock, product2Mock));
     }
 

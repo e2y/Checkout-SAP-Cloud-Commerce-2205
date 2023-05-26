@@ -10,11 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @UnitTest
 @RunWith(MockitoJUnitRunner.class)
@@ -31,11 +32,14 @@ public class CheckoutComAbstractPaymentResponseStrategyTest {
         testObj = Mockito.mock(
                 CheckoutComAbstractPaymentResponseStrategy.class,
                 Mockito.CALLS_REAL_METHODS);
-        Whitebox.setInternalState(testObj, "checkoutComPaymentResponseStrategyMapper",checkoutComPaymentResponseStrategyMapperMock);
+
+        ReflectionTestUtils.setField(testObj, "checkoutComPaymentResponseStrategyMapper",checkoutComPaymentResponseStrategyMapperMock);
     }
 
     @Test
     public void registerStrategy_ShouldRegisterTheStrategy() {
+        when(testObj.getStrategyKey()).thenReturn(CheckoutComPaymentType.CARD);
+
         testObj.registerStrategy();
 
         verify(checkoutComPaymentResponseStrategyMapperMock).addStrategy(any(CheckoutComPaymentType.class), any(CheckoutComPaymentResponseStrategy.class));

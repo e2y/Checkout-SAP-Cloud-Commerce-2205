@@ -57,8 +57,6 @@ public class CheckoutComVoidOrderActionTest {
     public void setUp() {
         when(checkoutComVoidProcessModelMock.getOrder()).thenReturn(orderModelMock);
         when(orderModelMock.getPaymentTransactions()).thenReturn(Collections.singletonList(paymentTransactionMock));
-        when(paymentServiceMock.isAuthorizationApproved(orderModelMock)).thenReturn(true);
-        when(paymentServiceMock.isCapturePending(orderModelMock)).thenReturn(true);
         when(checkoutComPaymentTransactionServiceMock.getPaymentTransaction(orderModelMock)).thenReturn(paymentTransactionMock);
         when(checkoutComPaymentTransactionServiceMock.findAcceptedAuthorizationEntry(paymentTransactionMock)).thenReturn(of(authTransactionEntryModelMock));
         when(paymentServiceMock.isVoidPresent(orderModelMock)).thenReturn(false);

@@ -46,7 +46,6 @@ public class CheckoutComPaymentEventListenerTest {
     @Before
     public void setUp() {
         sourceMap = createMapEventBody();
-        when(paymentInfoServiceMock.getSiteIdFromPaymentId(PAYMENT_ID)).thenReturn(ELECTRONICS);
         when(checkoutComPaymentEventServiceMock.getAllowedPaymentEventTypesForMerchant(ELECTRONICS)).thenReturn(EVENT_TYPES);
         when(checkoutComPaymentEventReverseConverterMock.convert(sourceMap)).thenReturn(checkoutComPaymentEventModelMock);
         when(checkoutComPaymentEventServiceMock.getSiteIdForTheEvent(sourceMap)).thenReturn(ELECTRONICS);

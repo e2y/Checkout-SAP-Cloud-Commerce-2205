@@ -159,7 +159,6 @@ public class CheckoutComCaptureRefundActionTest {
     @Test
     public void refundPayment_WhenRefundSuccessful_ShouldReturnRefundEntry() {
         when(paymentServiceMock.refundFollowOn(paymentTransactionMock, REFUND_AMOUNT)).thenReturn(refundEntryMock);
-        when(refundEntryMock.getRequestToken()).thenReturn(ACTION_ID);
 
         final PaymentTransactionEntryModel result = testObj.refundPayment(paymentTransactionMock, REFUND_AMOUNT);
 

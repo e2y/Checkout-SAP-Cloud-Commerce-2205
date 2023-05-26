@@ -1,8 +1,6 @@
 package com.checkout.hybris.core.order.services.impl;
 
 import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
-import com.checkout.payments.PaymentProcessed;
-import com.checkout.payments.PaymentResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.commerceservices.order.CommerceCheckoutService;
 import de.hybris.platform.commerceservices.service.data.CommerceCheckoutParameter;
@@ -27,11 +25,6 @@ public class DefaultCheckoutComOrderServiceTest {
 
     private static final BigDecimal AUTHORISATION_AMOUNT = new BigDecimal(123.12d);
     private static final String PAYMENT_PROVIDER = "paymentProvider";
-    private static final String PAYMENT_ID = "PAYMENT_ID";
-    private static final String TOKEN = "TOKEN";
-    private static final String TRANSACTION_STATUS = "DONE";
-    private static final long CHECKOUTCOM_AMOUNT = 12312L;
-    private static final String GBP = "GBP";
 
     @Mock
     private CommerceCheckoutService commerceCheckoutServiceMock;
@@ -39,10 +32,6 @@ public class DefaultCheckoutComOrderServiceTest {
     private CartModel cartModelMock;
     @Mock
     private CheckoutComCreditCardPaymentInfoModel paymentInfoModelMock;
-    @Mock
-    private PaymentResponse paymentResponseMock;
-    @Mock
-    private PaymentProcessed paymentProcessedMock;
 
     @Spy
     @InjectMocks
@@ -51,13 +40,6 @@ public class DefaultCheckoutComOrderServiceTest {
     @Before
     public void setUp() {
         when(commerceCheckoutServiceMock.getPaymentProvider()).thenReturn(PAYMENT_PROVIDER);
-        when(paymentResponseMock.getPayment()).thenReturn(paymentProcessedMock);
-        when(cartModelMock.getPaymentInfo()).thenReturn(paymentInfoModelMock);
-        when(paymentProcessedMock.getStatus()).thenReturn(TRANSACTION_STATUS);
-        when(paymentProcessedMock.getId()).thenReturn(PAYMENT_ID);
-        when(paymentProcessedMock.getAmount()).thenReturn(CHECKOUTCOM_AMOUNT);
-        when(paymentProcessedMock.getCurrency()).thenReturn(GBP);
-        when(paymentInfoModelMock.getCardToken()).thenReturn(TOKEN);
     }
 
     @Test(expected = IllegalArgumentException.class)

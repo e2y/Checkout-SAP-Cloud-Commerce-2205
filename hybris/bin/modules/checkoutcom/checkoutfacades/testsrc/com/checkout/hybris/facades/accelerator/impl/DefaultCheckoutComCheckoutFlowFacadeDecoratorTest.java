@@ -12,7 +12,7 @@ import com.checkout.hybris.core.payment.services.CheckoutComPaymentService;
 import com.checkout.hybris.facades.beans.AuthorizeResponseData;
 import com.checkout.hybris.facades.beans.CheckoutComPaymentInfoData;
 import com.checkout.hybris.facades.constants.CheckoutFacadesConstants;
-import com.checkout.payments.*;
+import com.checkout.sdk.payments.*;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorfacades.flow.CheckoutFlowFacade;
 import de.hybris.platform.commercefacades.order.CartFacade;
@@ -250,8 +250,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
 
     @Test
     public void hasNoPaymentInfo_WhenCartIsNull_shouldReturnTrue() {
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(null);
-
         final boolean result = testObj.hasNoPaymentInfo();
 
         assertTrue(result);
@@ -259,7 +257,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
 
     @Test
     public void hasNoPaymentInfo_WhenCartIsNotNullAndHasNoPaymentInfo_shouldReturnTrue() {
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(cartDataMock);
         when(cartDataMock.getPaymentInfo()).thenReturn(null);
         when(cartDataMock.getCheckoutComPaymentInfo()).thenReturn(null);
 
@@ -270,9 +267,7 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
 
     @Test
     public void hasNoPaymentInfo_WhenCartDataIsNotNullAndHasPaymentInfoAndAPMPaymentInfo_ShouldReturnFalse() {
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(cartDataMock);
         when(cartDataMock.getPaymentInfo()).thenReturn(ccPaymentInfoDataMock);
-        when(cartDataMock.getCheckoutComPaymentInfo()).thenReturn(apmPaymentInfoDataMock);
 
         final boolean result = testObj.hasNoPaymentInfo();
 
@@ -281,7 +276,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
 
     @Test
     public void hasNoPaymentInfo_WhenCartHasNoCCPaymentInfoAndHasAPMPaymentInfo_ShouldReturnFalse() {
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(cartDataMock);
         when(cartDataMock.getPaymentInfo()).thenReturn(null);
         when(cartDataMock.getCheckoutComPaymentInfo()).thenReturn(apmPaymentInfoDataMock);
 
@@ -292,8 +286,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
 
     @Test
     public void hasNoPaymentInfo_WhenCartHasNoAPMPaymentInfo_ShouldReturnFalse() {
-        when(checkoutFlowFacadeMock.getCheckoutCart()).thenReturn(cartDataMock);
-        when(cartDataMock.getCheckoutComPaymentInfo()).thenReturn(null);
         when(cartDataMock.getPaymentInfo()).thenReturn(ccPaymentInfoDataMock);
 
         final boolean result = testObj.hasNoPaymentInfo();
@@ -354,7 +346,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
     }
 
     private void setUpPaymentInfo() {
-        when(checkoutComCreditCardPaymentInfoMock.getCardToken()).thenReturn(TOKEN);
         when(checkoutComCreditCardPaymentInfoMock.getBillingAddress()).thenReturn(addressModelMock);
         when(checkoutComRequestFactoryMock.createPaymentRequest(cartModelMock)).thenReturn(requestMock);
         when(checkoutComPaymentIntegrationServiceMock.authorizePayment(requestMock)).thenReturn(paymentResponseMock);
@@ -363,7 +354,6 @@ public class DefaultCheckoutComCheckoutFlowFacadeDecoratorTest {
     private void setUpPaymentResponse() {
         when(paymentResponseMock.getPayment()).thenReturn(paymentMock);
         when(paymentResponseMock.getPending()).thenReturn(paymentPendingResponseMock);
-        when(paymentPendingResponseMock.getId()).thenReturn(PAYMENT_ID);
         when(paymentMock.getId()).thenReturn(PAYMENT_ID);
         when(paymentMock.getSource()).thenReturn(paymentSourceMock);
         when(paymentMock.isApproved()).thenReturn(true);

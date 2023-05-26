@@ -64,7 +64,6 @@ public class CheckoutComPaymentDetailsWsDTOValidValidatorTest {
     @Test
     public void validate_WhenValidPaymentType_ShouldCallTheCorrectValidator() {
         when(checkoutComPaymentTypeResolverMock.resolvePaymentMethod(CARD.name())).thenReturn(CARD);
-        doNothing().when(checkoutComCardPaymentDetailsWsDTOValidatorMock).validate(CARD, errors);
 
         testObj.validate(paymentDetailsWsDTO, errors);
 

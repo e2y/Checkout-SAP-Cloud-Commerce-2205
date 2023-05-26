@@ -51,7 +51,6 @@ public class CheckoutComCheckAuthorizeOrderPaymentActionTest {
 
         when(processMock.getOrder()).thenReturn(orderMock);
         when(orderMock.getPaymentInfo()).thenReturn(paymentInfoMock);
-        when(paymentServiceMock.isAutoCapture(orderMock)).thenReturn(false);
         when(paymentServiceMock.isAuthorizationPending(orderMock)).thenReturn(false);
         when(paymentServiceMock.isAuthorizationApproved(orderMock)).thenReturn(true);
     }

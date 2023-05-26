@@ -1,10 +1,10 @@
 package com.checkout.hybris.core.populators.payments;
 
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.Product;
-import com.checkout.payments.RequestSource;
-import com.checkout.payments.TokenSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.Product;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.payments.TokenSource;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.c2l.CountryModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;

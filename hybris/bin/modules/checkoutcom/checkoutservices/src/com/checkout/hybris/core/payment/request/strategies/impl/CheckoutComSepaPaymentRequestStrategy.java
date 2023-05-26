@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.Address;
+import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
@@ -13,12 +13,12 @@ import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentReq
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-import com.checkout.payments.AlternativePaymentSource;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.sources.SourceData;
-import com.checkout.sources.SourceRequest;
-import com.checkout.sources.SourceResponse;
+import com.checkout.sdk.payments.AlternativePaymentSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.sources.SourceData;
+import com.checkout.sdk.sources.SourceRequest;
+import com.checkout.sdk.sources.SourceResponse;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import org.apache.logging.log4j.LogManager;

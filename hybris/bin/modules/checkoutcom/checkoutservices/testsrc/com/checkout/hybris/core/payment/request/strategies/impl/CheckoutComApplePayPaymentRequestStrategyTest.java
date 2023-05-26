@@ -1,11 +1,11 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.Address;
+import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComApplePayPaymentInfoModel;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.payments.TokenSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.payments.TokenSource;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;

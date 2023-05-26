@@ -2,7 +2,7 @@ package com.checkout.hybris.facades.payment.token.request.converters.populators;
 
 import com.checkout.hybris.facades.beans.ApplePayAdditionalAuthInfo;
 import com.checkout.hybris.facades.beans.ApplePayHeader;
-import com.checkout.tokens.WalletTokenRequest;
+import com.checkout.sdk.tokens.WalletTokenRequest;
 import de.hybris.bootstrap.annotations.UnitTest;
 import org.junit.Before;
 import org.junit.Test;

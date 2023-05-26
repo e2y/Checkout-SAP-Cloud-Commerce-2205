@@ -2,7 +2,7 @@ package com.checkout.hybris.core.payment.services;
 
 import com.checkout.hybris.core.authorisation.AuthorizeResponse;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import de.hybris.platform.payment.PaymentService;

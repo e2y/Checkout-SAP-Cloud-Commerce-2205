@@ -13,7 +13,7 @@ import com.checkout.hybris.core.payment.services.CheckoutComPaymentService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
 import com.checkout.hybris.events.enums.CheckoutComPaymentEventType;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.platform.core.enums.OrderStatus;
 import de.hybris.platform.core.model.order.AbstractOrderModel;
 import de.hybris.platform.core.model.order.OrderModel;

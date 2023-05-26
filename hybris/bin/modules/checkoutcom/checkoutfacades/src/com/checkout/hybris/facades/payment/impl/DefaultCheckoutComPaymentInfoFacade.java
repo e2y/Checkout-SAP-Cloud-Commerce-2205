@@ -10,7 +10,7 @@ import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
 import com.checkout.hybris.facades.beans.*;
 import com.checkout.hybris.facades.payment.CheckoutComPaymentInfoFacade;
 import com.checkout.hybris.facades.payment.converters.CheckoutComApmMappedPaymentInfoReverseConverter;
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 import de.hybris.platform.commercefacades.order.data.CCPaymentInfoData;
 import de.hybris.platform.commercefacades.order.data.CartData;
 import de.hybris.platform.core.model.order.CartModel;

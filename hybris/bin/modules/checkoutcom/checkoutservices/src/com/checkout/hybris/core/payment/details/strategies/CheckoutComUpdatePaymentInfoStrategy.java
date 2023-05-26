@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.payment.details.strategies;
 
-import com.checkout.payments.GetPaymentResponse;
+import com.checkout.sdk.payments.GetPaymentResponse;
 
 /**
  * Processes the checkout.com payment detail response

@@ -1,7 +1,7 @@
 package com.checkout.hybris.core.payment.response.strategies;
 
 import com.checkout.hybris.core.authorisation.AuthorizeResponse;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 
 /**

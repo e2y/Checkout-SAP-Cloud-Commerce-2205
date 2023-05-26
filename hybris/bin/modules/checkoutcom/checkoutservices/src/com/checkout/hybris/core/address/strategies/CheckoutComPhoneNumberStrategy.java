@@ -1,6 +1,6 @@
 package com.checkout.hybris.core.address.strategies;
 
-import com.checkout.common.Phone;
+import com.checkout.sdk.common.Phone;
 import de.hybris.platform.core.model.user.AddressModel;
 
 import java.util.Optional;

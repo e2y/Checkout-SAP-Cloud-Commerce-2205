@@ -6,7 +6,7 @@ import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.response.mappers.CheckoutComPaymentResponseStrategyMapper;
 import com.checkout.hybris.core.payment.response.strategies.CheckoutComPaymentResponseStrategy;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
-import com.checkout.payments.PaymentPending;
+import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import org.apache.commons.collections.MapUtils;
 import org.apache.logging.log4j.LogManager;

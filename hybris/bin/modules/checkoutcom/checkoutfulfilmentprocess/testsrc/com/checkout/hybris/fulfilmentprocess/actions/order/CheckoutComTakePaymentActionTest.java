@@ -73,8 +73,6 @@ public class CheckoutComTakePaymentActionTest {
         when(paymentTransactionMock.getInfo()).thenReturn(paymentInfoModelMock);
         when(paymentServiceMock.isAutoCapture(orderMock)).thenReturn(false);
         when(checkoutComPaymentTransactionServiceMock.getPaymentTransaction(orderMock)).thenReturn(paymentTransactionMock);
-        when(paymentTransactionEntryMock.getPaymentTransaction()).thenReturn(paymentTransactionMock);
-        when(paymentTransactionMock.getOrder()).thenReturn(orderMock);
         when(paymentServiceMock.capture(paymentTransactionMock)).thenReturn(paymentTransactionEntryMock);
     }
 
@@ -175,7 +173,6 @@ public class CheckoutComTakePaymentActionTest {
 
     @Test
     public void execute_WhenNoCaptureAndNoAutoCapture_ShouldCaptureAndReturnOKIfPaymentAccepted() {
-        when(paymentServiceMock.isCaptureApproved(orderMock)).thenReturn(true);
         when(paymentServiceMock.captureExists(orderMock)).thenReturn(false);
         when(paymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.ACCEPTED.toString());
 
@@ -187,7 +184,6 @@ public class CheckoutComTakePaymentActionTest {
 
     @Test
     public void execute_WhenNoCaptureAndNoAutoCapture_ShouldCaptureAndReturnNOKIfPaymentError() {
-        when(paymentServiceMock.isCaptureApproved(orderMock)).thenReturn(true);
         when(paymentServiceMock.captureExists(orderMock)).thenReturn(false);
         when(paymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.ERROR.toString());
 
@@ -199,7 +195,6 @@ public class CheckoutComTakePaymentActionTest {
 
     @Test
     public void execute_WhenNoCaptureAndNoAutoCapture_ShouldCaptureAndReturnNOKIfPaymentRejected() {
-        when(paymentServiceMock.isCaptureApproved(orderMock)).thenReturn(true);
         when(paymentServiceMock.captureExists(orderMock)).thenReturn(false);
         when(paymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.REJECTED.toString());
 
@@ -211,7 +206,6 @@ public class CheckoutComTakePaymentActionTest {
 
     @Test
     public void execute_WhenNoCaptureAndNoAutoCapture_ShouldCaptureAndReturnWAITOtherwise() {
-        when(paymentServiceMock.isCaptureApproved(orderMock)).thenReturn(true);
         when(paymentServiceMock.captureExists(orderMock)).thenReturn(false);
         when(paymentTransactionEntryMock.getTransactionStatus()).thenReturn(TransactionStatus.PENDING.toString());
 

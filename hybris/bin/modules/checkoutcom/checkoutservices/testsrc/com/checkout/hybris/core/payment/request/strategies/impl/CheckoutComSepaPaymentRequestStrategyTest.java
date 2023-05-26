@@ -1,16 +1,16 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.common.Address;
+import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.merchantconfiguration.BillingDescriptor;
 import com.checkout.hybris.core.model.CheckoutComSepaPaymentInfoModel;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
-import com.checkout.payments.AlternativePaymentSource;
-import com.checkout.payments.PaymentRequest;
-import com.checkout.payments.RequestSource;
-import com.checkout.sources.*;
+import com.checkout.sdk.payments.AlternativePaymentSource;
+import com.checkout.sdk.payments.PaymentRequest;
+import com.checkout.sdk.payments.RequestSource;
+import com.checkout.sdk.sources.*;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.order.CartModel;
@@ -97,9 +97,7 @@ public class CheckoutComSepaPaymentRequestStrategyTest {
         when(checkoutComPaymentIntegrationServiceMock.setUpPaymentSource(any(SourceRequest.class))).thenReturn(sourceResponseMock);
         when(sourceResponseMock.getSource()).thenReturn(sourceProcessedMock);
         when(sourceProcessedMock.getId()).thenReturn(PAYMENT_ID);
-        when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(GBP, TOTAL_PRICE)).thenReturn(CHECKOUT_COM_TOTAL_PRICE);
         when(sourceProcessedMock.getCustomer()).thenReturn(customerResponseMock);
-        when(customerResponseMock.getId()).thenReturn(CUSTOMER_ID);
         when(sourceProcessedMock.getCustomer()).thenReturn(customerSourceResponseMock);
         when(customerSourceResponseMock.getId()).thenReturn(CUSTOMER_ID);
 

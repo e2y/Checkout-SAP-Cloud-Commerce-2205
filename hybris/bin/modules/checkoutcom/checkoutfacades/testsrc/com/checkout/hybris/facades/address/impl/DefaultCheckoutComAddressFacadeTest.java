@@ -65,7 +65,6 @@ public class DefaultCheckoutComAddressFacadeTest {
     public void setUp() {
         ReflectionTestUtils.setField(testObj, "addressConverter", addressConverterMock);
         when(addressConverterMock.convert(addressModelMock)).thenReturn(addressDataMock);
-        when(deliveryServiceMock.getSupportedDeliveryAddressesForOrder(cartModelMock, false)).thenReturn(Collections.singletonList(addressModelMock));
         when(addressDataMock.getId()).thenReturn(ADDRESS_ID);
         when(cartServiceMock.hasSessionCart()).thenReturn(true);
         when(cartServiceMock.getSessionCart()).thenReturn(cartModelMock);
@@ -113,7 +112,6 @@ public class DefaultCheckoutComAddressFacadeTest {
     @Test
     public void setCartBillingDetails_WhenNoAddressModel_ShouldDoNothing() {
         when(addressDataMock.getId()).thenReturn(null);
-        when(checkoutFlowFacadeMock.getDeliveryAddressModelForCode(ADDRESS_ID)).thenReturn(null);
 
         testObj.setCartBillingDetails(addressDataMock);
 
@@ -141,7 +139,6 @@ public class DefaultCheckoutComAddressFacadeTest {
 
     @Test
     public void setCartBillingDetailsByAddressId_WhenNoAddressModel_ShouldDoNothing() {
-        when(addressDataMock.getId()).thenReturn(null);
         when(checkoutFlowFacadeMock.getDeliveryAddressModelForCode(ADDRESS_ID)).thenReturn(null);
 
         testObj.setCartBillingDetailsByAddressId(ADDRESS_ID);
