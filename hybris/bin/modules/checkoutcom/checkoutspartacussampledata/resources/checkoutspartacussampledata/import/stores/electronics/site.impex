@@ -1,4 +1,6 @@
 $spaSiteUid = electronics-spa
+$productCatalog=electronicsProductCatalog
+$catalogVersion=catalogversion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
 
 # Merchant keys
 "#% if: de.hybris.platform.jalo.extension.ExtensionManager.getInstance().isExtensionInstalled(""spartacussampledata"")"
@@ -40,5 +42,9 @@ INSERT_UPDATE CheckoutComACHConfiguration; code[unique = true]             ; cli
 # Set merchant configuration and payment redirect urls to the site
 UPDATE BaseSite; uid[unique = true]; checkoutComMerchantConfiguration(code); checkoutComSuccessRedirectUrl                        ; checkoutComFailureRedirectUrl
                ; $spaSiteUid       ; merchantConfiguration-$spaSiteUid     ; $spartacusUrlPath/order-confirmation?authorized=true ; $spartacusUrlPath/order-confirmation?authorized=false
+
+# Spartacus sets electronics store tax group to US taxes. This creates the relation between the tax group and the tax.
+INSERT_UPDATE TaxRow;$catalogVersion;tax(code)[unique=true];pg(code)[unique=true];ug(code)[unique=true]
+                    ;;jp-vat-full;jp-vat-full;us-taxes
 
 #% endif:

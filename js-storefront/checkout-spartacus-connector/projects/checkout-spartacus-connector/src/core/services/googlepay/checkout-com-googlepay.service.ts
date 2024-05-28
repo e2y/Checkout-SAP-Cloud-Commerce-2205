@@ -126,7 +126,7 @@ export class CheckoutComGooglepayService {
     };
   }
 
-  addPaymentExpressIntents(paymentRequest) {
+  addPaymentExpressIntents(paymentRequest: GooglePayMerchantConfiguration) {
     return {
       ...paymentRequest,
 

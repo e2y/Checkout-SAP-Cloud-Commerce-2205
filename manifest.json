@@ -1,5 +1,5 @@
 {
-  "commerceSuiteVersion": "2105",
+  "commerceSuiteVersion": "2205",
   "useCloudExtensionPack": true,
   "extensions": [
     "adaptivesearchsolr",
@@ -9,8 +9,6 @@
     "commerceservicesbackoffice",
     "solrfacetsearchbackoffice",
     "solrserver",
-    "yacceleratorbackoffice",
-    "yacceleratorinitialdata",
     "yacceleratorstorefront",
     "electronicsstore",
     "apparelstore",
@@ -84,7 +82,6 @@
     "outboundservices",
     "outboundsync",
     "odata2webservices",
-    "odata2webservicesfeaturetests",
     "integrationbackoffice",
     "integrationmonitoringbackoffice",
     "outboundsyncbackoffice",

@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -37,7 +38,8 @@ public class CheckoutComCardPaymentRequestStrategyTest {
     @Spy
     @InjectMocks
     private CheckoutComCardPaymentRequestStrategy testObj;
-
+    @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
     @Mock
     private CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationServiceMock;
     @Mock
@@ -55,6 +57,8 @@ public class CheckoutComCardPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
         when(checkoutComMerchantConfigurationServiceMock.getPaymentAction()).thenReturn(AUTHORIZE_AND_CAPTURE);
         when(checkoutComMerchantConfigurationServiceMock.isThreeDSEnabled()).thenReturn(true);
         when(checkoutComMerchantConfigurationServiceMock.isAttemptNoThreeDSecure()).thenReturn(true);

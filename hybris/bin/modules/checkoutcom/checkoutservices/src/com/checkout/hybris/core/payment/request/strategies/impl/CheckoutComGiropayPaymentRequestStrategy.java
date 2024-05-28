@@ -1,18 +1,14 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
+import com.checkout.sdk.common.Address;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
 import com.checkout.sdk.payments.ShippingDetails;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;
 import org.apache.commons.lang.StringUtils;
@@ -26,16 +22,12 @@ import static de.hybris.platform.servicelayer.util.ServicesUtil.validateParamete
  */
 public class CheckoutComGiropayPaymentRequestStrategy extends CheckoutComAbstractApmPaymentRequestStrategy {
 
-    public CheckoutComGiropayPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                    final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                    final CheckoutComCurrencyService checkoutComCurrencyService,
+    public CheckoutComGiropayPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                     final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                    final CMSSiteService cmsSiteService,
-                                                    final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                    final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+                                                    final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                    final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper) {
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+              checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesWrapper);
     }
 
     /**

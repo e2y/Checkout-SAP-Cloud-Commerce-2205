@@ -5,8 +5,9 @@ import com.checkout.hybris.facades.beans.KlarnaClientTokenData;
 import com.checkout.hybris.facades.payment.klarna.CheckoutComKlarnaFacade;
 import de.hybris.platform.webservicescommons.cache.CacheControl;
 import de.hybris.platform.webservicescommons.cache.CacheControlDirective;
-import io.swagger.annotations.Api;
+
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;

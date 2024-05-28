@@ -162,11 +162,6 @@
         </property>
     </bean>
 
-    <alias name="defaultCheckoutComIdealPaymentInfoReversePopulator"
-           alias="checkoutComIdealPaymentInfoReversePopulator"/>
-    <bean id="defaultCheckoutComIdealPaymentInfoReversePopulator"
-          class="com.checkout.hybris.facades.payment.converters.populators.CheckoutComIdealPaymentInfoReversePopulator"/>
-
     <alias name="defaultCheckoutComIdealPaymentInfoReverseConverter"
            alias="checkoutComIdealPaymentInfoReverseConverter"/>
     <bean id="defaultCheckoutComIdealPaymentInfoReverseConverter" parent="abstractPopulatingConverter">
@@ -174,7 +169,6 @@
         <property name="populators">
             <list>
                 <ref bean="checkoutComApmPaymentInfoReversePopulator"/>
-                <ref bean="checkoutComIdealPaymentInfoReversePopulator"/>
             </list>
         </property>
     </bean>

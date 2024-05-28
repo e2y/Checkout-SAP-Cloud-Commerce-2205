@@ -17,7 +17,7 @@ public abstract class CheckoutComAbstractPaymentResponseStrategy implements Chec
         // default empty constructor
     }
 
-    public CheckoutComAbstractPaymentResponseStrategy(final CheckoutComPaymentResponseStrategyMapper checkoutComPaymentResponseStrategyMapper) {
+    protected CheckoutComAbstractPaymentResponseStrategy(final CheckoutComPaymentResponseStrategyMapper checkoutComPaymentResponseStrategyMapper) {
         this.checkoutComPaymentResponseStrategyMapper = checkoutComPaymentResponseStrategyMapper;
     }
 

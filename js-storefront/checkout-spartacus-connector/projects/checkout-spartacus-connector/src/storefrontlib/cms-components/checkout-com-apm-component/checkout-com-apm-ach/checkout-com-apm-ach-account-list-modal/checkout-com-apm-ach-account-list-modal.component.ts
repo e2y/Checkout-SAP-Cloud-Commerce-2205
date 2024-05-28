@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AchSuccessMetadata } from '../../../../../core/model/Ach';
+import { accountMeta, AchSuccessMetadata } from '../../../../../core/model/Ach';
 import { ModalService } from '@spartacus/storefront';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -13,8 +13,8 @@ export class CheckoutComApmAchAccountListModalComponent implements OnInit {
   achAccountListForm = this.fb.group({
     account_id: ['', Validators.required],
   });
-  achAccountList: any = {};
-
+  achAccountList: any = {} as { [key: string]: accountMeta[] };
+  Object = Object;
   constructor(
     protected modalService: ModalService,
     protected fb: FormBuilder
@@ -22,7 +22,7 @@ export class CheckoutComApmAchAccountListModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.achMetadata.accounts.map(account => {
+    this.achMetadata.accounts.map((account: accountMeta) => {
       if (this.achAccountList[account.subtype]) {
         this.achAccountList[account.subtype].push(account);
       } else {
@@ -54,5 +54,4 @@ export class CheckoutComApmAchAccountListModalComponent implements OnInit {
   close(reason: string) {
     this.modalService.closeActiveModal({ type: reason });
   }
-
 }

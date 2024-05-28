@@ -18,7 +18,7 @@
               id="cardholdername"
             />
             <cx-form-errors
-              [control]="paymentForm.get('accountHolderName')"
+              [control]="$any(paymentForm.get('accountHolderName'))"
             ></cx-form-errors>
           </label>
         </div>

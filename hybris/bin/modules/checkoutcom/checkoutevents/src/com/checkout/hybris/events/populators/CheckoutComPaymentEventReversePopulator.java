@@ -1,40 +1,20 @@
 package com.checkout.hybris.events.populators;
 
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventDataObject;
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import com.checkout.hybris.events.enums.CheckoutComPaymentEventStatus;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.hybris.platform.converters.Populator;
 import de.hybris.platform.servicelayer.dto.converter.ConversionException;
 import de.hybris.platform.servicelayer.i18n.CommonI18NService;
-import org.apache.commons.collections4.MapUtils;
-
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.checkout.hybris.events.constants.CheckouteventsConstants.EVENT_APPROVED_RESPONSE_CODE;
 
-/**
- * Populates the properties of the {@link CheckoutComPaymentEventModel}
- */
-public class CheckoutComPaymentEventReversePopulator implements Populator<Map, CheckoutComPaymentEventModel> {
 
-    protected static final String KEY_ID = "id";
-    protected static final String KEY_SOURCE_TYPE = "type";
-    protected static final String KEY_DATA = "data";
-    protected static final String KEY_ACTION_ID = "action_id";
-    protected static final String KEY_CURRENCY = "currency";
-    protected static final String KEY_AMOUNT = "amount";
-    protected static final String KEY_RESPONSE_SUMMARY = "response_summary";
-    protected static final String KEY_RESPONSE_CODE = "response_code";
-    protected static final String KEY_SITE_ID = "site_id";
-    protected static final String KEY_REFERENCE = "reference";
-    protected static final String KEY_SOURCE = "source";
-    protected static final String KEY_RISK = "risk";
-    protected static final String KEY_FLAGGED = "flagged";
-    protected static final String KEY_METADATA = "metadata";
-    protected static final String KEY_EVENT_TYPE = "type";
+public class CheckoutComPaymentEventReversePopulator implements Populator<CheckoutComPaymentEventObject, CheckoutComPaymentEventModel> {
 
     protected final CommonI18NService commonI18NService;
     protected final CheckoutComCurrencyService checkoutComCurrencyService;
@@ -48,46 +28,41 @@ public class CheckoutComPaymentEventReversePopulator implements Populator<Map, C
      * {@inheritDoc}
      */
     @Override
-    public void populate(final Map source, final CheckoutComPaymentEventModel target) throws ConversionException {
-        Preconditions.checkArgument(MapUtils.isNotEmpty(source), "CheckoutComPaymentEvent body cannot be null.");
+    public void populate(final CheckoutComPaymentEventObject source, final CheckoutComPaymentEventModel target) throws ConversionException {
+        Preconditions.checkNotNull(source, "CheckoutComPaymentEvent body cannot be null.");
 
-        target.setEventId((String) source.get(KEY_ID));
-        target.setEventType((String) source.get(KEY_EVENT_TYPE));
+        target.setEventId(source.getId());
+        target.setEventType(source.getType());
         target.setStatus(CheckoutComPaymentEventStatus.PENDING);
-        final Gson gson = new GsonBuilder().create();
-        target.setPayload(gson.toJson(source));
+        target.setPayload(source.getPayLoad());
 
         populateDataAttributes(source, target);
     }
 
-    protected void populateDataAttributes(final Map<String, Object> source, final CheckoutComPaymentEventModel target) {
-        if (source.containsKey(KEY_DATA)) {
-            final Map dataMap = (Map) source.get(KEY_DATA);
-            target.setResponseSummary((String) dataMap.get(KEY_RESPONSE_SUMMARY));
-            target.setResponseCode(dataMap.containsKey(KEY_RESPONSE_CODE) ? (String) dataMap.get(KEY_RESPONSE_CODE) : EVENT_APPROVED_RESPONSE_CODE);
-            target.setPaymentReference((String) dataMap.get(KEY_REFERENCE));
-            target.setPaymentId((String) dataMap.get(KEY_ID));
-            target.setActionId(dataMap.containsKey(KEY_ACTION_ID) ? (String) dataMap.get(KEY_ACTION_ID) : (String) dataMap.get(KEY_ID));
+    protected void populateDataAttributes(final CheckoutComPaymentEventObject source, final CheckoutComPaymentEventModel target) {
+        if (source.getData() != null) {
+            final CheckoutComPaymentEventDataObject data = source.getData();
+            target.setResponseSummary(data.getResponse_summary());
+            target.setResponseCode(StringUtils.isNotBlank(data.getResponse_code()) ? data.getResponse_code() : EVENT_APPROVED_RESPONSE_CODE);
+            target.setPaymentReference(data.getReference());
+            target.setPaymentId(data.getId());
+            target.setActionId(StringUtils.isNotBlank(data.getAction_id()) ? data.getAction_id() : data.getId());
 
-            if (dataMap.containsKey(KEY_METADATA)) {
-                final Map metadataMap = (Map) dataMap.get(KEY_METADATA);
-                target.setSiteId((String) metadataMap.get(KEY_SITE_ID));
+            if (data.getMetadata() != null) {
+                target.setSiteId(data.getMetadata().getSite_id());
             }
 
-            if (dataMap.containsKey(KEY_RISK)) {
-                final Map riskMap = (Map) dataMap.get(KEY_RISK);
-                target.setRiskFlag((Boolean) riskMap.get(KEY_FLAGGED));
+            if (data.getRisk() != null) {
+                target.setRiskFlag(data.getRisk().getFlagged());
             }
 
-            if (dataMap.containsKey(KEY_SOURCE)) {
-                final Map sourceMap = (Map) dataMap.get(KEY_SOURCE);
-                target.setSourceType((String) sourceMap.get(KEY_SOURCE_TYPE));
+            if (data.getSource() != null) {
+                target.setSourceType(data.getSource().getType());
             }
 
-            if (dataMap.containsKey(KEY_CURRENCY) && dataMap.containsKey(KEY_AMOUNT)) {
-                final String currencyCode = (String) dataMap.get(KEY_CURRENCY);
-                target.setCurrency(commonI18NService.getCurrency(currencyCode));
-                target.setAmount(checkoutComCurrencyService.convertAmountFromPennies(currencyCode, ((Double) dataMap.get(KEY_AMOUNT)).longValue()));
+            if (StringUtils.isNotBlank(data.getCurrency()) && data.getAmount() != null) {
+                target.setCurrency(commonI18NService.getCurrency(data.getCurrency()));
+                target.setAmount(checkoutComCurrencyService.convertAmountFromPennies(data.getCurrency(), data.getAmount().longValue()));
             }
         }
     }

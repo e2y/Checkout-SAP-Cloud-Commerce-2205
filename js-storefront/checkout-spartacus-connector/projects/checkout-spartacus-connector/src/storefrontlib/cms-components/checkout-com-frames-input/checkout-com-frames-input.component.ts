@@ -32,7 +32,7 @@ export class CheckoutComFramesInputComponent implements OnInit {
     if (name) {
       this.fieldCtrl = new FormControl();
       if (!this.form) {
-        const controls = {};
+        const controls: any = {};
         controls[name] = this.fieldCtrl;
         this.form = new FormGroup(controls);
       } else {

@@ -1,13 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckoutComKlarnaComponent } from './checkout-com-klarna.component';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { PaymentType } from '../../../../core/model/ApmData';
 import { CheckoutComApmService } from '../../../../core/services/checkout-com-apm.service';
 import { GlobalMessageService, I18nTestingModule } from '@spartacus/core';
 import { CheckoutComPaymentService } from '../../../../core/services/checkout-com-payment.service';
 import { CheckoutDeliveryFacade } from '@spartacus/checkout/root';
 import createSpy = jasmine.createSpy;
+import { Component, Input, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'lib-checkout-com-billing-address',
+  template: '',
+})
+export class MockCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
+
 
 const apm = {code: PaymentType.Klarna};
 
@@ -40,7 +52,7 @@ describe('CheckoutComKlarnaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckoutComKlarnaComponent],
+      declarations: [CheckoutComKlarnaComponent, MockCheckoutComBillingAddressComponent],
       imports: [I18nTestingModule],
       providers: [
         {provide: CheckoutComApmService, useClass: CheckoutComApmServiceStub},

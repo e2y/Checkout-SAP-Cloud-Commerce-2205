@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, AfterViewInit, Input, Output, OnDestroy, NgZone, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import {
   FramesConfig,
   FramesLocalization,
@@ -84,13 +84,13 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
 
   private getIsABCParam() {
     this.userIdService.getUserId().pipe(
-      first(id => !!id),
-      switchMap((userId) => {
+      first((id: string) => !!id),
+      switchMap((userId: string) => {
         this.checkoutComPaymentService.getIsABC(userId);
         return this.checkoutComPaymentService.getIsABCFromState();
       }),
       takeUntil(this.drop)
-    ).subscribe((isABC: boolean) => {
+    ).subscribe((isABC: boolean): void => {
         if (isABC !== null) {
           this.isABC = isABC;
           this.listenForMerchantKey();
@@ -104,7 +104,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
       this.cardholderStream.pipe(
         filter(Boolean),
         takeUntil(this.drop)
-      ).subscribe((cardholder) => {
+      ).subscribe((cardholder: FramesCardholder): void => {
         this.modifyFramesCardholder(cardholder);
       }, err => console.error('listenForCardHolder with errors', { err }));
     }
@@ -113,11 +113,11 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
   private listenForMerchantKey() {
     this.userIdService.getUserId().pipe(
       first(id => !!id),
-      switchMap((userId) => {
+      switchMap((userId: string) => {
         this.checkoutComPaymentService.requestOccMerchantKey(userId);
         return this.checkoutComPaymentService.getOccMerchantKeyFromState().pipe(
           first(k => !!k),
-          switchMap((firstPublicKey) => {
+          switchMap((firstPublicKey: string): Observable<string> => {
             const initialConfig: FramesConfig = {
               publicKey: firstPublicKey,
               cardTokenized: null,
@@ -130,7 +130,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
           }));
       }),
       takeUntil(this.drop)
-    ).subscribe((publicKey) => {
+    ).subscribe((publicKey: string): void => {
         this.modifyFramesPublicKey(publicKey);
       },
       err => console.error('listenForMerchantKey with errors', { err }));
@@ -143,7 +143,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
   private getValidator(fieldType: FrameElementIdentifier): ValidatorFn {
     return () => {
       const isValid = this.validationStatusMap.get(fieldType);
-      const errObj = {};
+      const errObj: any = {};
       let errKey;
       switch (fieldType) {
         case FrameElementIdentifier.CardNumber:
@@ -200,7 +200,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  private initFrames(config): boolean {
+  private initFrames(config: FramesConfig): boolean {
     this.framesReady.next(false);
     if (!config) {
       return false;
@@ -209,7 +209,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
       return true;
     }
 
-    const Frames: any = this.windowRef.nativeWindow['Frames']; // tslint:disable-line
+    const Frames: any = (this.windowRef.nativeWindow as { [key: string]: any })['Frames'];
     if (!Frames) {
       return false;
     }
@@ -225,13 +225,13 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     return true;
   }
 
-  private modifyFramesPublicKey(publicKey: string): boolean {
+  private modifyFramesPublicKey(publicKey: string): void {
     if (publicKey == null) {
       return;
     }
-    const Frames: any = this.windowRef.nativeWindow['Frames']; // tslint:disable-line
+    const Frames: any = (this.windowRef.nativeWindow as { [key: string]: any })['Frames'];
     if (!Frames) {
-      return false;
+      return;
     }
     try {
       Frames.publicKey = publicKey;
@@ -239,12 +239,11 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
         this.config.publicKey = publicKey;
       }
     } catch (e) {
-      return false;
+      return;
     }
-    return true;
   }
 
-  private listenForFramesEvents() {
+  private listenForFramesEvents(): void {
     this.frameValidationChanged.pipe(takeUntil(this.drop)).subscribe((event) => {
       this.validationStatusMap.set(event.element, event.isValid && !event.isEmpty);
       const ctrl = this.getElementByIdentifier(event.element);
@@ -299,10 +298,10 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     }, err => console.error('isCobadged', { err }));
   }
 
-  private getElementByIdentifier(identifier: FrameElementIdentifier) {
+  private getElementByIdentifier(identifier: FrameElementIdentifier): AbstractControl | undefined {
     const controlName = this.getInputNameByIdentifier(identifier);
     if (!controlName) {
-      return;
+      return undefined;
     }
     return this.form.controls[controlName];
   }
@@ -336,8 +335,8 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  private submitCard() {
-    const Frames: any = this.windowRef.nativeWindow['Frames']; // tslint:disable-line
+  private submitCard(): boolean {
+    const Frames: any = (this.windowRef.nativeWindow as { [key: string]: any })['Frames'];
     if (!Frames) {
       this.tokenizationFailed.emit({
         errorCode: 'frames_not_found',
@@ -348,7 +347,8 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     if (this.formSubmitted) {
       Frames.enableSubmitForm();
     }
-    Frames.submitCard().catch((err) => {
+
+    Frames.submitCard().catch((err: any): void => {
       this.ngZone.run(() => {
         this.tokenizationFailed.emit({
           message: err,
@@ -357,6 +357,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
       });
     });
     this.formSubmitted = true;
+    return true;
   }
 
   private getStyleConfig(): FramesStyle {
@@ -386,7 +387,7 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
     };
   }
 
-  private modifyFramesCardholder(cardholder: FramesCardholder): boolean {
+  private modifyFramesCardholder(cardholder: FramesCardholder): void {
     if (cardholder == null) {
       return;
     }
@@ -396,19 +397,18 @@ export class CheckoutComFramesFormComponent implements OnInit, AfterViewInit, On
       return;
     }
 
-    const Frames: any = window['Frames']; // tslint:disable-line
+    const Frames: any = (this.windowRef.nativeWindow as { [key: string]: any })['Frames'];
     if (!Frames) {
-      return false;
+      return;
     }
     try {
       Frames.cardholder = cardholder;
       if (this.config) {
         this.config.cardholder = cardholder;
       }
-    } catch (e) {
-      return false;
+    } catch (err: any) {
+      console.log('modifyFramesCardholder', err);
     }
-    return true;
   }
 
   ngOnDestroy() {

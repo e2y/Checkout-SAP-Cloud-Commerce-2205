@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -39,6 +40,8 @@ public class CheckoutComGooglePayPaymentRequestStrategyTest {
     private CheckoutComGooglePayPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
     private CartModel cartMock;
     @Mock
     private PaymentInfoModel paymentInfoMock;
@@ -53,6 +56,8 @@ public class CheckoutComGooglePayPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
         when(cartMock.getPaymentInfo()).thenReturn(googlePayPaymentInfoMock);
         when(googlePayPaymentInfoMock.getToken()).thenReturn(PAYMENT_TOKEN_VALUE);
         when(cartMock.getPaymentAddress()).thenReturn(addressModelMock);

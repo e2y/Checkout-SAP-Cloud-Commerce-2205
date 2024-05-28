@@ -4,7 +4,7 @@ import { CheckoutComPaymentFormComponent } from './checkout-com-payment-form.com
 import { StoreModule } from '@ngrx/store';
 import { CheckoutComPaymentService } from '../../../core/services/checkout-com-payment.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormErrorsModule, ICON_TYPE, ModalService } from '@spartacus/storefront';
 import { CheckoutComFramesInputModule } from '../checkout-com-frames-input/checkout-com-frames-input.module';
 import {
@@ -22,13 +22,23 @@ import {
 } from '@spartacus/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CheckoutComFramesFormModule } from '../checkout-com-frames-form/checkout-com-frames-form.module';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output } from '@angular/core';
 import { FrameCardTokenizedEvent, Scheme } from '../checkout-com-frames-form/interfaces';
 import { PaymentFormComponent } from '@spartacus/checkout/components';
 import { CheckoutDeliveryFacade, CheckoutPaymentFacade } from '@spartacus/checkout/root';
 import createSpy = jasmine.createSpy;
 import Region = Occ.Region;
 import { CheckoutComPaymentDetails } from '../../interfaces';
+
+
+@Component({
+  selector: 'lib-checkout-com-billing-address',
+  template: '',
+})
+export class MockCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
 
 class CheckoutComPaymentStub {
   requestOccMerchantKey = createSpy('requestOccMerchantKey').and.stub();
@@ -224,6 +234,7 @@ describe('CheckoutComPaymentFormComponent', () => {
         MockBillingAddressFormComponent,
         MockCxIconComponent,
         MockSpinnerComponent,
+        MockCheckoutComBillingAddressComponent
       ],
       imports: [StoreModule.forRoot({}),
         ReactiveFormsModule,

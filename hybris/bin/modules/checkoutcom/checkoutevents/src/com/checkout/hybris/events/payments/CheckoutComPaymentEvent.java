@@ -1,19 +1,18 @@
 package com.checkout.hybris.events.payments;
 
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import de.hybris.platform.servicelayer.event.ClusterAwareEvent;
 import de.hybris.platform.servicelayer.event.PublishEventContext;
 import de.hybris.platform.servicelayer.event.events.AbstractEvent;
 
 import java.util.Map;
 
-/**
- * Event containing the body of the Webhook receieved from Checkout.com
- */
+
 public class CheckoutComPaymentEvent extends AbstractEvent implements ClusterAwareEvent {
 
-    private Map eventBody;
+    private CheckoutComPaymentEventObject eventBody;
 
-    public CheckoutComPaymentEvent(final Map eventBody) {
+    public CheckoutComPaymentEvent(final CheckoutComPaymentEventObject eventBody) {
         this.eventBody = eventBody;
     }
 
@@ -27,11 +26,11 @@ public class CheckoutComPaymentEvent extends AbstractEvent implements ClusterAwa
         return (sourceNodeId == targetNodeId);
     }
 
-    public Map getEventBody() {
+    public CheckoutComPaymentEventObject getEventBody() {
         return eventBody;
     }
 
-    public void setEventBody(final Map eventBody) {
+    public void setEventBody(final CheckoutComPaymentEventObject eventBody) {
         this.eventBody = eventBody;
     }
 

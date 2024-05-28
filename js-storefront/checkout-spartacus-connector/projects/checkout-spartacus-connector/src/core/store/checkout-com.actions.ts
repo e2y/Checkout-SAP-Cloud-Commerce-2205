@@ -191,7 +191,7 @@ export class CreatePaymentDetails implements Action {
 export class CreatePaymentDetailsFail implements Action {
   readonly type = CREATE_PAYMENT_DETAILS_FAIL;
 
-  constructor(readonly error) {
+  constructor(readonly error: any) {
 
   }
 }
@@ -294,7 +294,7 @@ export class RedirectPlaceOrderAuthorize {
 export class RedirectPlaceOrderAuthorizeFail {
   readonly type = REDIRECT_PLACE_ORDER_AUTHORIZE_FAIL;
 
-  constructor(readonly error) {
+  constructor(readonly error: any) {
   }
 }
 

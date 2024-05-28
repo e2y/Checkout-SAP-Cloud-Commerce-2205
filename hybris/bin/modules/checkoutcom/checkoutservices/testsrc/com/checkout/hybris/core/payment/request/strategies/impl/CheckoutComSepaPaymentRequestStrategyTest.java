@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.checkout.hybris.core.enums.SepaPaymentType.RECURRING;
 import static com.checkout.hybris.core.payment.enums.CheckoutComPaymentType.SEPA;
@@ -56,6 +57,8 @@ public class CheckoutComSepaPaymentRequestStrategyTest {
     private CheckoutComSepaPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
     private CheckoutComPaymentIntegrationService checkoutComPaymentIntegrationServiceMock;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CartModel cartMock;
@@ -86,6 +89,10 @@ public class CheckoutComSepaPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComPaymentIntegrationService", checkoutComPaymentIntegrationServiceMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
         doNothing().when(testObj).populatePaymentRequest(anyObject(), anyObject());
         when(cartMock.getCurrency().getIsocode()).thenReturn(CURRENCY_ISO_CODE);
         when(cartMock.getPaymentInfo()).thenReturn(sepaPaymentInfoModelMock);

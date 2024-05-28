@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class CheckoutComMadaPaymentRequestStrategyTest {
     private CheckoutComMadaPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
     private CMSSiteService cmsSiteServiceMock;
     @Mock
     private CMSSiteModel currentSiteMock;
@@ -43,6 +46,8 @@ public class CheckoutComMadaPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "cmsSiteService", cmsSiteServiceMock);
         when(cmsSiteServiceMock.getCurrentSite()).thenReturn(currentSiteMock);
         when(currentSiteMock.getUid()).thenReturn(SITE_ID);
     }

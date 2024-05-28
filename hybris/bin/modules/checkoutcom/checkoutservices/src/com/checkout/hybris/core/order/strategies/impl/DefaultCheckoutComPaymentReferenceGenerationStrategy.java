@@ -20,6 +20,6 @@ public class DefaultCheckoutComPaymentReferenceGenerationStrategy implements Che
      */
     @Override
     public String generatePaymentReference(final AbstractOrderModel abstractOrder) {
-        return abstractOrder.getCode().concat("-").concat(String.valueOf(timeService.getCurrentTime().getTime()));
+        return abstractOrder.getCode().concat(String.valueOf(timeService.getCurrentTime().getTime()));
     }
 }

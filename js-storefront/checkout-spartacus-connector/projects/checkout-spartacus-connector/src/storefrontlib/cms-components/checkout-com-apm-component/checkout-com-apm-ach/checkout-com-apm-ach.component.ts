@@ -117,7 +117,7 @@ export class CheckoutComApmAchComponent implements OnInit, OnDestroy {
         takeUntil(this.drop)
       ).subscribe(() => {
         this.open();
-      }, error => console.log(error));
+      }, (error: any) => console.log(error));
     } else if (results.decision === 'REJECT') {
       this.globalMessageService.add(
         { key: 'addressForm.invalidAddress' },
@@ -147,7 +147,7 @@ export class CheckoutComApmAchComponent implements OnInit, OnDestroy {
     this.plaidLinkService
       .createPlaid(
         Object.assign({}, this.config, {
-          onSuccess: (token, metadata) => {
+          onSuccess: (token: string, metadata: AchSuccessMetadata) => {
             this.cd.detectChanges();
             this.onSuccess(token, metadata);
           },
@@ -212,7 +212,7 @@ export class CheckoutComApmAchComponent implements OnInit, OnDestroy {
     this.plaidLinkHandler.exit();
   }
 
-  onSuccess(public_token, metadata): void {
+  onSuccess(public_token: string, metadata: AchSuccessMetadata): void {
     this.plaidSuccessPopup$.next({
       public_token,
       metadata

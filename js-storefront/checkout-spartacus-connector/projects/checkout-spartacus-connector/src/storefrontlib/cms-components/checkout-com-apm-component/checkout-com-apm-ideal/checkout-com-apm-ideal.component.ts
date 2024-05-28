@@ -18,16 +18,12 @@ export class CheckoutComApmIdealComponent implements OnDestroy {
   public submitting$ = new BehaviorSubject<boolean>(false);
   public sameAsShippingAddress: boolean = true;
 
-  idealForm = this.fb.group({
-      bic: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]{8}$|^[a-zA-Z0-9]{11}$/)]]
-    }
-  );
+  idealForm = this.fb.group({});
 
   constructor(protected fb: FormBuilder) {
   }
 
   next() {
-    const {valid, value} = this.idealForm;
     const {invalid: billingInvalid, value: billingValue} = this.billingAddressForm;
 
     if (!this.sameAsShippingAddress && billingInvalid) {
@@ -35,26 +31,21 @@ export class CheckoutComApmIdealComponent implements OnDestroy {
       return;
     }
 
-    if (valid) {
-      const paymentDetails: ApmPaymentDetails = {
-        type: PaymentType.iDeal,
-        bic: value.bic
-      };
+    const paymentDetails: ApmPaymentDetails = {
+      type: PaymentType.iDeal
+    };
 
-      this.submitting$.next(true);
+    this.submitting$.next(true);
 
-      let billingAddress = null;
-      if (!this.sameAsShippingAddress) {
-        billingAddress = billingValue;
-      }
-
-      this.setPaymentDetails.emit({
-        paymentDetails,
-        billingAddress
-      });
-    } else {
-      this.idealForm.markAllAsTouched();
+    let billingAddress = null;
+    if (!this.sameAsShippingAddress) {
+      billingAddress = billingValue;
     }
+
+    this.setPaymentDetails.emit({
+      paymentDetails,
+      billingAddress
+    });
   }
 
   ngOnDestroy(): void {

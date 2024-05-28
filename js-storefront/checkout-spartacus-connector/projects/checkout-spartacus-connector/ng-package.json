@@ -3,5 +3,10 @@
   "dest": "../../dist/checkout-spartacus-connector",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": [
+    "ng2-tooltip-directive",
+    "ngx-plaid-link",
+    "@techiediaries/ngx-qrcode"
+  ]
 }

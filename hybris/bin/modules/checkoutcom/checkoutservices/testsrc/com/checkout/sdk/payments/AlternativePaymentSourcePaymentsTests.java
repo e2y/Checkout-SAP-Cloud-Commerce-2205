@@ -12,7 +12,6 @@ public class AlternativePaymentSourcePaymentsTests extends SandboxTestFixture {
     @Test
     public void can_request_ideal_payment() throws Exception {
         AlternativePaymentSource alternativePaymentSource = new AlternativePaymentSource("ideal");
-        alternativePaymentSource.put("bic", "INGBNL2A");
         alternativePaymentSource.put("description", "ORD 5023 4E89");
 
         requestAlternativePayment(alternativePaymentSource);

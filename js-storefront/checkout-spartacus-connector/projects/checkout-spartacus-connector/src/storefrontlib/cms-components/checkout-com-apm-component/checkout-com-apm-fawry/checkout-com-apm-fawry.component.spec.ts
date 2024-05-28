@@ -6,7 +6,18 @@ import { FormErrorsModule } from '@spartacus/storefront';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaymentType } from '../../../../core/model/ApmData';
 import { timeout } from 'rxjs/operators';
+import { CheckoutComBillingAddressComponent } from '../../checkout-com-billing-address/checkout-com-billing-address.component';
+import { Component, Input, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
+@Component({
+  template: '',
+  selector: 'lib-checkout-com-billing-address',
+})
+class MockLibCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
 describe('CheckoutComApmFawryComponent', () => {
   let component: CheckoutComApmFawryComponent;
   let fixture: ComponentFixture<CheckoutComApmFawryComponent>;
@@ -15,7 +26,7 @@ describe('CheckoutComApmFawryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [I18nTestingModule, FormErrorsModule, ReactiveFormsModule],
-      declarations: [CheckoutComApmFawryComponent]
+      declarations: [CheckoutComApmFawryComponent, MockLibCheckoutComBillingAddressComponent]
     }).compileComponents();
   });
 

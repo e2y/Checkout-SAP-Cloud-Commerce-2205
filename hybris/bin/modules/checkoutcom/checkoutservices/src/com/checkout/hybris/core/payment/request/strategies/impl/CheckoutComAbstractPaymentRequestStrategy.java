@@ -1,20 +1,15 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.enums.PaymentTypes;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.merchantconfiguration.BillingDescriptor;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-
+import com.checkout.sdk.common.Address;
 import com.checkout.sdk.payments.*;
 import com.checkout.sdk.sources.SourceProcessed;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;
 import de.hybris.platform.core.model.user.CustomerModel;
@@ -35,28 +30,19 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
     protected static final String SITE_ID_KEY = "site_id";
     protected static final String UDF1_KEY = "udf1";
 
-    protected CMSSiteService cmsSiteService;
-    protected CheckoutComUrlService checkoutComUrlService;
     protected CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy;
-    protected CheckoutComCurrencyService checkoutComCurrencyService;
-    protected CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService;
     protected CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper;
     protected CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter;
+    protected CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper;
 
-    protected CheckoutComAbstractPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                        final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                        final CheckoutComCurrencyService checkoutComCurrencyService,
+    protected CheckoutComAbstractPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                         final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                        final CMSSiteService cmsSiteService,
-                                                        final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                        final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
-        this.checkoutComUrlService = checkoutComUrlService;
+                                                        final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                        final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper) {
         this.checkoutComPhoneNumberStrategy = checkoutComPhoneNumberStrategy;
-        this.checkoutComCurrencyService = checkoutComCurrencyService;
         this.checkoutComPaymentRequestStrategyMapper = checkoutComPaymentRequestStrategyMapper;
-        this.cmsSiteService = cmsSiteService;
-        this.checkoutComMerchantConfigurationService = checkoutComMerchantConfigurationService;
         this.checkoutComCartModelToPaymentL2AndL3Converter = checkoutComCartModelToPaymentL2AndL3Converter;
+        this.checkoutPaymentRequestServicesWrapper = checkoutPaymentRequestServicesWrapper;
     }
 
     protected CheckoutComAbstractPaymentRequestStrategy() {
@@ -86,7 +72,8 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
         validateParameterNotNull(cart, "Cart model cannot be null");
 
         final String currencyIsoCode = cart.getCurrency().getIsocode();
-        final Long amount = checkoutComCurrencyService.convertAmountIntoPennies(currencyIsoCode, cart.getTotalPrice());
+        final Long amount = checkoutPaymentRequestServicesWrapper.checkoutComCurrencyService.
+            convertAmountIntoPennies(currencyIsoCode, cart.getTotalPrice());
 
         final PaymentRequest<RequestSource> request = getRequestSourcePaymentRequest(cart, currencyIsoCode, amount);
 
@@ -124,7 +111,7 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
      */
     protected void populateDynamicBillingDescriptor(final PaymentRequest<RequestSource> request) {
         final BillingDescriptor billingDescriptorMerchantConfiguration =
-                checkoutComMerchantConfigurationService.getBillingDescriptor();
+            checkoutPaymentRequestServicesWrapper.checkoutComMerchantConfigurationService.getBillingDescriptor();
         final Boolean includeBillingDescriptor = billingDescriptorMerchantConfiguration.getIncludeBillingDescriptor();
         if (Boolean.TRUE.equals(includeBillingDescriptor)) {
             final com.checkout.sdk.payments.BillingDescriptor billingDescriptor =
@@ -150,8 +137,12 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
      * @param request the request to populate
      */
     protected void populateRedirectUrls(final PaymentRequest<RequestSource> request) {
-        request.setSuccessUrl(checkoutComUrlService.getFullUrl(cmsSiteService.getCurrentSite().getCheckoutComSuccessRedirectUrl(), true));
-        request.setFailureUrl(checkoutComUrlService.getFullUrl(cmsSiteService.getCurrentSite().getCheckoutComFailureRedirectUrl(), true));
+        request.setSuccessUrl(checkoutPaymentRequestServicesWrapper.checkoutComUrlService
+            .getFullUrl(checkoutPaymentRequestServicesWrapper.cmsSiteService
+            .getCurrentSite().getCheckoutComSuccessRedirectUrl(), true));
+        request.setFailureUrl(checkoutPaymentRequestServicesWrapper.checkoutComUrlService
+            .getFullUrl(checkoutPaymentRequestServicesWrapper.cmsSiteService
+            .getCurrentSite().getCheckoutComFailureRedirectUrl(), true));
     }
 
     /**
@@ -173,7 +164,7 @@ public abstract class CheckoutComAbstractPaymentRequestStrategy implements Check
      */
     protected Map<String, Object> createGenericMetadata() {
         final Map<String, Object> metadataMap = new HashMap<>();
-        metadataMap.put(SITE_ID_KEY, cmsSiteService.getCurrentSite().getUid());
+        metadataMap.put(SITE_ID_KEY, checkoutPaymentRequestServicesWrapper.cmsSiteService.getCurrentSite().getUid());
         return metadataMap;
     }
 

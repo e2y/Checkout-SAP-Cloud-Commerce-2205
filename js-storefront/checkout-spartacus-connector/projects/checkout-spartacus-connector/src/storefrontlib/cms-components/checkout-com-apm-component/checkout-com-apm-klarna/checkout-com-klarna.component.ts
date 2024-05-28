@@ -1,15 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CheckoutComApmService } from '../../../../core/services/checkout-com-apm.service';
 import { BehaviorSubject, EMPTY, Subject, throwError } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -113,7 +102,7 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
     this.drop.next();
   }
 
-  public authorize() {
+  public authorize(): void {
     if (!this.sameAsShippingAddress && !this.billingAddressForm.valid) {
       makeFormErrorsVisible(this.billingAddressForm);
       return;
@@ -127,17 +116,17 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const k = this.windowRef.nativeWindow['Klarna']?.Payments; // tslint:disable-line
+      const k = (this.windowRef.nativeWindow as { [key: string]: any })['Klarna']?.Payments;
       if (!k) {
         console.error('Klarna is not set');
-        return false;
+        return;
       }
-      let billingAddress = null;
+      let billingAddress: Address = null;
       if (!this.sameAsShippingAddress) {
         billingAddress = this.billingAddressForm.value;
       }
       this.authorizing$.next(true);
-      k.authorize({payment_method_category: category.code}, this.getKlarnaCountryParams(), (response: KlarnaAuthResponse) => {
+      k.authorize({ payment_method_category: category.code }, this.getKlarnaCountryParams(), (response: KlarnaAuthResponse): void => {
         this.authorizing$.next(false);
         if (response != null && response.approved === true && response.authorization_token) {
           this.setPaymentDetails.next({
@@ -182,7 +171,7 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error(error);
-        this.msgSrv.add({key: 'paymentForm.klarna.initializationFailed'}, GlobalMessageType.MSG_TYPE_ERROR);
+        this.msgSrv.add({ key: 'paymentForm.klarna.initializationFailed' }, GlobalMessageType.MSG_TYPE_ERROR);
       }
     });
   }
@@ -192,7 +181,7 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
       filter(values => values?.country?.isocode), distinctUntilChanged(), takeUntil(this.drop)
     ).subscribe((values) => {
       this.currentCountryCode.next(values?.country?.isocode);
-    }, err => console.error('listenForCountrySelection with errors', {err}));
+    }, err => console.error('listenForCountrySelection with errors', { err }));
   }
 
   private klarnaIsReady() {
@@ -203,7 +192,7 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
           return throwError('Shipping address is required');
         }
         return this.checkoutComPaymentService.updatePaymentAddress(shippingAddress)
-                   .pipe(tap(() => this.billingAddressHasBeenSet = true));
+          .pipe(tap(() => this.billingAddressHasBeenSet = true));
       }),
       take(1),
     ).pipe(finalize(() => this.initializing$.next(false)), takeUntil(this.drop)).subscribe({
@@ -211,29 +200,30 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
         if (address?.country?.isocode) {
           this.currentCountryCode.next(address.country.isocode);
         } else {
-          this.msgSrv.add({key: 'paymentForm.klarna.countryIsRequired'}, GlobalMessageType.MSG_TYPE_ERROR);
+          this.msgSrv.add({ key: 'paymentForm.klarna.countryIsRequired' }, GlobalMessageType.MSG_TYPE_ERROR);
         }
-      }, error: () => {
-        this.msgSrv.add({key: 'paymentForm.klarna.countryIsRequired'}, GlobalMessageType.MSG_TYPE_ERROR);
+      },
+      error: () => {
+        this.msgSrv.add({ key: 'paymentForm.klarna.countryIsRequired' }, GlobalMessageType.MSG_TYPE_ERROR);
       }
     });
   }
 
   private initKlarna(params: KlarnaInitParams) {
     try {
-      const k = this.windowRef.nativeWindow['Klarna']?.Payments; // tslint:disable-line
+      const k = (this.windowRef.nativeWindow as { [key: string]: any })['Klarna']?.Payments;
       if (!k) {
         console.error('Klarna is not set');
-        return false;
+        return;
       }
-      k.init({client_token: params.clientToken});
+      k.init({ client_token: params.clientToken });
     } catch (e) {
       console.error('CheckoutComKlarnaComponent::initKlarna', e);
     }
   }
 
   private addScript() {
-    if (!this.windowRef.nativeWindow['Klarna']) {  // tslint:disable-line
+    if (!(this.windowRef.nativeWindow as { [key: string]: any })['Klarna'] as any) {
       Object.defineProperty(this.windowRef.nativeWindow, 'klarnaAsyncCallback', {
         value: () => {
           this.ngZone.run(() => {
@@ -274,14 +264,14 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
       if (this.widget?.nativeElement) {
         this.loadWidget(category, this.widget.nativeElement);
       }
-    }, err => console.error('listenForCategorySelection with errors', {err}));
+    }, err => console.error('listenForCategorySelection with errors', { err }));
   }
 
   private getKlarnaCountryParams(): { purchase_country: string } {
     if (!this.sameAsShippingAddress) {
       const ctrlCountryIsoCode = this.billingAddressForm.get('country.isocode');
       if (ctrlCountryIsoCode && ctrlCountryIsoCode.value) {
-        return {purchase_country: ctrlCountryIsoCode.value};
+        return { purchase_country: ctrlCountryIsoCode.value };
       }
     }
     return null;
@@ -289,13 +279,16 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
 
   private loadWidget(category: DisplayKlarnaPaymentMethodCategory, container: HTMLElement | string) {
     try {
-      const k = this.windowRef.nativeWindow['Klarna']?.Payments; // tslint:disable-line
+      const k: any = (this.windowRef.nativeWindow as { [key: string]: any })['Klarna']?.Payments;
       if (!k) {
         console.error('Klarna is not set');
-        return false;
+        return;
       }
       this.loadingWidget$.next(true);
-      k.load({container, payment_method_category: category.code}, this.getKlarnaCountryParams(), (response: KlarnaLoadResponse) => {
+      k.load({
+        container,
+        payment_method_category: category.code
+      }, this.getKlarnaCountryParams(), (response: KlarnaLoadResponse) => {
         this.loadingWidget$.next(false);
         if (response != null && typeof response === 'object') {
           if (response.hasOwnProperty('show_form')) {
@@ -315,12 +308,15 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
   }
 
   private renderCategories(paymentMethodCategories: KlarnaPaymentMethodCategory[]) {
-    const categories = [];
+    const categories: any[] = [];
     if (paymentMethodCategories?.length) {
-      paymentMethodCategories.forEach((category) => {
+      paymentMethodCategories.forEach((category: KlarnaPaymentMethodCategory): void => {
         const key = this.getTranslationKeyForCategory(category);
         if (key) {
-          categories.push({code: category, key});
+          categories.push({
+            code: category,
+            key
+          });
         }
       });
     }
