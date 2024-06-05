@@ -34,8 +34,8 @@ import {
 export class CheckoutComApplepayService {
   private deliveryAddress$: Subscription;
   private deliveryMethod$: Subscription;
-  protected cartId;
-  protected userId;
+  protected cartId: string;
+  protected userId: string;
 
   constructor(
     protected checkoutComStore: Store<StateWithCheckoutCom>,

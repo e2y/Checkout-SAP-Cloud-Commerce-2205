@@ -14,7 +14,7 @@ public abstract class CheckoutComAbstractUpdatePaymentInfoStrategy implements Ch
 
     protected CartService cartService;
 
-    public CheckoutComAbstractUpdatePaymentInfoStrategy(final CartService cartService) {
+    protected CheckoutComAbstractUpdatePaymentInfoStrategy(final CartService cartService) {
         this.cartService = cartService;
     }
 

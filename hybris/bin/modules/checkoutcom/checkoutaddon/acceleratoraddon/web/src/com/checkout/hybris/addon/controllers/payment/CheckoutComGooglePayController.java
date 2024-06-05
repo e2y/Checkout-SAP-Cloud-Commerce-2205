@@ -76,7 +76,9 @@ public class CheckoutComGooglePayController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     @ApiOperation(nickname = "getGooglePayDeliveryInfo", value = "Creates a delivery address and delivery method for the cart.")
-    public GooglePayPaymentDataRequestUpdate getGooglePayDeliveryInfo(final HttpServletRequest request, final HttpServletResponse response, @ApiParam(required = true) @RequestBody final GooglePayIntermediatePaymentData googlePayIntermediatePaymentData) throws DuplicateUidException {
+    public GooglePayPaymentDataRequestUpdate getGooglePayDeliveryInfo(final HttpServletRequest request,
+                                                                      final HttpServletResponse response,
+                                                                      @ApiParam(required = true) @RequestBody final GooglePayIntermediatePaymentData googlePayIntermediatePaymentData) throws DuplicateUidException {
         if (userFacade.isAnonymousUser()) {
             checkoutComCustomerFacade.createGooglePayExpressCheckoutGuestUserForAnonymousCheckoutAndSetItOnSession();
             guidCookieStrategy.setCookie(request, response);

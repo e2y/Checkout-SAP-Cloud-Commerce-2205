@@ -6,15 +6,10 @@ import de.hybris.platform.servicelayer.model.ModelService
 import de.hybris.platform.site.BaseSiteService
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.RESTClient
 import org.junit.Ignore
 
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.URLENC
-import static groovyx.net.http.ContentType.XML
-import static groovyx.net.http.ContentType.XML
-import static groovyx.net.http.ContentType.XML
 import static org.apache.http.HttpStatus.SC_CREATED
 
 @Ignore
@@ -34,6 +29,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
     protected static final AT_BILLING_ADDRESS_JSON = "{\"titleCode\": \"${CUSTOMER_TITLE_CODE}\", \"town\": \"${CUSTOMER_ADDRESS_TOWN}\", \"line1\": \"${CUSTOMER_ADDRESS_LINE1}\", \"postalCode\": \"${CUSTOMER_ADDRESS_POSTAL_CODE}\", \"country\": { \"isocode\": \"AT\" }, \"firstName\": \"${CUSTOMER_FIRST_NAME}\", \"lastName\": \"${CUSTOMER_LAST_NAME}\"}"
     protected static final NL_BILLING_ADDRESS_JSON = "{\"titleCode\": \"${CUSTOMER_TITLE_CODE}\", \"town\": \"${CUSTOMER_ADDRESS_TOWN}\", \"line1\": \"${CUSTOMER_ADDRESS_LINE1}\", \"postalCode\": \"${CUSTOMER_ADDRESS_POSTAL_CODE}\", \"country\": { \"isocode\": \"NL\" }, \"firstName\": \"${CUSTOMER_FIRST_NAME}\", \"lastName\": \"${CUSTOMER_LAST_NAME}\"}"
     protected static final MX_BILLING_ADDRESS_JSON = "{\"titleCode\": \"${CUSTOMER_TITLE_CODE}\", \"town\": \"${CUSTOMER_ADDRESS_TOWN}\", \"line1\": \"${CUSTOMER_ADDRESS_LINE1}\", \"postalCode\": \"${CUSTOMER_ADDRESS_POSTAL_CODE}\", \"country\": { \"isocode\": \"MX\" }, \"firstName\": \"${CUSTOMER_FIRST_NAME}\", \"lastName\": \"${CUSTOMER_LAST_NAME}\"}"
+    protected static final NZ_BILLING_ADDRESS_JSON = "{\"titleCode\": \"${CUSTOMER_TITLE_CODE}\", \"town\": \"${CUSTOMER_ADDRESS_TOWN}\", \"line1\": \"${CUSTOMER_ADDRESS_LINE1}\", \"postalCode\": \"${CUSTOMER_ADDRESS_POSTAL_CODE}\", \"country\": { \"isocode\": \"NZ\" }, \"firstName\": \"${CUSTOMER_FIRST_NAME}\", \"lastName\": \"${CUSTOMER_LAST_NAME}\"}"
     protected static final INVALID_ADDRESS_JSON = "{\"titleCode\": \"${CUSTOMER_TITLE_CODE}\", \"town\": \"${CUSTOMER_ADDRESS_TOWN}\", \"line1\": \"${CUSTOMER_ADDRESS_LINE1}\", \"postalCode\": \"${CUSTOMER_ADDRESS_POSTAL_CODE}\",  \"firstName\": \"${CUSTOMER_FIRST_NAME}\", \"lastName\": \"${CUSTOMER_LAST_NAME}\"}"
     protected static final INVALID_ADDRESS_XML = "<address><titleCode>${CUSTOMER_TITLE_CODE}</titleCode><town>${CUSTOMER_ADDRESS_TOWN}</town><line1>${CUSTOMER_ADDRESS_LINE1}</line1><postalCode>${CUSTOMER_ADDRESS_POSTAL_CODE}</postalCode><firstName>${CUSTOMER_FIRST_NAME}</firstName><lastName>${CUSTOMER_LAST_NAME}</lastName></address>"
 
@@ -95,12 +91,8 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
     protected static final String DEFAULT_CHECKOUT_QPAY_PAYMENT_JSON = "{\"type\" : \"QPAY\"}"
     protected static final String DEFAULT_CHECKOUT_QPAY_PAYMENT_XML = "<paymentDetails><type>QPAY</type></paymentDetails>"
 
-    protected static final String DEFAULT_CHECKOUT_IDEAL_PAYMENT_JSON = "{\"bic\" : \"INGBNL2A\", \"type\" : \"IDEAL\"}"
-    protected static final String DEFAULT_CHECKOUT_IDEAL_PAYMENT_XML = "<paymentDetails><bic>ORD50234E89</bic><type>IDEAL</type></paymentDetails>"
-    protected static final String BAD_CHECKOUT_IDEAL_PAYMENT_JSON = "{\"type\" : \"IDEAL\"}"
-    protected static final String BAD_CHECKOUT_IDEAL_PAYMENT_XML = "<paymentDetails><type>IDEAL</type></paymentDetails>"
-    protected static final String WRONG_BIC_CHECKOUT_IDEAL_PAYMENT_JSON = "{\"bic\" : \"ORD50/E89\", \"type\" : \"IDEAL\"}"
-    protected static final String WRONG_BIC_CHECKOUT_IDEAL_PAYMENT_XML = "<paymentDetails><bic>ORD50/E89</bic><type>IDEAL</type></paymentDetails>"
+    protected static final String DEFAULT_CHECKOUT_IDEAL_PAYMENT_JSON = "{\"type\" : \"IDEAL\"}"
+    protected static final String DEFAULT_CHECKOUT_IDEAL_PAYMENT_XML = "<paymentDetails><type>IDEAL</type></paymentDetails>"
 
     protected static final String DEFAULT_CHECKOUT_KLARNA_PAYMENT_JSON = "{\"authorizationToken\" : \"ORD50234E89\", \"type\" : \"KLARNA\"}"
     protected static final String DEFAULT_CHECKOUT_KLARNA_PAYMENT_XML = "<paymentDetails><authorizationToken>ORD50234E89</authorizationToken><type>KLARNA</type></paymentDetails>"
@@ -153,6 +145,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
     protected static final String AUD_CURRENCY_CODE = 'AUD'
     protected static final String USD_CURRENCY_CODE = 'USD'
     protected static final String MXN_CURRENCY_CODE = 'MXN'
+    protected static final String NZD_CURRENCY_CODE = 'NZD'
 
     protected static final String INVALID_ADDRESS_ID = '9999999999999'
 
@@ -183,7 +176,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
      * @param paymentTokenInfo Request data to retrieve the payment token
      * @return payment info
      */
-    protected createPaymentInfo(RESTClient client, customer, cartId, paymentInfo = DEFAULT_CHECKOUT_CC_PAYMENT_JSON, paymentTokenInfo = DEFAULT_GET_CC_TOKEN_JSON) {
+    protected createPaymentInfo(GroovyObject client, customer, cartId, paymentInfo = DEFAULT_CHECKOUT_CC_PAYMENT_JSON, paymentTokenInfo = DEFAULT_GET_CC_TOKEN_JSON) {
         def paymentToken = getPaymentToken(paymentTokenInfo)
         def paymentInfoRequest = replaceTokenForPaymentInfoRequest(paymentInfo, paymentToken)
         def response = client.post(
@@ -205,7 +198,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
      * @param paymentInfoRequest Request data with the payment info to save
      * @return payment info
      */
-    protected createAPMPaymentInfo(RESTClient client, customer, cartId, paymentInfoRequest) {
+    protected createAPMPaymentInfo(GroovyObject client, customer, cartId, paymentInfoRequest) {
         def response = client.post(
                 path: getBasePathWithSite() + '/users/' + customer.id + '/carts/' + cartId + '/checkoutcomapmpaymentdetails',
                 body: paymentInfoRequest,
@@ -235,7 +228,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
      * @param format format to be used
      * @return created customer and payment info, customer at position [0], info at position [1], cart at position [2]
      */
-    protected createCustomerWithPaymentInfo(RESTClient client, format = JSON) {
+    protected createCustomerWithPaymentInfo(GroovyObject client, format = JSON) {
         def customer = registerAndAuthorizeCustomer(client, format)
         def cart = createCart(client, customer, format)
         createBillingAddress(customer.id, cart.code)
@@ -248,7 +241,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
      * @return the payment token
      */
     def getPaymentToken(paymentInfo = DEFAULT_GET_CC_TOKEN_JSON) {
-        def client = new RESTClient(getConfigurationProperty('checkoutocctests.checkout.sandbox.url'))
+        def client = createRestClient(getConfigurationProperty('checkoutocctests.checkout.sandbox.url'))
         def response = client.post(
                 path: getConfigurationProperty('checkoutocctests.checkout.sandbox.tokens.path'),
                 body: paymentInfo,
@@ -401,7 +394,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
         return guestUid;
     }
 
-    protected prepareCartForGuestOrder(RESTClient client, userGuid, format) {
+    protected prepareCartForGuestOrder(GroovyObject client, userGuid, format) {
         authorizeClient(client)
         def anonymous = ANONYMOUS_USER
         def cart = createAnonymousCart(client, format)

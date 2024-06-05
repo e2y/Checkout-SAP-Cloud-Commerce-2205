@@ -48,13 +48,10 @@
     <bean id="defaultCheckoutComAbstractPaymentRequestStrategy"
           class="com.checkout.hybris.core.payment.request.strategies.impl.CheckoutComAbstractPaymentRequestStrategy"
           abstract="true">
-        <constructor-arg ref="checkoutComUrlService"/>
         <constructor-arg ref="checkoutComPhoneNumberStrategy"/>
-        <constructor-arg ref="checkoutComCurrencyService"/>
         <constructor-arg ref="checkoutComPaymentRequestStrategyMapper"/>
-        <constructor-arg ref="cmsSiteService"/>
-        <constructor-arg ref="checkoutComMerchantConfigurationService"/>
         <constructor-arg ref="checkoutComCartModelToPaymentL2AndL3Converter"/>
+        <constructor-arg ref="checkoutPaymentRequestServicesWrapper"/>
     </bean>
 
     <alias name="defaultCheckoutComCardPaymentRequestStrategy" alias="checkoutComCardPaymentRequestStrategy"/>
@@ -166,9 +163,7 @@
     <alias name="defaultCheckoutComSepaPaymentRequestStrategy" alias="checkoutComSepaPaymentRequestStrategy"/>
     <bean id="defaultCheckoutComSepaPaymentRequestStrategy"
           class="com.checkout.hybris.core.payment.request.strategies.impl.CheckoutComSepaPaymentRequestStrategy"
-          parent="checkoutComAbstractApmPaymentRequestStrategy">
-        <constructor-arg name="checkoutComPaymentIntegrationService" ref="checkoutComPaymentIntegrationService"/>
-    </bean>
+          parent="checkoutComAbstractApmPaymentRequestStrategy"/>
 
     <alias name="defaultCheckoutComApplePayPaymentRequestStrategy" alias="checkoutComApplePayPaymentRequestStrategy"/>
     <bean id="defaultCheckoutComApplePayPaymentRequestStrategy"
@@ -272,6 +267,13 @@
     <bean id="defaultCheckoutComMadaPaymentInfoStrategy"
           class="com.checkout.hybris.core.payment.details.strategies.impl.CheckoutComMadaUpdatePaymentInfoStrategy"
           parent="checkoutComCardPaymentInfoStrategy"/>
+
+    <alias name="defaultCheckoutComIdealPaymentInfoStrategy" alias="checkoutComIdealPaymentInfoStrategy"/>
+    <bean id="defaultCheckoutComIdealPaymentInfoStrategy"
+          class="com.checkout.hybris.core.payment.details.strategies.impl.CheckoutComIdealUpdatePaymentInfoStrategy"
+          parent="checkoutComCardPaymentInfoStrategy">
+        <constructor-arg ref="modelService"/>
+    </bean>
 
     <alias name="defaultCheckoutComKlarnaDiscountAmountStrategy" alias="checkoutComKlarnaDiscountAmountStrategy"/>
     <bean id="defaultCheckoutComKlarnaDiscountAmountStrategy"

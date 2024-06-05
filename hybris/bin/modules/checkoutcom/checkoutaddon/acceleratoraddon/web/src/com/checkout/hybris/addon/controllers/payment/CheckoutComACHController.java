@@ -60,18 +60,18 @@ public class CheckoutComACHController extends CheckoutComSummaryCheckoutStepCont
     @RequireHardLogIn
     @PostMapping(value = "/item/public_token/exchange", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public RedirectObject itemPublicTokenExchange(
-        @ApiParam(required = true)
-        @RequestBody final PlaidLinkCreationResponseStorefrontDTO plaidLinkCreationResponseStorefrontDTO,
-        final RedirectAttributes redirectAttributes,
-        final Model model) throws IOException, CMSItemNotFoundException, CustomerConsentException {
+            @ApiParam(required = true)
+            @RequestBody final PlaidLinkCreationResponseStorefrontDTO plaidLinkCreationResponseStorefrontDTO,
+            final RedirectAttributes redirectAttributes,
+            final Model model) throws IOException, CMSItemNotFoundException, CustomerConsentException {
         final PlaidLinkCreationResponse plaidLinkCreationResponse =
-            plaidLinkCreationResponseStorefrontDTOPlaidLinkCreationResponseConverter.convert(
-                plaidLinkCreationResponseStorefrontDTO);
+                plaidLinkCreationResponseStorefrontDTOPlaidLinkCreationResponseConverter.convert(
+                        plaidLinkCreationResponseStorefrontDTO);
         final AchBankInfoDetailsData bankAccountDetailsData = checkoutComPlaidLinkFacade.getBankAccountDetailsData(
-            plaidLinkCreationResponse);
+                plaidLinkCreationResponse);
         checkoutComAchFacade.setPaymentInfoAchToCart(bankAccountDetailsData);
         checkoutComACHConsentFacade.createCheckoutComACHConsent(bankAccountDetailsData,
-                                                                plaidLinkCreationResponseStorefrontDTO.getCustomerConsents());
+                plaidLinkCreationResponseStorefrontDTO.getCustomerConsents());
         final String url = authorisePlaceOrderAndRedirectToResultPage(model, redirectAttributes);
 
         return createRedirectObjectFrom(url, redirectAttributes);
@@ -88,20 +88,20 @@ public class CheckoutComACHController extends CheckoutComSummaryCheckoutStepCont
         final RedirectObject redirectObject = new RedirectObject();
         redirectObject.setUrl(redirectUrl);
         redirectObject.setErrors(
-            translateFlashAttributes((Map<String, List<GlobalMessage>>) redirectAttributes.getFlashAttributes()));
+                translateFlashAttributes((Map<String, List<GlobalMessage>>) redirectAttributes.getFlashAttributes()));
 
         return redirectObject;
     }
 
     private Map<String, List<String>> translateFlashAttributes(final Map<String, List<GlobalMessage>> flashAttributes) {
         return flashAttributes.entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue()))
-                              .map(entryPair -> Pair.of(entryPair.getKey(), entryPair.getValue().stream()
-                                                                                     .map(
-                                                                                         message -> getMessageSource().getMessage(
-                                                                                             message.getCode(), null,
-                                                                                             getI18nService().getCurrentLocale()))
-                                                                                     .collect(Collectors.toList())))
-                              .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+                .map(entryPair -> Pair.of(entryPair.getKey(), entryPair.getValue().stream()
+                        .map(
+                                message -> getMessageSource().getMessage(
+                                        message.getCode(), null,
+                                        getI18nService().getCurrentLocale()))
+                        .collect(Collectors.toList())))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
 }

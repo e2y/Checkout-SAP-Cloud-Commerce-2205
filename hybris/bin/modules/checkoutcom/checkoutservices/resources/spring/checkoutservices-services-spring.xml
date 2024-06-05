@@ -22,6 +22,16 @@
         <constructor-arg ref="orderDao" name="checkoutComOrderDao"/>
     </bean>
 
+    <alias name="defaultCheckoutPaymentRequestServicesWrapper" alias="checkoutPaymentRequestServicesWrapper"/>
+    <bean id="defaultCheckoutPaymentRequestServicesWrapper"
+          class="com.checkout.hybris.core.payment.request.strategies.impl.CheckoutPaymentRequestServicesWrapper">
+        <constructor-arg ref="checkoutComUrlService"/>
+        <constructor-arg ref="checkoutComMerchantConfigurationService"/>
+        <constructor-arg ref="checkoutComCurrencyService"/>
+        <constructor-arg ref="cmsSiteService"/>
+        <constructor-arg ref="checkoutComPaymentIntegrationService"/>
+    </bean>
+
     <alias name="defaultCheckoutComMerchantConfigurationService" alias="checkoutComMerchantConfigurationService"/>
     <bean id="defaultCheckoutComMerchantConfigurationService"
           class="com.checkout.hybris.core.merchant.services.impl.DefaultCheckoutComMerchantConfigurationService">
@@ -188,7 +198,7 @@
     <bean id="idealAPMConfigurationSetting"
           class="com.checkout.hybris.core.apm.configuration.CheckoutComAPMConfigurationSettings">
         <property name="isApmRedirect" value="true"/>
-        <property name="isApmUserDataRequired" value="true"/>
+        <property name="isApmUserDataRequired" value="false"/>
     </bean>
 
     <bean id="klarnaAPMConfigurationSetting"

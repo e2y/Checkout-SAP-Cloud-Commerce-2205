@@ -26,18 +26,13 @@ def pl = platform {
         extName 'commerceservicesbackoffice'
         extName 'solrfacetsearchbackoffice'
         extName 'solrserver'
-
-        extName 'yacceleratorbackoffice'
-        extName 'yacceleratorinitialdata'
+        
         extName 'yacceleratorstorefront'
-        extName 'ycommercewebservices'
-        extName 'ycommercewebservicestest'
 
         extName 'electronicsstore'
         extName 'apparelstore'
 
         extName 'captchaaddon'
-        extName 'acceleratorwebservicesaddon'
         extName 'commerceorgsamplesaddon'
         extName 'orderselfserviceaddon'
 
@@ -70,7 +65,6 @@ def pl = platform {
         extName 'smarteditaddon'
         extName 'cmssmartedit'
         extName 'cmsbackoffice'
-        extName 'cmsoccaddon'
 
         extName 'consignmenttrackingaddon'
         extName 'consignmenttrackingmock'
@@ -109,9 +103,6 @@ def pl = platform {
         extName 'xyformsweb'
         extName 'platformbackoffice'
         extName 'orbeonweb'
-        extName 'consignmenttrackingoccaddon'
-        extName 'customerinterestsoccaddon'
-        extName 'notificationoccaddon'
 
         extName 'kymaintegrationbackoffice'
 
@@ -119,7 +110,6 @@ def pl = platform {
         extName 'outboundservices'
         extName 'outboundsync'
         extName 'odata2webservices'
-        extName 'odata2webservicesfeaturetests'
         extName 'integrationbackoffice'
         extName 'integrationmonitoringbackoffice'
         extName 'outboundsyncbackoffice'
@@ -151,11 +141,6 @@ def pl = platform {
                     'personalizationyprofilesampledataaddon', 'personalizationaddon', 'profiletagaddon', 'merchandisingaddon', 'merchandisingstorefrontsampledataaddon',
                     'checkoutsampledataaddon', 'checkoutaddon')
             template 'yacceleratorstorefront'
-        }
-
-        forStoreFronts('ycommercewebservices') {
-            names 'acceleratorwebservicesaddon', 'consignmenttrackingoccaddon', 'customerinterestsoccaddon', 'notificationoccaddon', 'cmsoccaddon'
-            template 'ycommercewebservices'
         }
     }
 }

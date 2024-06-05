@@ -1,12 +1,8 @@
 package com.checkout.hybris.occ.controllers;
 
-import com.checkout.dto.order.ApplePayValidateMerchantRequestWsDTO;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.resolvers.CheckoutComPaymentTypeResolver;
-import com.checkout.hybris.facades.accelerator.CheckoutComCheckoutFlowFacade;
-import com.checkout.hybris.facades.accelerator.impl.CheckoutComAbstractCheckoutFlowFacadeDecorator;
 import com.checkout.hybris.facades.address.CheckoutComAddressFacade;
-import com.checkout.hybris.facades.beans.ApplePayValidateMerchantRequestData;
 import com.checkout.hybris.facades.payment.CheckoutComPaymentInfoFacade;
 import com.checkout.hybris.occ.converters.CheckoutComPaymentDetailsDTOReverseConverter;
 import com.checkout.hybris.occ.exceptions.NoCheckoutCartException;
@@ -14,12 +10,10 @@ import de.hybris.platform.commercefacades.order.CartFacade;
 import de.hybris.platform.commercefacades.order.CheckoutFacade;
 import de.hybris.platform.commercefacades.order.data.CCPaymentInfoData;
 import de.hybris.platform.commercefacades.order.data.CartData;
-import de.hybris.platform.commercefacades.order.data.DeliveryModeData;
 import de.hybris.platform.commercefacades.user.UserFacade;
 import de.hybris.platform.commercefacades.user.data.AddressData;
 import de.hybris.platform.commerceservices.strategies.CheckoutCustomerStrategy;
 import de.hybris.platform.commercewebservicescommons.annotation.SiteChannelRestriction;
-import de.hybris.platform.commercewebservicescommons.dto.order.DeliveryModeWsDTO;
 import de.hybris.platform.commercewebservicescommons.dto.order.PaymentDetailsWsDTO;
 import de.hybris.platform.commercewebservicescommons.dto.user.AddressWsDTO;
 import de.hybris.platform.commercewebservicescommons.errors.exceptions.CartAddressException;
@@ -31,9 +25,9 @@ import de.hybris.platform.webservicescommons.mapping.FieldSetLevelHelper;
 import de.hybris.platform.webservicescommons.swagger.ApiBaseSiteIdUserIdAndCartIdParam;
 import de.hybris.platform.webservicescommons.swagger.ApiFieldsParam;
 import de.hybris.platform.webservicescommons.util.YSanitizer;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -44,7 +38,6 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/{baseSiteId}/users/{userId}/carts")
@@ -88,11 +81,14 @@ public class CheckoutComCartsController {
     @ResponseBody
     @ApiOperation(nickname = "createCartPaymentDetails", value = "Defines and assigns details of a new credit card payment to the cart.", notes = "Defines the details of a new credit card, and assigns this payment option to the cart.")
     @ApiBaseSiteIdUserIdAndCartIdParam
-    public PaymentDetailsWsDTO createCartPaymentDetails(@ApiParam(value =
-            "Request body parameter that contains details such as the name on the card (accountHolderName), the card number (cardNumber), the card type (cardType.code), "
-                    + "the month of the expiry date (expiryMonth), the year of the expiry date (expiryYear), whether the payment details should be saved (saved), whether the payment details "
-                    + "should be set as default (defaultPaymentInfo), and the billing address (billingAddress.firstName, billingAddress.lastName, billingAddress.titleCode, billingAddress.country.isocode, "
-                    + "billingAddress.line1, billingAddress.line2, billingAddress.town, billingAddress.postalCode, billingAddress.region.isocode)\n\nThe DTO is in XML or .json format.", required = true) @RequestBody final PaymentDetailsWsDTO paymentDetails,
+    public PaymentDetailsWsDTO createCartPaymentDetails(@ApiParam(value = """
+            Request body parameter that contains details such as the name on the card (accountHolderName), the card number (cardNumber), the card type (cardType.code),\s
+            the month of the expiry date (expiryMonth), the year of the expiry date (expiryYear), whether the payment details should be saved (saved), whether the payment details\s
+            should be set as default (defaultPaymentInfo), and the billing address (billingAddress.firstName, billingAddress.lastName, billingAddress.titleCode, billingAddress.country.isocode,\s
+            billingAddress.line1, billingAddress.line2, billingAddress.town, billingAddress.postalCode, billingAddress.region.isocode)
+
+            The DTO is in XML or .json format.
+            """, required = true) @RequestBody final PaymentDetailsWsDTO paymentDetails,
                                                         @ApiFieldsParam @RequestParam(defaultValue = DEFAULT_FIELD_SET) final String fields) throws NoCheckoutCartException {
         validatePayment(paymentDetails);
 
@@ -115,11 +111,14 @@ public class CheckoutComCartsController {
     @ApiOperation(nickname = "createCartPaymentDetails", value = "Defines and assigns details of a new APM payment to the cart.", notes = "Defines the details of a new APM, and assigns this payment option to the cart.")
     @ApiBaseSiteIdUserIdAndCartIdParam
     public void createCartAPMPaymentDetails(@ApiParam(value =
-            "Request body parameter that contains details such as the name on the card (accountHolderName), the card number (cardNumber), the card type (cardType.code), "
-                    + "the month of the expiry date (expiryMonth), the year of the expiry date (expiryYear), whether the payment details should be saved (saved), whether the payment details "
-                    + "should be set as default (defaultPaymentInfo), and the billing address (billingAddress.firstName, billingAddress.lastName, billingAddress.titleCode, billingAddress.country.isocode, "
-                    + "billingAddress.line1, billingAddress.line2, billingAddress.town, billingAddress.postalCode, billingAddress.region.isocode)\n\nThe DTO is in XML or .json format.",
-            required = true) @RequestBody final PaymentDetailsWsDTO paymentDetails) throws NoCheckoutCartException {
+            """
+                    Request body parameter that contains details such as the name on the card (accountHolderName), the card number (cardNumber), the card type (cardType.code),\s
+                    the month of the expiry date (expiryMonth), the year of the expiry date (expiryYear), whether the payment details should be saved (saved), whether the payment details\s
+                    should be set as default (defaultPaymentInfo), and the billing address (billingAddress.firstName, billingAddress.lastName, billingAddress.titleCode, billingAddress.country.isocode,\s
+                    billingAddress.line1, billingAddress.line2, billingAddress.town, billingAddress.postalCode, billingAddress.region.isocode)
+
+                    The DTO is in XML or .json format.
+                    """, required = true) @RequestBody final PaymentDetailsWsDTO paymentDetails) throws NoCheckoutCartException {
         validatePayment(paymentDetails);
 
         final CheckoutComPaymentType paymentType = checkoutComPaymentTypeResolver.resolvePaymentMethod(paymentDetails.getType());
@@ -151,16 +150,20 @@ public class CheckoutComCartsController {
     }
 
     @Secured({"ROLE_CUSTOMERGROUP", "ROLE_CUSTOMERMANAGERGROUP", "ROLE_GUEST", "ROLE_TRUSTED_CLIENT"})
-    @RequestMapping(value = "/{cartId}/addresses/checkoutcomdeliverypayment", method = RequestMethod.POST, consumes = {
+    @PostMapping(value = "/{cartId}/addresses/checkoutcomdeliverypayment", consumes = {
             MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     @ApiOperation(nickname = "createCartDeliveryAndBillingAddress", value = "Creates a delivery and a payment address for the cart.", notes = "Creates an address and assigns it to the cart as the delivery address and the payment address.")
     @ApiBaseSiteIdUserIdAndCartIdParam
     public AddressWsDTO createCartDeliveryAndBillingAddress(@ApiParam(value =
-            "Request body parameter that contains details such as the customer's first name (firstName), the customer's last name (lastName), the customer's title (titleCode), the customer's phone (phone), "
-                    + "the country (country.isocode), the first part of the address (line1), the second part of the address (line2), the town (town), the postal code (postalCode), and the region (region.isocode).\n\nThe DTO is in XML or .json format.", required = true) @RequestBody final AddressWsDTO address,
-                                                  @ApiFieldsParam @RequestParam(defaultValue = DEFAULT_FIELD_SET) final String fields) {
+            """
+                    Request body parameter that contains details such as the customer's first name (firstName), the customer's last name (lastName), the customer's title (titleCode), the customer's phone (phone),\s
+                    the country (country.isocode), the first part of the address (line1), the second part of the address (line2), the town (town), the postal code (postalCode), and the region (region.isocode).
+
+                    The DTO is in XML or .json format.
+                    """, required = true) @RequestBody final AddressWsDTO address,
+                                                            @ApiFieldsParam @RequestParam(defaultValue = DEFAULT_FIELD_SET) final String fields) {
         validate(address, OBJECT_NAME_ADDRESS, addressDTOValidator);
         AddressData addressData = dataMapper.map(address, AddressData.class, DEFAULT_FIELD_SET);
         addressData = createAddressInternal(addressData);
@@ -170,7 +173,7 @@ public class CheckoutComCartsController {
     }
 
     @Secured({"ROLE_CUSTOMERGROUP", "ROLE_GUEST", "ROLE_CUSTOMERMANAGERGROUP", "ROLE_TRUSTED_CLIENT"})
-    @RequestMapping(value = "/{cartId}/addresses/checkoutcomdeliverypayment", method = RequestMethod.PUT)
+    @PutMapping(value = "/{cartId}/addresses/checkoutcomdeliverypayment")
     @ResponseStatus(HttpStatus.OK)
     @SiteChannelRestriction(allowedSiteChannelsProperty = API_COMPATIBILITY_B2C_CHANNELS)
     @ApiOperation(nickname = "replaceCartDeliveryAndBillingAddress", value = "Sets a delivery and payment address for the cart.", notes = "Sets a delivery and payment address for the cart. The address country must be placed among the delivery countries of the current base store.")

@@ -1,9 +1,11 @@
 package com.checkout.hybris.events.validators.impl;
 
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import com.checkout.hybris.events.services.CheckoutComPaymentEventService;
 import com.checkout.hybris.events.validators.CheckoutComRequestEventValidator;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import de.hybris.platform.site.BaseSiteService;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -45,7 +48,10 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
     public boolean isRequestEventValid(final HttpServletRequest request, final String eventBody) throws NoSuchAlgorithmException, InvalidKeyException {
         final String ckoSignature = request.getHeader("cko-signature");
         final String eventAuthorizationHeaderKey = request.getHeader("authorization");
-        baseSiteService.setCurrentBaseSite(baseSiteService.getBaseSiteForUID(getSiteIdForTheEvent(eventBody)), false);
+        final Type type = new TypeToken<CheckoutComPaymentEventObject>() {/**/
+        }.getType();
+        final CheckoutComPaymentEventObject eventBodyData = new Gson().fromJson(eventBody, type);
+        baseSiteService.setCurrentBaseSite(baseSiteService.getBaseSiteForUID(getSiteIdForTheEvent(eventBodyData)), false);
 
         LOG.debug("Received event authorization header: [{}]; ", eventAuthorizationHeaderKey);
         LOG.debug("Received event signature: [{}]; ", ckoSignature);
@@ -101,8 +107,8 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
                 checkoutComMerchantConfigurationService.isAbcSignatureKeyUsedOnNotificationValidation();
     }
 
-    private String getSiteIdForTheEvent(final String eventBody) {
-        return checkoutComPaymentEventService.getSiteIdForTheEvent(new Gson().fromJson(eventBody, Map.class));
+    private String getSiteIdForTheEvent(final CheckoutComPaymentEventObject eventBody) {
+        return checkoutComPaymentEventService.getSiteIdForTheEvent(eventBody);
     }
 
     private byte[] getSecretPhrase() {

@@ -17,6 +17,7 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,8 @@ public class CheckoutComFawryPaymentRequestStrategyTest {
     private CheckoutComFawryPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
     private CartModel cartMock;
     @Mock
     private CheckoutComFawryPaymentInfoModel fawryPaymentInfoMock;
@@ -64,6 +67,8 @@ public class CheckoutComFawryPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "cmsSiteService", cmsSiteServiceMock);
         when(cartMock.getUser()).thenReturn(customerMock);
         when(customerMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL_VALUE);
         when(cmsSiteServiceMock.getCurrentSite().getName()).thenReturn(SITE_NAME);

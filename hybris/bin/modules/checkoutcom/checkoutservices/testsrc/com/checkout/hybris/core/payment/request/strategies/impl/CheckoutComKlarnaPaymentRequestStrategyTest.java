@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,8 @@ public class CheckoutComKlarnaPaymentRequestStrategyTest {
     private CheckoutComKlarnaPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
     private CheckoutComCurrencyService checkoutComCurrencyServiceMock;
     @Mock
     private Converter<CartModel, List<KlarnaProductRequestDto>> checkoutComKlarnaProductsRequestDtoPopulatorMock;
@@ -77,6 +80,8 @@ public class CheckoutComKlarnaPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
         when(cartModelMock.getPaymentInfo()).thenReturn(klarnaPaymentInfoMock);
         when(cartModelMock.getUser()).thenReturn(customerMock);
         when(customerMock.getContactEmail()).thenReturn(EMAIL_VALUE);

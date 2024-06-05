@@ -24,7 +24,7 @@ public class CheckoutComPaymentReferencePrepareInterceptorIntegrationTest extend
     public void cart_ShouldHavePaymentReference() {
         final CartModel cart = cartService.getSessionCart();
 
-        Assertions.assertThat(cart.getCheckoutComPaymentReference()).startsWith(cart.getCode() + "-");
+        Assertions.assertThat(cart.getCheckoutComPaymentReference()).startsWith(cart.getCode());
     }
 
     @Test

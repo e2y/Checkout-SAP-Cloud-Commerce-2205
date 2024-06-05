@@ -1,11 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
 import { CheckoutComOrderConfirmationThankYouMessageComponent } from './checkout-com-order-confirmation-thank-you-message.component';
 import { I18nTestingModule, MockTranslatePipe, Order, ORDER_TYPE } from '@spartacus/core';
 import { Observable, of } from 'rxjs';
 import { CheckoutFacade } from '@spartacus/checkout/root';
 
+@Component({
+  selector: 'ngx-qrcode',
+  template: ''
+})
+class MockNgxQrcodeComponent {
+  @Input() elementType: any;
+  @Input() errorCorrectionLevel: string;
+  @Input() value: string;
+}
+
+@Component({
+  selector: 'cx-spinner',
+  template: '',
+})
+class MockSpinnerComponent {
+}
+
+
+@Component({
+  selector: 'cx-add-to-home-screen-banner',
+  template: ''
+})
+class MockAddToHomeScreenBannerComponent {
+}
+
 class MockCheckoutFacade {
-  clearCheckoutData(){}
+  clearCheckoutData() {
+  }
 
   getOrderDetails(): Observable<Order> {
     return of({
@@ -29,12 +56,21 @@ describe('CheckoutComOrderConfirmationThankYouMessageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckoutComOrderConfirmationThankYouMessageComponent, MockTranslatePipe],
-      providers: [
-        I18nTestingModule,
-        {provide: CheckoutFacade, useClass: MockCheckoutFacade}
-      ]
-    })
+        declarations: [
+          CheckoutComOrderConfirmationThankYouMessageComponent,
+          MockTranslatePipe,
+          MockAddToHomeScreenBannerComponent,
+          MockNgxQrcodeComponent,
+          MockSpinnerComponent
+        ],
+        providers: [
+          I18nTestingModule,
+          {
+            provide: CheckoutFacade,
+            useClass: MockCheckoutFacade
+          }
+        ]
+      })
       .compileComponents();
 
     checkoutService = TestBed.inject(CheckoutFacade);
@@ -72,8 +108,7 @@ describe('CheckoutComOrderConfirmationThankYouMessageComponent', () => {
   });
 
   it('should show spinner when order has not been received', () => {
-    spyOn(checkoutService, 'getOrderDetails').and.returnValue(of({
-    }));
+    spyOn(checkoutService, 'getOrderDetails').and.returnValue(of({}));
 
     fixture = TestBed.createComponent(CheckoutComOrderConfirmationThankYouMessageComponent);
     component = fixture.componentInstance;

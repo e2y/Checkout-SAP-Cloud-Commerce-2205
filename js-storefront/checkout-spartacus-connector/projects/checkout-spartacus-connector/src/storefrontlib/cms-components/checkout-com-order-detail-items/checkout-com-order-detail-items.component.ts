@@ -43,7 +43,7 @@ export class CheckoutComOrderDetailItemsComponent extends OrderDetailItemsCompon
     return this.order$.pipe(
       map((order) => {
         if (Boolean(order.consignments)) {
-          return order.consignments.filter((consignment) =>
+          return order.consignments.filter((consignment: Consignment) =>
             consignmentStatus.includes(consignment.status)
           );
         }
@@ -58,7 +58,7 @@ export class CheckoutComOrderDetailItemsComponent extends OrderDetailItemsCompon
       map((order) => {
         if (Boolean(order.consignments)) {
           return order.consignments.filter(
-            (consignment) => !consignmentStatus.includes(consignment.status)
+            (consignment: Consignment) => !consignmentStatus.includes(consignment.status)
           );
         }
       })

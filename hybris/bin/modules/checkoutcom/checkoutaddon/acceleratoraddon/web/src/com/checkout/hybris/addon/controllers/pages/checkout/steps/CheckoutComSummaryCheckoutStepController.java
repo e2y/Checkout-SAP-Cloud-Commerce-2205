@@ -175,8 +175,7 @@ public class CheckoutComSummaryCheckoutStepController extends AbstractCheckoutSt
                     addFlashMessage(redirectAttributes, ERROR_MESSAGES_HOLDER, "checkout.express.error.deliveryAddress");
                     returnUrl = REDIRECT_URL_ADD_DELIVERY_ADDRESS;
                     break;
-                case ERROR_DELIVERY_MODE:
-                case ERROR_CHEAPEST_DELIVERY_MODE:
+                case ERROR_DELIVERY_MODE, ERROR_CHEAPEST_DELIVERY_MODE:
                     addFlashMessage(redirectAttributes, ERROR_MESSAGES_HOLDER, "checkout.express.error.deliveryMode");
                     returnUrl = REDIRECT_URL_CHOOSE_DELIVERY_METHOD;
                     break;
@@ -222,7 +221,8 @@ public class CheckoutComSummaryCheckoutStepController extends AbstractCheckoutSt
     protected String authorisePlaceOrderAndRedirectToResultPage(final Model model, final RedirectAttributes redirectAttributes) throws CMSItemNotFoundException {
         final AuthorizeResponseData authorizeResponseData = checkoutFlowFacade.authorizePayment();
 
-        if (!authorizeResponseData.getIsSuccess() || Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
+        if (Boolean.FALSE.equals(authorizeResponseData.getIsSuccess()) ||
+            Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
             if (Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
                 LOG.debug("Redirecting to checkout.com url [{}] for 3d secure.", authorizeResponseData.getRedirectUrl());
                 return REDIRECT_PREFIX + authorizeResponseData.getRedirectUrl();

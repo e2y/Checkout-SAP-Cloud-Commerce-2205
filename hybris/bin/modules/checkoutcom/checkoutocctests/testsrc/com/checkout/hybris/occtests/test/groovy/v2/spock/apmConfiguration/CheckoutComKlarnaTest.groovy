@@ -16,7 +16,7 @@ class CheckoutComKlarnaTest extends AbstractCheckoutComPaymentsTest {
         def customerAndCart = createAndAuthorizeCustomerWithCart(restClient, JSON)
         def customer = customerAndCart[0]
         def cart = customerAndCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, JSON)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, JSON)

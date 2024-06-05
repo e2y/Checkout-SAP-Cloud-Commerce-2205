@@ -1,7 +1,7 @@
 {
   "name": "@checkout.com/checkout-spartacus-translations",
-  "version": "4.2.3",
-  "repository": "https://github.com/checkout/Checkout-SAP-Cloud-Commerce-2011",
+  "version": "4.2.6",
+  "repository": "https://github.com/checkout/Checkout-SAP-Cloud-Commerce-2211",
   "peerDependencies": {
     "@angular/common": "^10.2.4",
     "@angular/core": "^10.2.4"

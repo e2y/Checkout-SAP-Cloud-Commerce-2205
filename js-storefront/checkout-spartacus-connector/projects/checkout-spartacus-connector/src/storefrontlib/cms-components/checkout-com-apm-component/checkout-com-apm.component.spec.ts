@@ -4,7 +4,7 @@ import { CheckoutComApmComponent } from './checkout-com-apm.component';
 import { CheckoutComApmService } from '../../../core/services/checkout-com-apm.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ApmData, PaymentType } from '../../../core/model/ApmData';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   ActiveCartService,
   Cart,
@@ -22,7 +22,35 @@ import { GooglePayMerchantConfiguration } from '../../../core/model/GooglePay';
 import { CheckoutComApplepayService } from '../../../core/services/applepay/checkout-com-applepay.service';
 import { ApplePayPaymentRequest } from '../../../core/model/ApplePay';
 import { CheckoutDeliveryFacade } from '@spartacus/checkout/root';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import createSpy = jasmine.createSpy;
+import { CheckoutComBillingAddressComponent } from '../checkout-com-billing-address/checkout-com-billing-address.component';
+
+@Component({
+  selector: 'cx-spinner',
+  template: '',
+})
+class MockSpinnerComponent {
+}
+
+
+@Component({
+  template: '',
+  selector: 'lib-checkout-com-apm-tile',
+})
+class MockCheckoutComApmTitle {
+  @Input() apm: ApmData;
+}
+
+@Component({
+  selector: 'lib-checkout-com-apm',
+  template: '',
+})
+class MockCheckoutComApmComponent {
+  @Output() setPaymentDetails : EventEmitter<any>;
+  @Input() goBack: () => void;
+  @Input() processing = false;
+}
 
 class MockActiveCartService {
   isGuestCart(): boolean {
@@ -158,6 +186,15 @@ class MockGlobalMessageService {
   add = createSpy();
 }
 
+@Component({
+  template: '',
+  selector: 'lib-checkout-com-billing-address',
+})
+class MockLibCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
+
 describe('CheckoutComApmComponent', () => {
   let component: CheckoutComApmComponent;
   let fixture: ComponentFixture<CheckoutComApmComponent>;
@@ -165,7 +202,14 @@ describe('CheckoutComApmComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckoutComApmComponent, MockTranslatePipe],
+      declarations: [
+        CheckoutComApmComponent,
+        MockTranslatePipe,
+        MockCheckoutComApmTitle,
+        MockLibCheckoutComBillingAddressComponent,
+        MockCheckoutComApmComponent,
+        MockSpinnerComponent
+      ],
       providers: [
         {provide: CheckoutComApmService, useClass: CheckoutComApmServiceStub},
         {provide: FormBuilder, useClass: FormBuilder},

@@ -1,13 +1,11 @@
 package com.checkout.hybris.events.services;
 
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import com.checkout.hybris.events.enums.CheckoutComPaymentEventType;
 
-import java.util.Map;
 import java.util.Set;
 
-/**
- * Service to handle logic of payment events
- */
+
 public interface CheckoutComPaymentEventService {
 
     /**
@@ -25,5 +23,5 @@ public interface CheckoutComPaymentEventService {
      * @param eventBodyMap the event
      * @return the site id of the event or the related order
      */
-    String getSiteIdForTheEvent(Map eventBodyMap);
+    String getSiteIdForTheEvent(CheckoutComPaymentEventObject eventBody);
 }

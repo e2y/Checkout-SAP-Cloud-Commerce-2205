@@ -1,7 +1,7 @@
 {
   "name": "checkout-spartacus-connector",
-  "version": "4.2.0",
-  "repository": "https://github.com/checkout/Checkout-SAP-Cloud-Commerce-2011",
+  "version": "4.2.7",
+  "repository": "https://github.com/checkout/Checkout-SAP-Cloud-Commerce-2211",
   "scripts": {
     "ng": "ng",
     "start:localtest": "yarn start --host localtest.me",
@@ -90,6 +90,9 @@
     "typescript": "~4.3.5"
   },
   "peerDependencies": {
-    "@techiediaries/ngx-qrcode": "^9.1.0"
+    "@techiediaries/ngx-qrcode": "^9.1.0",
+    "ng2-tooltip-directive": "^2.10.3",
+    "ngx-infinite-scroll": "^8.0.0",
+    "ngx-plaid-link": "1.0.3"
   }
 }

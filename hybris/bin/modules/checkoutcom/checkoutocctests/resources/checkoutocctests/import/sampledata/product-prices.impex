@@ -9,3 +9,4 @@ INSERT PriceRow; currency(isocode)[unique = true]; price ; product(code, $catalo
                ; EGP                             ; 95.39 ; 1934795                                      ; pieces
                ; KWD                             ; 95.39 ; 1934795                                      ; pieces
                ; MXN                             ; 95.39 ; 1934795                                      ; pieces
+               ; NZD                             ; 23.21 ; 1934795                                      ; pieces

@@ -21,6 +21,5 @@ public class CheckoutComIdealPaymentDetailsDTOToIdealPaymentInfoDataPopulator im
         Assert.notNull(target, "IdealPaymentInfoData cannot be null.");
 
         target.setType(CheckoutComPaymentType.IDEAL.name());
-        target.setBic(source.getBic());
     }
 }

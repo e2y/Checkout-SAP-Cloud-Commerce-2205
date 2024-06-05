@@ -24,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -38,6 +39,8 @@ public class CheckoutComNasAchPayPaymentRequestStrategyTest {
 	@Spy
 	private CheckoutComNasAchPayPaymentRequestStrategy testObj;
 
+    @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
 	@Mock
 	private CheckoutComCurrencyService checkoutComCurrencyServiceMock;
 
@@ -47,6 +50,8 @@ public class CheckoutComNasAchPayPaymentRequestStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
 		doNothing().when(testObj).populatePaymentRequest(any(CartModel.class),
 				any(PaymentRequest.class));
 	}

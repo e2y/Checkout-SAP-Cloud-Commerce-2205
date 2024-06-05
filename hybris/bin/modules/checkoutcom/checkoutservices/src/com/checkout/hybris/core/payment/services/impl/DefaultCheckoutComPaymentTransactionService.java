@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -35,9 +37,9 @@ public class DefaultCheckoutComPaymentTransactionService implements CheckoutComP
 
     protected static final Logger LOG = LogManager.getLogger(DefaultCheckoutComPaymentTransactionService.class);
 
-    protected static final String SEPARATOR = "-";
     protected static final String PAYMENT_TRANSACTION_CANNOT_BE_NULL = "Payment transaction cannot be null.";
     protected static final String ORDER_MODEL_CANNOT_BE_NULL = "OrderModel cannot be null";
+    protected static final String REGEX = "-[A-Z-_]+([+-]?(\\d)(?:\\d+)?(\\d*))?";
 
     protected final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService;
     protected final CommercePaymentProviderStrategy commercePaymentProviderStrategy;
@@ -148,7 +150,9 @@ public class DefaultCheckoutComPaymentTransactionService implements CheckoutComP
     public String getPaymentReferenceFromTransactionEntryCode(final String transactionEntryCode) {
         checkArgument(StringUtils.isNotBlank(transactionEntryCode), "Payment transaction entry code cannot be null or empty.");
 
-        return transactionEntryCode.substring(0, transactionEntryCode.indexOf(SEPARATOR, transactionEntryCode.indexOf(SEPARATOR) + 1));
+        return Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE)
+                .matcher(transactionEntryCode)
+                .replaceAll("");
     }
 
     /**

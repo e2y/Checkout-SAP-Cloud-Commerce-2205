@@ -1,7 +1,9 @@
 package com.checkout.hybris.events.facades.impl;
 
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import com.checkout.hybris.events.payments.CheckoutComPaymentEvent;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.servicelayer.event.EventService;
 import org.junit.Test;
@@ -11,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Map;
+import java.lang.reflect.Type;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -40,6 +42,12 @@ public class DefaultCheckoutComEventFacadeTest {
         testObj.publishPaymentEvent(EVENT_BODY);
 
         verify(eventServiceMock).publishEvent(eventArgumentCaptor.capture());
-        assertEquals(new Gson().fromJson(EVENT_BODY, Map.class), eventArgumentCaptor.getValue().getEventBody());
+
+        final Type type = new TypeToken<CheckoutComPaymentEventObject>() {/**/
+        }.getType();
+        final CheckoutComPaymentEventObject eventBodyData = new Gson().fromJson(EVENT_BODY, type);
+        eventBodyData.setPayLoad(EVENT_BODY);
+
+        assertEquals(EVENT_BODY, eventArgumentCaptor.getValue().getEventBody().getPayLoad());
     }
 }

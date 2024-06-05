@@ -37,6 +37,6 @@ public class DefaultCheckoutComPaymentReferenceGenerationStrategyTest {
 
         final String result = testObj.generatePaymentReference(abstractOrderMock);
 
-        assertEquals(ORDER_CODE + "-" + currentTime.getTime(), result);
+        assertEquals(ORDER_CODE + currentTime.getTime(), result);
     }
 }

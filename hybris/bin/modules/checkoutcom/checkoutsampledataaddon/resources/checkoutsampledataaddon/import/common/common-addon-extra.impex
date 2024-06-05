@@ -798,7 +798,7 @@ INSERT_UPDATE ZoneDeliveryMode; code[unique = true]    ; net; active[default = t
 INSERT_UPDATE CheckoutComAPMConfiguration; code[unique = true]; name[lang = en]; restrictedCountries(isocode)                                                                                         ; restrictedCurrencies(isocode)
                                          ; SOFORT             ; Sofort         ; AT,BE,DE,ES,IT,NL                                                                                                    ; EUR
                                          ; PAYPAL             ; PayPal         ;                                                                                                                      ;
-                                         ; POLI               ; POLi           ; AU,NZ                                                                                                                ; AUD,NZD
+                                         ; POLI               ; POLi           ; NZ                                                                                                                ; AUD,NZD
                                          ; IDEAL              ; iDeal          ; NL                                                                                                                   ; EUR
                                          ; KLARNA             ; Klarna         ; AT,DK,FI,DE,NL,NO,SE,GB,IM,JE,GG                                                                                     ; EUR,GBP
                                          ; ALIPAY             ; Alipay         ; US,CN                                                                                                                ; USD

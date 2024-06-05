@@ -20,7 +20,6 @@
                 <entry key="CARD" value-ref="checkoutComCardPaymentDetailsWsDTOValidator"/>
                 <entry key="ACH" value-ref="checkoutComAchPaymentDetailsWsDTOValidator"/>
                 <entry key="FAWRY" value-ref="checkoutComFawryPaymentDetailsWsDTOValidator"/>
-                <entry key="IDEAL" value-ref="checkoutComIdealPaymentDetailsWsDTOValidator"/>
                 <entry key="KLARNA" value-ref="checkoutComKlarnaPaymentDetailsWsDTOValidator"/>
                 <entry key="SEPA" value-ref="checkoutComSepaPaymentDetailsWsDTOValidator"/>
                 <entry key="OXXO" value-ref="checkoutComOxxoPaymentDetailsWsDTOValidator"/>
@@ -43,11 +42,6 @@
            alias="checkoutComFawryPaymentDetailsWsDTOValidator"/>
     <bean id="defaultCheckoutComFawryPaymentDetailsWsDTOValidator"
           class="com.checkout.hybris.occ.validators.paymentdetailswsdto.CheckoutComFawryPaymentDetailsWsDTOValidator"/>
-
-    <alias name="defaultCheckoutComIdealPaymentDetailsWsDTOValidator"
-           alias="checkoutComIdealPaymentDetailsWsDTOValidator"/>
-    <bean id="defaultCheckoutComIdealPaymentDetailsWsDTOValidator"
-          class="com.checkout.hybris.occ.validators.paymentdetailswsdto.CheckoutComIdealPaymentDetailsWsDTOValidator"/>
 
     <alias name="defaultCheckoutComKlarnaPaymentDetailsWsDTOValidator"
            alias="checkoutComKlarnaPaymentDetailsWsDTOValidator"/>

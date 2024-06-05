@@ -1,12 +1,14 @@
+import { EventEmitter, Input, Output, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CheckoutComApmIdealComponent } from './checkout-com-apm-ideal.component';
 import { Address, I18nTestingModule } from '@spartacus/core';
 import { FormErrorsModule } from '@spartacus/storefront';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApmPaymentDetails } from '../../../interfaces';
-import { EventEmitter } from '@angular/core';
+
 import { PaymentType } from '../../../../core/model/ApmData';
+import { Observable } from 'rxjs';
+
 
 describe('CheckoutComApmIdealComponent', () => {
   let component: CheckoutComApmIdealComponent;
@@ -49,50 +51,7 @@ describe('CheckoutComApmIdealComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('BIC validation', () => {
-    [
-      {description: 'Should allow 11 character BIC', bic: 'INGDESMMXXX', result: true},
-      {description: 'Should allow 8 character BIC', bic: 'CHASUS33', result: true},
-      {description: 'Should be invalid if bic is less then 8 characters', bic: 'INGDE', result: false},
-      {description: 'Should be invalid if bic is more than 11 characters', bic: 'INGDESMMXXX ', result: false},
-      {description: 'Should be invalid if bic not 8 or 11 characters', bic: 'INGDESMMXX ', result: false},
-      {description: 'Should be invalid if bic not 8 or 11 characters', bic: '', result: false},
-    ].forEach((parameter) => {
-      const {description, bic, result} = parameter;
-      it(description, () => {
-        component.idealForm.setValue({
-          bic
-        });
-
-        expect(component.idealForm.valid).toBe(result);
-      });
-    });
-  });
-
-  it('should require bic field', (done) => {
-    component.idealForm.setValue({
-      bic: 'INGDESMMXXX'
-    });
-
-    setPaymentDetails
-      .subscribe((event) => {
-      expect(event.billingAddress).toBeNull();
-      expect(event.paymentDetails).toEqual({ type: PaymentType.iDeal, bic: 'INGDESMMXXX' });
-
-      done();
-    });
-
-    fixture.detectChanges();
-
-    expect(document.querySelector('button[data-test-id="ideal-continue-btn"]')['disabled']).toEqual(false);
-
-    component.next();
-  });
-
   it('should use the billing address if given', (done) => {
-    component.idealForm.setValue({
-      bic: 'INGDESMMXXX'
-    });
     component.sameAsShippingAddress = false;
     const billingAddress = {
       firstName: 'John',
@@ -103,7 +62,7 @@ describe('CheckoutComApmIdealComponent', () => {
     setPaymentDetails
       .subscribe((event) => {
       expect(event.billingAddress).toEqual(billingAddress);
-      expect(event.paymentDetails).toEqual({ type: PaymentType.iDeal, bic: 'INGDESMMXXX' });
+      expect(event.paymentDetails).toEqual({ type: PaymentType.iDeal});
 
       done();
     });
@@ -115,21 +74,7 @@ describe('CheckoutComApmIdealComponent', () => {
     component.next();
   });
 
-  it('should not call setPaymentDetails event if required bic field is not set', () => {
-    component.idealForm.setValue({
-      bic: ''
-    });
-    component.sameAsShippingAddress = false;
-
-    fixture.detectChanges();
-
-    expect(document.querySelector('button[data-test-id="ideal-continue-btn"]')['disabled']).toEqual(true);
-  });
-
   it('should not call setPaymentDetails event if billing address is not valid', () => {
-    component.idealForm.setValue({
-      bic: '123'
-    });
     component.sameAsShippingAddress = false;
     const billingAddress = {
       firstName: 'John',
@@ -139,6 +84,6 @@ describe('CheckoutComApmIdealComponent', () => {
 
     fixture.detectChanges();
 
-    expect(document.querySelector('button[data-test-id="ideal-continue-btn"]')['disabled']).toEqual(true);
+    expect(document.querySelector('button[data-test-id="ideal-continue-btn"]')['disabled']).toEqual(false);
   });
 });

@@ -31,7 +31,7 @@ export class CheckoutComPaymentService {
     this.checkoutComStore.dispatch(new SetOccMerchantKey({ userId }));
   }
 
-  public canSaveCard(userId): boolean {
+  public canSaveCard(userId: string): boolean {
     return userId !== OCC_USER_ID_ANONYMOUS;
   }
 

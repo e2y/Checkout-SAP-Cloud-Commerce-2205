@@ -1,6 +1,5 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.sdk.common.Phone;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.enums.PaymentTypes;
@@ -11,6 +10,7 @@ import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentReques
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
+import com.checkout.sdk.common.Phone;
 import com.checkout.sdk.payments.*;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
@@ -62,6 +62,10 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     @Mock
     private CartModel cartModelMock;
     @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
+    @Mock
+    private CheckoutComUrlService checkoutComUrlServiceMock;
+    @Mock
     private CMSSiteService cmsSiteServiceMock;
     @Mock
     private CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationServiceMock;
@@ -79,8 +83,6 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
     private CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategyMock;
     @Mock
     private Phone phoneMock;
-    @Mock
-    private CheckoutComUrlService checkoutComUrlServiceMock;
     @Mock
     private CMSSiteModel currentSiteMock;
     @Mock
@@ -105,13 +107,14 @@ public class CheckoutComAbstractPaymentRequestStrategyTest {
                 CheckoutComAbstractPaymentRequestStrategy.class,
                 Mockito.CALLS_REAL_METHODS);
 
-        ReflectionTestUtils.setField(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
         ReflectionTestUtils.setField(testObj, "checkoutComPhoneNumberStrategy", checkoutComPhoneNumberStrategyMock);
-        ReflectionTestUtils.setField(testObj, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
         ReflectionTestUtils.setField(testObj, "checkoutComPaymentRequestStrategyMapper", checkoutComPaymentRequestStrategyMapperMock);
-        ReflectionTestUtils.setField(testObj, "cmsSiteService", cmsSiteServiceMock);
-        ReflectionTestUtils.setField(testObj, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
         ReflectionTestUtils.setField(testObj, "checkoutComCartModelToPaymentL2AndL3Converter", checkoutComCartModelToPaymentL2AndL3ConverterMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComUrlService", checkoutComUrlServiceMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "cmsSiteService", cmsSiteServiceMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComCurrencyService", checkoutComCurrencyServiceMock);
 
         setUpCart();
         setUpAddress();

@@ -18,7 +18,7 @@
             <cx-form-errors
               aria-live="assertive"
               aria-atomic="true"
-              [control]="paymentForm.get('accountHolderName')"
+              [control]="$any(paymentForm.get('accountHolderName'))"
             ></cx-form-errors>
           </label>
         </div>
@@ -62,7 +62,7 @@
                 <cx-form-errors
                   aria-live="assertive"
                   aria-atomic="true"
-                  [control]="paymentForm.get('expiryMonth')"
+                  [control]="$any(paymentForm.get('expiryMonth'))"
                 ></cx-form-errors>
               </label>
               <label class="cx-payment-form-exp-date-wrapper">
@@ -83,7 +83,7 @@
                 <cx-form-errors
                   aria-live="assertive"
                   aria-atomic="true"
-                  [control]="paymentForm.get('expiryYear')"
+                  [control]="$any(paymentForm.get('expiryYear'))"
                 ></cx-form-errors>
               </label>
             </fieldset>
