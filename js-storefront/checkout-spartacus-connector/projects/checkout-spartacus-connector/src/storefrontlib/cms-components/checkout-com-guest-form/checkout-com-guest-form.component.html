@@ -25,7 +25,7 @@
           <cx-form-errors
             aria-live="assertive"
             aria-atomic="true"
-            [control]="guestRegisterForm.get('password')"
+            [control]="$any(guestRegisterForm.get('password'))"
           ></cx-form-errors>
         </label>
       </div>
@@ -48,7 +48,7 @@
           <cx-form-errors
             aria-live="assertive"
             aria-atomic="true"
-            [control]="guestRegisterForm.get('passwordconf')"
+            [control]="$any(guestRegisterForm.get('passwordconf'))"
           ></cx-form-errors>
         </label>
       </div>

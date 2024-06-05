@@ -1,15 +1,11 @@
 package com.checkout.hybris.occ.strategies;
 
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.impl.CheckoutComAbstractPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 
 /**
  * Abstract strategy that overrides redirect URLs for occ
@@ -20,17 +16,15 @@ public abstract class CheckoutComOccAbstractPaymentRequestStrategy extends Check
             "=true";
     protected static final String CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_FAILURE =
             "/order-confirmation?authorized=false";
+    protected CheckoutPaymentRequestServicesOccWrapper checkoutPaymentRequestServicesOccWrapper;
 
-    protected CheckoutComOccAbstractPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                           final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                           final CheckoutComCurrencyService checkoutComCurrencyService,
+    protected CheckoutComOccAbstractPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                            final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                           final CMSSiteService cmsSiteService,
-                                                           final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                           final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+                                                           final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                           final CheckoutPaymentRequestServicesOccWrapper checkoutPaymentRequestServicesOCCWrapper) {
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+              checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesOCCWrapper);
+        this.checkoutPaymentRequestServicesOccWrapper = checkoutPaymentRequestServicesOCCWrapper;
     }
 
     protected CheckoutComOccAbstractPaymentRequestStrategy() {
@@ -44,7 +38,7 @@ public abstract class CheckoutComOccAbstractPaymentRequestStrategy extends Check
      */
     @Override
     protected void populateRedirectUrls(final PaymentRequest<RequestSource> request) {
-        request.setSuccessUrl(checkoutComUrlService.getFullUrl(CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_SUCCESS, true));
-        request.setFailureUrl(checkoutComUrlService.getFullUrl(CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_FAILURE, true));
+        request.setSuccessUrl(checkoutPaymentRequestServicesOccWrapper.checkoutComOccUrlService.getFullUrl(CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_SUCCESS, true));
+        request.setFailureUrl(checkoutPaymentRequestServicesOccWrapper.checkoutComOccUrlService.getFullUrl(CHECKOUT_COM_OCC_PAYMENT_REDIRECT_PAYMENT_FAILURE, true));
     }
 }

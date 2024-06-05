@@ -1,31 +1,15 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit, Renderer2,
-  ViewChild
-} from '@angular/core';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {
-  ActiveCartService,
-  GlobalMessageService,
-  GlobalMessageType,
-  RoutingService,
-  UserIdService,
-  WindowRef
-} from '@spartacus/core';
-import {CheckoutComGooglepayService} from '../../../../core/services/googlepay/checkout-com-googlepay.service';
-import {filter, first, switchMap, take, takeUntil} from 'rxjs/operators';
-import {CheckoutComPaymentService} from '../../../../core/services/checkout-com-payment.service';
-import {FormGroup} from '@angular/forms';
-import {makeFormErrorsVisible} from '../../../../core/shared/make-form-errors-visible';
-import {loadScript} from '../../../../core/shared/loadScript';
-import {getUserIdCartId} from '../../../../core/shared/get-user-cart-id';
-import {CheckoutFacade} from '@spartacus/checkout/root';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { ActiveCartService, GlobalMessageService, RoutingService, UserIdService, WindowRef } from '@spartacus/core';
+import { CheckoutComGooglepayService } from '../../../../core/services/googlepay/checkout-com-googlepay.service';
+import { filter, first, switchMap, take, takeUntil } from 'rxjs/operators';
+import { CheckoutComPaymentService } from '../../../../core/services/checkout-com-payment.service';
+import { FormGroup } from '@angular/forms';
+import { makeFormErrorsVisible } from '../../../../core/shared/make-form-errors-visible';
+import { loadScript } from '../../../../core/shared/loadScript';
+import { getUserIdCartId } from '../../../../core/shared/get-user-cart-id';
+import { CheckoutFacade } from '@spartacus/checkout/root';
+import { GooglePayMerchantConfiguration, GooglePayPaymentRequest, IntermediatePaymentData } from '../../../../core/model/GooglePay';
 
 @Component({
   selector: 'lib-checkout-com-apm-googlepay',
@@ -59,17 +43,20 @@ export class CheckoutComApmGooglepayComponent implements OnInit, AfterViewInit, 
     this.checkoutFacade.getOrderDetails().pipe(
       filter(order => Object.keys(order).length !== 0), takeUntil(this.drop)
     ).subscribe((order) => {
-      this.routingService.go({cxRoute: 'orderConfirmation'});
-    }, err => console.error('return to order confirmation with errors', {err}));
+      this.routingService.go({ cxRoute: 'orderConfirmation' });
+    }, err => console.error('return to order confirmation with errors', { err }));
   }
 
   ngAfterViewInit() {
     if (this.gpayBtn?.nativeElement) {
       getUserIdCartId(this.userIdService, this.activeCartService)
         .pipe(takeUntil(this.drop))
-        .subscribe(({userId, cartId}) => {
+        .subscribe(({
+          userId,
+          cartId
+        }) => {
           this.initBtn(userId, cartId);
-        }, err => console.error('get user id and cart id with erros', {err}));
+        }, err => console.error('get user id and cart id with erros', { err }));
     }
   }
 
@@ -81,12 +68,12 @@ export class CheckoutComApmGooglepayComponent implements OnInit, AfterViewInit, 
           return;
         }
 
-        let paymentClientData = merchantConfiguration;
+        let paymentClientData: GooglePayMerchantConfiguration = merchantConfiguration;
         if (express) {
           // clone the object, Rx objects are immutable deep
           paymentClientData = JSON.parse(JSON.stringify(merchantConfiguration));
-          const onPaymentAuthorized = (paymentData) => this.checkoutComGooglePayService.onPaymentAuthorized(cartId, userId, paymentData);
-          const onPaymentDataChanged = (paymentData) => this.checkoutComGooglePayService.onPaymentDataChanged(cartId, userId, paymentData);
+          const onPaymentAuthorized = (paymentData: GooglePayPaymentRequest) => this.checkoutComGooglePayService.onPaymentAuthorized(cartId, userId, paymentData);
+          const onPaymentDataChanged = (paymentData: IntermediatePaymentData) => this.checkoutComGooglePayService.onPaymentDataChanged(cartId, userId, paymentData);
 
           paymentClientData.clientSettings.paymentDataCallbacks = {
             onPaymentAuthorized,
@@ -104,16 +91,16 @@ export class CheckoutComApmGooglepayComponent implements OnInit, AfterViewInit, 
             });
           });
         }
-      }, err => console.error('initBtn with errors', {err}));
+      }, (err: any) => console.error('initBtn with errors', { err }));
   }
 
-  protected initPaymentsClient(merchantConfiguration, userId: string, cartId: string) {
+  protected initPaymentsClient(merchantConfiguration: GooglePayMerchantConfiguration, userId: string, cartId: string) {
     // @ts-ignore
     this.paymentsClient = new google.payments.api.PaymentsClient(merchantConfiguration.clientSettings);
     const isReadyToPayRequest: object = this.checkoutComGooglePayService
       .createInitialPaymentRequest(merchantConfiguration, this.shippingAddressRequired);
     this.paymentsClient.isReadyToPay(isReadyToPayRequest)
-      .then(({result}) => {
+      .then(({ result }: any) => {
         if (result) {
           const button = this.paymentsClient.createButton({
             onClick: () => {
@@ -124,13 +111,13 @@ export class CheckoutComApmGooglepayComponent implements OnInit, AfterViewInit, 
           });
           if (this.gpayBtn?.nativeElement.children.length === 0) {
             this.renderer.setAttribute(this.gpayBtn?.nativeElement, 'id', 'google-pay-button');
-            this.renderer.appendChild(this.gpayBtn?.nativeElement, button)
+            this.renderer.appendChild(this.gpayBtn?.nativeElement, button);
           } else {
             button.remove();
           }
         }
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.error('failed to initialize googlepay', err);
       });
   }
@@ -157,13 +144,13 @@ export class CheckoutComApmGooglepayComponent implements OnInit, AfterViewInit, 
         this.checkoutComGooglePayService.createFullPaymentRequest(merchantConfiguration);
 
       this.paymentsClient.loadPaymentData(paymentDataRequest)
-        .then((paymentRequest) => {
+        .then((paymentRequest: GooglePayPaymentRequest) => {
           this.checkoutComGooglePayService.authoriseOrder(paymentRequest, false, userId, cartId);
         })
-        .catch(function (err) {
-          console.log("Error google pay payment...");
+        .catch((err: any): void => {
+          console.log('Error google pay payment...');
           console.error(err);
         });
-    }, err => console.error('authorisePayment with errors', {err}));
+    }, err => console.error('authorisePayment with errors', { err }));
   }
 }

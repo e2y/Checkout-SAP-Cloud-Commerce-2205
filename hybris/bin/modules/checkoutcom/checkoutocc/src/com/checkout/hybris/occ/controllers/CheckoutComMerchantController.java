@@ -1,7 +1,6 @@
 package com.checkout.hybris.occ.controllers;
 
 import com.checkout.hybris.facades.merchant.CheckoutComMerchantConfigurationFacade;
-import de.hybris.platform.commercewebservicescommons.dto.user.AddressWsDTO;
 import de.hybris.platform.webservicescommons.cache.CacheControl;
 import de.hybris.platform.webservicescommons.cache.CacheControlDirective;
 import io.swagger.annotations.Api;
@@ -37,7 +36,7 @@ public class CheckoutComMerchantController {
     }
 
     @Secured({"ROLE_CUSTOMERGROUP", "ROLE_CUSTOMERMANAGERGROUP", "ROLE_GUEST", "ROLE_TRUSTED_CLIENT", "ROLE_CLIENT"})
-    @GetMapping (value = "/isABC", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/isABC", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> isMerchantABC() {
         Boolean isABC = checkoutComMerchantConfigurationFacade.isCheckoutComMerchantABC();
         return isABC == null ? ResponseEntity.status(INTERNAL_SERVER_ERROR).body(IS_ABC_FALSE) :

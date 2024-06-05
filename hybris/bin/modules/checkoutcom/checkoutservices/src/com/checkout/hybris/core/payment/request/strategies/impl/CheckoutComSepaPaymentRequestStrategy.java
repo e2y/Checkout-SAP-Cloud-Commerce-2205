@@ -1,25 +1,20 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.merchantconfiguration.BillingDescriptor;
 import com.checkout.hybris.core.model.CheckoutComSepaPaymentInfoModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.exception.CheckoutComPaymentIntegrationException;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
-import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
+import com.checkout.sdk.common.Address;
 import com.checkout.sdk.payments.AlternativePaymentSource;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
 import com.checkout.sdk.sources.SourceData;
 import com.checkout.sdk.sources.SourceRequest;
 import com.checkout.sdk.sources.SourceResponse;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,20 +36,14 @@ public class CheckoutComSepaPaymentRequestStrategy extends CheckoutComAbstractAp
     protected static final String BILLING_DESCRIPTOR_KEY = "billing_descriptor";
     protected static final String PAYMENT_SOURCE_ID_KEY = "id";
 
-    protected final CheckoutComPaymentIntegrationService checkoutComPaymentIntegrationService;
-
-    public CheckoutComSepaPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
+    public CheckoutComSepaPaymentRequestStrategy(final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper,
                                                  final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                 final CheckoutComCurrencyService checkoutComCurrencyService,
                                                  final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                 final CMSSiteService cmsSiteService,
-                                                 final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
-                                                 final CheckoutComPaymentIntegrationService checkoutComPaymentIntegrationService) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
-        this.checkoutComPaymentIntegrationService = checkoutComPaymentIntegrationService;
+                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
+        super(checkoutComPhoneNumberStrategy,
+            checkoutComPaymentRequestStrategyMapper,
+            checkoutComCartModelToPaymentL2AndL3Converter,
+            checkoutPaymentRequestServicesWrapper);
     }
 
     /**
@@ -73,7 +62,8 @@ public class CheckoutComSepaPaymentRequestStrategy extends CheckoutComAbstractAp
         validateParameterNotNull(cart, "Cart model cannot be null");
 
         final String currencyIsoCode = cart.getCurrency().getIsocode();
-        final Long amount = checkoutComCurrencyService.convertAmountIntoPennies(currencyIsoCode, cart.getTotalPrice());
+        final Long amount = checkoutPaymentRequestServicesWrapper.checkoutComCurrencyService
+            .convertAmountIntoPennies(currencyIsoCode, cart.getTotalPrice());
 
         final PaymentRequest<RequestSource> paymentRequest = super.getRequestSourcePaymentRequest(cart, currencyIsoCode,
                                                                                                   amount);
@@ -97,10 +87,10 @@ public class CheckoutComSepaPaymentRequestStrategy extends CheckoutComAbstractAp
 
     protected SourceResponse getCheckoutComSourceResponse(final CartModel cart) {
         SourceResponse sourceResponse = null;
-        if (cart.getPaymentInfo() instanceof CheckoutComSepaPaymentInfoModel) {
-            final CheckoutComSepaPaymentInfoModel sepaPaymentInfo = (CheckoutComSepaPaymentInfoModel) cart.getPaymentInfo();
+        if (cart.getPaymentInfo() instanceof CheckoutComSepaPaymentInfoModel sepaPaymentInfo) {
             try {
-                sourceResponse = checkoutComPaymentIntegrationService.setUpPaymentSource(createSourceRequest(cart, sepaPaymentInfo));
+                sourceResponse = checkoutPaymentRequestServicesWrapper.checkoutComPaymentIntegrationService
+                    .setUpPaymentSource(createSourceRequest(cart, sepaPaymentInfo));
             } catch (final CheckoutComPaymentIntegrationException e) {
                 LOG.error("Error setting the payment source with checkout.com endpoint for sepa payment and cart [{}]", cart.getCode());
             }
@@ -154,7 +144,8 @@ public class CheckoutComSepaPaymentRequestStrategy extends CheckoutComAbstractAp
         sourceData.put(ACCOUNT_IBAN_KEY, sepaPaymentInfo.getAccountIban());
         sourceData.put(MANDATE_TYPE_KEY, sepaPaymentInfo.getPaymentType().getCode().toLowerCase());
 
-        final BillingDescriptor billingDescriptor = checkoutComMerchantConfigurationService.getBillingDescriptor();
+        final BillingDescriptor billingDescriptor = checkoutPaymentRequestServicesWrapper
+            .checkoutComMerchantConfigurationService.getBillingDescriptor();
         validateParameterNotNull(billingDescriptor, "BillingDescriptor cannot be null");
         sourceData.put(BILLING_DESCRIPTOR_KEY, billingDescriptor.getBillingDescriptorName());
         return sourceData;

@@ -29,6 +29,14 @@ import { CheckoutComApmAchAccountListModalComponent } from './checkout-com-apm-a
 import createSpy = jasmine.createSpy;
 
 @Component({
+  selector: 'lib-checkout-com-billing-address',
+  template: '',
+})
+class MockCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
+@Component({
   selector: 'cx-card',
   template: '',
 })

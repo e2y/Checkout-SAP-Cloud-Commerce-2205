@@ -20,7 +20,7 @@
                 formControlName="firstName"
               />
               <cx-form-errors
-                [control]="sepaForm.get('firstName')"
+                [control]="$any(sepaForm.get('firstName'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -38,7 +38,7 @@
                 formControlName="lastName"
               />
               <cx-form-errors
-                [control]="sepaForm.get('lastName')"
+                [control]="$any(sepaForm.get('lastName'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -62,7 +62,7 @@
                   >
                   </ng-select>
                   <cx-form-errors
-                    [control]="sepaForm.get('paymentType.code')"
+                    [control]="$any(sepaForm.get('paymentType.code'))"
                   ></cx-form-errors>
                 </label>
               </div>
@@ -82,7 +82,7 @@
                 formControlName="accountIban"
               />
               <cx-form-errors
-                [control]="sepaForm.get('accountIban')"
+                [control]="$any(sepaForm.get('accountIban'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -100,7 +100,7 @@
                 formControlName="addressLine1"
               />
               <cx-form-errors
-                [control]="sepaForm.get('addressLine1')"
+                [control]="$any(sepaForm.get('addressLine1'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -118,7 +118,7 @@
                 formControlName="addressLine2"
               />
               <cx-form-errors
-                [control]="sepaForm.get('addressLine2')"
+                [control]="$any(sepaForm.get('addressLine2'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -136,7 +136,7 @@
                 formControlName="city"
               />
               <cx-form-errors
-                [control]="sepaForm.get('city')"
+                [control]="$any(sepaForm.get('city'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -154,7 +154,7 @@
                 formControlName="postalCode"
               />
               <cx-form-errors [prefix]="'sepaForm.postalCode'"
-                [control]="sepaForm.get('postalCode')"
+                [control]="$any(sepaForm.get('postalCode'))"
               ></cx-form-errors>
             </label>
           </div>
@@ -179,7 +179,7 @@
                   >
                   </ng-select>
                   <cx-form-errors
-                    [control]="sepaForm.get('country.isocode')"
+                    [control]="$any(sepaForm.get('country.isocode'))"
                   ></cx-form-errors>
                 </label>
               </div>

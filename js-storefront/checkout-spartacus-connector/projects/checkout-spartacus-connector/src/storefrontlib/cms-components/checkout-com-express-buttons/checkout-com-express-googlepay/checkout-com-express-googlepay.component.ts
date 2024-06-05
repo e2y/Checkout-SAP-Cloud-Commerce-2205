@@ -20,6 +20,7 @@ import {
 } from '../../checkout-com-apm-component/checkout-com-apm-googlepay/checkout-com-apm-googlepay.component';
 import {getUserIdCartId} from '../../../../core/shared/get-user-cart-id';
 import {loadScript} from "../../../../core/shared/loadScript";
+import { GooglePayMerchantConfiguration, GooglePayPaymentRequest, IntermediatePaymentData } from '../../../../core/model/GooglePay';
 
 @Component({
   selector: 'lib-checkout-com-express-googlepay',
@@ -90,7 +91,7 @@ export class CheckoutComExpressGooglepayComponent extends CheckoutComApmGooglepa
       }
     }
   }
-  ngOnChanges(changes){
+  ngOnChanges(changes: { [x: string]: any; }){
     if(changes["newCart"] && this.newCart){
       this.newCart.pipe(
         takeUntil(this.drop)
@@ -148,31 +149,31 @@ export class CheckoutComExpressGooglepayComponent extends CheckoutComApmGooglepa
     this.checkoutComGooglePayService.getMerchantConfigurationFromState()
       .pipe(first(merchantConfiguration => merchantConfiguration !== undefined && Object.keys(merchantConfiguration).length > 0),
         takeUntil(this.drop))
-      .subscribe((merchantConfiguration) => {
+      .subscribe((merchantConfiguration: GooglePayMerchantConfiguration) => {
         let paymentClientData = merchantConfiguration;
         // clone the object, Rx objects are immutable deep
         paymentClientData = JSON.parse(JSON.stringify(merchantConfiguration));
-        const onPaymentDataChanged = (paymentData) => this.checkoutComGooglePayService.onPaymentDataChanged(cartId, userId, paymentData);
+        const onPaymentDataChanged = (paymentData: IntermediatePaymentData) => this.checkoutComGooglePayService.onPaymentDataChanged(cartId, userId, paymentData);
         paymentClientData.clientSettings.paymentDataCallbacks = {
           onPaymentDataChanged,
         };
         this.initExpressPaymentsClient(paymentClientData, userId, cartId);
 
-      }, err => console.error('initBtn with errors', {err}));
+      }, (err: any) => console.error('initBtn with errors', {err}));
   }
 
-  protected initExpressPaymentsClient(merchantConfiguration, userId: string, cartId: string) {
+  protected initExpressPaymentsClient(merchantConfiguration: any, userId: string, cartId: string) {
     // @ts-ignore
     this.paymentsClient = new google.payments.api.PaymentsClient(merchantConfiguration.clientSettings);
     const isReadyToPayRequest: object = this.checkoutComGooglePayService
       .createInitialPaymentRequest(merchantConfiguration, this.shippingAddressRequired);
     this.paymentsClient.isReadyToPay(isReadyToPayRequest)
-      .then(({result}) => {
+      .then(({result}: any) => {
         if (result) {
           this.authorisePayment(userId, cartId);
         }
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.error('failed to initialize googlepay', err);
       });
   }
@@ -182,17 +183,17 @@ export class CheckoutComExpressGooglepayComponent extends CheckoutComApmGooglepa
       .pipe(
         first(merchantConfiguration => merchantConfiguration !== undefined && Object.keys(merchantConfiguration).length > 0),
         takeUntil(this.drop)
-      ).subscribe((merchantConfiguration) => {
+      ).subscribe((merchantConfiguration: GooglePayMerchantConfiguration) => {
       const paymentDataRequest: any =
         this.checkoutComGooglePayService.addPaymentExpressIntents(
           this.checkoutComGooglePayService.createFullPaymentRequest(merchantConfiguration)
         );
 
       this.paymentsClient.loadPaymentData(paymentDataRequest)
-        .then((paymentRequest) => {
+        .then((paymentRequest: any) => {
           this.checkoutComGooglePayService.onPaymentAuthorized(cartId, userId, paymentRequest);
         })
-        .catch(function (err) {
+        .catch(function (err: any) {
           console.error(err);
         });
     }, err => console.error('authorisePayment with errors', {err}));

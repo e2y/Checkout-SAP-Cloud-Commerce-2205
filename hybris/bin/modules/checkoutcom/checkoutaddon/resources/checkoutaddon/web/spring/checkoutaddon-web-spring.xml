@@ -235,7 +235,6 @@
                 <entry key="CARD" value-ref="checkoutComCardPaymentDataFormValidator"/>
                 <entry key="ACH" value-ref="checkoutComAchPaymentDataFormValidator"/>
                 <entry key="FAWRY" value-ref="checkoutComFawryPaymentDataFormValidator"/>
-                <entry key="IDEAL" value-ref="checkoutComIdealPaymentDataFormValidator"/>
                 <entry key="KLARNA" value-ref="checkoutComKlarnaPaymentDataFormValidator"/>
                 <entry key="SEPA" value-ref="checkoutComSepaPaymentDataFormValidator"/>
                 <entry key="OXXO" value-ref="checkoutComOxxoPaymentDataFormValidator"/>
@@ -264,11 +263,6 @@
     <alias name="defaultCheckoutComFawryPaymentDataFormValidator" alias="checkoutComFawryPaymentDataFormValidator"/>
     <bean id="defaultCheckoutComFawryPaymentDataFormValidator"
           class="com.checkout.hybris.addon.validators.paymentform.CheckoutComFawryPaymentDataFormValidator"
-          parent="checkoutComAbstractPaymentDataFormValidValidator"/>
-
-    <alias name="defaultCheckoutComIdealPaymentDataFormValidator" alias="checkoutComIdealPaymentDataFormValidator"/>
-    <bean id="defaultCheckoutComIdealPaymentDataFormValidator"
-          class="com.checkout.hybris.addon.validators.paymentform.CheckoutComIdealPaymentDataFormValidator"
           parent="checkoutComAbstractPaymentDataFormValidValidator"/>
 
     <alias name="defaultCheckoutComKlarnaPaymentDataFormValidator" alias="checkoutComKlarnaPaymentDataFormValidator"/>

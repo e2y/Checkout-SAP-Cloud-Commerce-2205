@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller("CheckoutComAPMComponentController")
 @RequestMapping(value = "/view/CheckoutComAPMComponentController")
-public class CheckoutComAPMComponentController extends GenericCMSAddOnComponentController {
+public class CheckoutComAPMComponentController extends CheckoutComGenericCMSAddOnComponentController {
 
     protected static final String IS_AVAILABLE_MODEL_ATTRIBUTE = "isAvailable";
     protected static final String IS_REDIRECT_MODEL_ATTRIBUTE = "isRedirect";

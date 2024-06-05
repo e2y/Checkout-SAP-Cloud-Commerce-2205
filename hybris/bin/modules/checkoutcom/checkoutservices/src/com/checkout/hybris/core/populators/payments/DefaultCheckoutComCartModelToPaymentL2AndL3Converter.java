@@ -97,6 +97,7 @@ public class DefaultCheckoutComCartModelToPaymentL2AndL3Converter implements Che
 
     private Long populateShippingTaxAmount(final CartModel cart) {
         LOG.info("Populate shipping tax amount with your own implementation here");
+        LOG.info("Shipping tax amount for cart - {}", cart.getCode());
 
         return null;
     }

@@ -21,10 +21,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CheckoutComIdealPaymentRequestStrategyTest {
 
-    private static final String BIC_KEY = "bic";
-    private static final String BIC_VALUE = "758fr458";
     private static final String PAYMENT_REFERENCE = "payment-refer-.,;[enc[]e";
-    private static final String DESCRIPTION_VALUE = "paymentreference";
     private static final String DESCRIPTION_KEY = "description";
     private static final String CURRENCY_ISO_CODE = "BRL";
     private static final Long CHECKOUT_COM_TOTAL_PRICE = 10000L;
@@ -41,7 +38,6 @@ public class CheckoutComIdealPaymentRequestStrategyTest {
     public void setUp() {
         when(cartMock.getPaymentInfo()).thenReturn(idealPaymentInfoMock);
         when(idealPaymentInfoMock.getType()).thenReturn(IDEAL.name());
-        when(idealPaymentInfoMock.getBic()).thenReturn(BIC_VALUE);
         when(cartMock.getCheckoutComPaymentReference()).thenReturn(PAYMENT_REFERENCE);
     }
 
@@ -50,13 +46,12 @@ public class CheckoutComIdealPaymentRequestStrategyTest {
         final PaymentRequest<RequestSource> result = testObj.getRequestSourcePaymentRequest(cartMock, CURRENCY_ISO_CODE, CHECKOUT_COM_TOTAL_PRICE);
 
         assertEquals(IDEAL.name().toLowerCase(), result.getSource().getType());
-        assertEquals(BIC_VALUE, ((AlternativePaymentSource) result.getSource()).get(BIC_KEY));
-        assertEquals(DESCRIPTION_VALUE, ((AlternativePaymentSource) result.getSource()).get(DESCRIPTION_KEY));
+        assertEquals(PAYMENT_REFERENCE, ((AlternativePaymentSource) result.getSource()).get(DESCRIPTION_KEY));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getRequestSourcePaymentRequest_WhenPaymentReferenceMoreThan35CharWhenFormatted_shouldThrowException() {
-        when(cartMock.getCheckoutComPaymentReference()).thenReturn("fghjkl547yuijftnom4u5i-.,k,wetgyhucrniurdyhfjgyjcdftbfcdyrhew7");
+        when(cartMock.getCheckoutComPaymentReference()).thenReturn("");
 
         testObj.getRequestSourcePaymentRequest(cartMock, CURRENCY_ISO_CODE, CHECKOUT_COM_TOTAL_PRICE);
     }

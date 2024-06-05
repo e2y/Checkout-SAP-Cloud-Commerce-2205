@@ -1,12 +1,10 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, OnDestroy} from '@angular/core';
-import {ActiveCartService, CmsAddToCartComponent, MultiCartService, UserIdService, WindowRef} from '@spartacus/core';
-import {AddToCartComponent, CmsComponentData, CurrentProductService, ModalService} from '@spartacus/storefront';
-import {CheckoutComApplepayService, CheckoutComGooglepayService, getUserIdCartId} from 'checkout-spartacus-connector';
-import {combineLatest, Observable, of, Subject} from 'rxjs';
-import {filter, map, take, takeUntil} from 'rxjs/operators';
-import {
-  createApplePaySession
-} from "../../../../../checkout-spartacus-connector/src/core/services/applepay/applepay-session";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ActiveCartService, CmsAddToCartComponent, MultiCartService, UserIdService, WindowRef } from '@spartacus/core';
+import { AddToCartComponent, CmsComponentData, CurrentProductService, ModalService } from '@spartacus/storefront';
+import { CheckoutComApplepayService, CheckoutComGooglepayService, getUserIdCartId } from 'checkout-spartacus-connector';
+import { combineLatest, of, Subject } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { createApplePaySession } from '../../../../../checkout-spartacus-connector/src/core/services/applepay/applepay-session';
 
 @Component({
   selector: 'app-express-add-to-cart-component',
@@ -36,8 +34,10 @@ export class ExpressAddToCartComponent extends AddToCartComponent implements OnD
   }
 
   showApplePay() {
-    const ApplePaySession = createApplePaySession(this.windowRef);
-    this.applePay = !!(ApplePaySession && ApplePaySession.canMakePayments());
+    if (this.windowRef) {
+      const ApplePaySession = createApplePaySession(this.windowRef);
+      this.applePay = !!(ApplePaySession && ApplePaySession.canMakePayments());
+    }
   }
 
   ngOnDestroy(): void {
@@ -46,14 +46,18 @@ export class ExpressAddToCartComponent extends AddToCartComponent implements OnD
 
   public removeCart(): void {
     getUserIdCartId(this.userIdService, this.activeCartService)
-      .pipe(take(1),takeUntil(this.drop))
-      .subscribe(({userId, cartId}) => {
+      .pipe(take(1), takeUntil(this.drop))
+      .subscribe(({
+        userId,
+        cartId
+      }: { userId: string, cartId: string }) => {
         this.multiCartService.deleteCart(cartId, userId);
-      }, err => console.log('getUserIdCartId with errors', {err}));
+      }, err => console.log('getUserIdCartId with errors', { err }));
   }
 
   expressAddToCart(googlePay?: boolean) {
-    let removeCart = true, emptyCart = true;
+    let removeCart = true,
+      emptyCart = true;
     const quantity = this.addToCartForm.get('quantity').value;
     this.activeCartService
       .getEntries().pipe(
@@ -82,14 +86,17 @@ export class ExpressAddToCartComponent extends AddToCartComponent implements OnD
         take(1),
         takeUntil(this.drop),
       )
-      .subscribe(([_, {userId, cartId}]) => {
+      .subscribe(([_, {
+        userId,
+        cartId
+      }]) => {
         this.checkoutComGooglePayService.requestMerchantConfiguration(userId, cartId);
         this.checkoutComApplepayService.requestApplePayPaymentRequest(userId, cartId);
         if (googlePay) {
           this.loadPaymentGoogleConfigurationSuccess = of(true);
           this.cd.markForCheck();
         }
-      }, err => console.error('requesting payment request after add to cart with errors', {err}));
+      }, err => console.error('requesting payment request after add to cart with errors', { err }));
   }
 
   // We override the openModal function to request the ApplePay payment request after add to cart
@@ -104,9 +111,12 @@ export class ExpressAddToCartComponent extends AddToCartComponent implements OnD
         take(1),
         takeUntil(this.drop),
       )
-      .subscribe(([_, {userId, cartId}]) => {
+      .subscribe(([_, {
+        userId,
+        cartId
+      }]) => {
         this.checkoutComGooglePayService.requestMerchantConfiguration(userId, cartId);
         this.checkoutComApplepayService.requestApplePayPaymentRequest(userId, cartId);
-      }, err => console.error('requesting payment request after add to cart with errors', {err}));
+      }, err => console.error('requesting payment request after add to cart with errors', { err }));
   }
 }

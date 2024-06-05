@@ -18,7 +18,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -45,7 +45,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -73,7 +73,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -99,7 +99,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -126,7 +126,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -153,7 +153,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -180,7 +180,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -207,7 +207,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
@@ -234,7 +234,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
-        def address = createAddress(restClient, customer)
+        def address = createAddressWithOptions(restClient, customer)
         setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)

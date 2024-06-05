@@ -130,15 +130,6 @@ export const checkoutComTranslations = {
         }
       },
 
-      idealForm: {
-        bic: {
-          label: 'BIC',
-          placeholder: 'Enter your bank\'s BIC number',
-          pattern: 'BIC field is mandatory and must 8 or 11 characters long',
-          required: 'BIC field is mandatory and must 8 or 11 characters long'
-        }
-      },
-
       achAccountModal: {
         popupTitle: 'Please select an account from {{institution}}',
         submitButton: 'Place Order',
@@ -183,7 +174,6 @@ export const checkoutComTranslationChunkConfig = {
     'paymentCard',
     'paymentTypes',
     'sepaForm',
-    'idealForm',
     'paymentPdp',
     'achAccountModal'
   ]

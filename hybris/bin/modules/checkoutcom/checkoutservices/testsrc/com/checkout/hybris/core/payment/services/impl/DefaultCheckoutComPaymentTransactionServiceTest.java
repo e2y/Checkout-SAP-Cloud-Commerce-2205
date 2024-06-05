@@ -4,13 +4,10 @@ import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurati
 import com.checkout.hybris.core.model.CheckoutComAPMPaymentInfoModel;
 import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
-import com.checkout.sdk.payments.CardSourceResponse;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.commerceservices.order.CommercePaymentProviderStrategy;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
-import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.OrderModel;
-import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.payment.dto.TransactionStatus;
 import de.hybris.platform.payment.model.PaymentTransactionEntryModel;
 import de.hybris.platform.payment.model.PaymentTransactionModel;
@@ -47,12 +44,16 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
     private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
     private static final String PAYMENT_ID = "PAYMENT_ID";
     private static final Date CURRENT_DATE = new Date();
-    private static final String PAYMENT_REFERENCE = "PAYMENT-REFERENCE";
+    private static final String PAYMENT_REFERENCE = "000180031716810579970";
+    private static final String PAYMENT_REFERENCE_OLD = "0001800-31716810579970";
     private static final String PROVIDER = "PROVIDER";
     private static final BigDecimal AMOUNT = new BigDecimal(2000d);
     private static final String ACCEPTED_PAYMENT_STATUS = TransactionStatus.ACCEPTED.toString();
     private static final String SUCCESSFUL_TRANSACTION_STATUS_DETAILS = SUCCESFULL.toString();
-    private static final String PAYMENT_TRANSACTION_ENTRY_CODE = "PAYMENT-REFERENCE-AUTHORIZATION-1";
+    private static final String PAYMENT_TRANSACTION_ENTRY_CODE_OLD = "0001800-31716810579970-AUTHORIZATION-1";
+    private static final String PAYMENT_TRANSACTION_ENTRY_REFUND_CODE_OLD = "0001800-31716810579970-REFUND_FOLLOW_ON-1";
+    private static final String PAYMENT_TRANSACTION_ENTRY_CODE = "000180031716810579970-REFUND_FOLLOW_ON-1";
+    private static final String PAYMENT_TRANSACTION_ENTRY_REFUND_CODE = "000180031716810579970-AUTHORIZATION-1";
     private static final String ACTION_ID = "actionId";
 
     @Spy
@@ -62,8 +63,6 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private OrderModel orderMock;
     @Mock
-    private CartModel cartMock;
-    @Mock
     private CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationServiceMock;
     @Mock
     private TimeService timeServiceMock;
@@ -72,27 +71,22 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
     @Mock
     private CurrencyModel currencyModelMock;
     @Mock
-    private CheckoutComCreditCardPaymentInfoModel cardPaymentInfoMock, userPaymentInfo1Mock, userPaymentInfo2Mock;
+    private CheckoutComCreditCardPaymentInfoModel cardPaymentInfoMock;
     @Mock
     private PaymentTransactionModel paymentTransaction1Mock, paymentTransaction2Mock;
     @Mock
     private CommercePaymentProviderStrategy commercePaymentProviderStrategyMock;
     @Mock
     private PaymentTransactionEntryModel authorisationEntryMock, captureEntryMock, capturePaymentTransactionEntryMock,
-            capturePendingPaymentTransactionEntryMock, rejectedAuthorizationPaymentTransactionEntryMock,
             acceptedAuthorizationPaymentTransactionEntryMock, reviewAuthorizationPaymentTransactionEntryMock,
             refundPaymentTransactionEntry1Mock, refundPaymentTransactionEntry2Mock,
-            cancelPaymentTransactionEntryMock, authorizationPendingPaymentTransactionEntryMock;
+            authorizationPendingPaymentTransactionEntryMock;
     @Mock
     private CheckoutComPaymentEventModel paymentEventMock;
     @Captor
     private ArgumentCaptor<PaymentTransactionEntryModel> paymentTransactionEntryModelCaptor;
     @Mock
     private CheckoutComAPMPaymentInfoModel apmPaymentInfoMock;
-    @Mock
-    private CardSourceResponse sourceMock;
-    @Mock
-    private CustomerModel userMock;
 
     @Before
     public void setUp() {
@@ -251,8 +245,29 @@ public class DefaultCheckoutComPaymentTransactionServiceTest {
     }
 
     @Test
-    public void getPaymentReferenceFromTransactionEntryCode_WhenPaymentTransactionCodeIsPresent_ShouldReturnThePaymentReference() {
+    public void getPaymentReferenceFromTransactionEntryCode_WhenPaymentAuthorisationTransactionCodeIsPresent_ShouldReturnThePaymentReference() {
         final String result = testObj.getPaymentReferenceFromTransactionEntryCode(PAYMENT_TRANSACTION_ENTRY_CODE);
+
+        assertEquals(PAYMENT_REFERENCE, result);
+    }
+
+    @Test
+    public void getPaymentReferenceFromTransactionEntryCode_WhenPaymentOldAuthorisationTransactionCodeIsPresent_ShouldReturnThePaymentReference() {
+        final String result = testObj.getPaymentReferenceFromTransactionEntryCode(PAYMENT_TRANSACTION_ENTRY_CODE_OLD);
+
+        assertEquals(PAYMENT_REFERENCE_OLD, result);
+    }
+
+    @Test
+    public void getPaymentReferenceFromTransactionEntryCode_WhenPaymentOldRefundTransactionCodeIsPresent_ShouldReturnThePaymentReference() {
+        final String result = testObj.getPaymentReferenceFromTransactionEntryCode(PAYMENT_TRANSACTION_ENTRY_REFUND_CODE_OLD);
+
+        assertEquals(PAYMENT_REFERENCE_OLD, result);
+    }
+
+    @Test
+    public void getPaymentReferenceFromTransactionEntryCode_WhenPaymentRefundTransactionCodeIsPresent_ShouldReturnThePaymentReference() {
+        final String result = testObj.getPaymentReferenceFromTransactionEntryCode(PAYMENT_TRANSACTION_ENTRY_REFUND_CODE);
 
         assertEquals(PAYMENT_REFERENCE, result);
     }

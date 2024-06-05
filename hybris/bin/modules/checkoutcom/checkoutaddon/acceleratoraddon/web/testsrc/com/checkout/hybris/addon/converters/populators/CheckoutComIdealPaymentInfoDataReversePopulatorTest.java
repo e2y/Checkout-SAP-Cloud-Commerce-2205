@@ -3,7 +3,6 @@ package com.checkout.hybris.addon.converters.populators;
 import com.checkout.hybris.addon.forms.PaymentDataForm;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.facades.beans.IdealPaymentInfoData;
-import com.google.common.collect.ImmutableMap;
 import de.hybris.bootstrap.annotations.UnitTest;
 import org.junit.Test;
 
@@ -19,12 +18,9 @@ public class CheckoutComIdealPaymentInfoDataReversePopulatorTest {
 
     @Test
     public void populate_ShouldPopulateTargetCorrectly() {
-        source.setFormAttributes(ImmutableMap.of("bic", "68453120000"));
-
         testObj.populate(source, target);
 
         assertEquals(CheckoutComPaymentType.IDEAL.name(), target.getType());
-        assertEquals("68453120000", target.getBic());
     }
 
     @Test(expected = IllegalArgumentException.class)

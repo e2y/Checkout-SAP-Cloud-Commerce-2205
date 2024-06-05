@@ -7,8 +7,6 @@ import de.hybris.platform.converters.Populator;
 import de.hybris.platform.servicelayer.dto.converter.ConversionException;
 import org.springframework.util.Assert;
 
-import java.util.Map;
-
 /**
  * Populates the required attributes of the {@link com.checkout.hybris.facades.beans.IdealPaymentInfoData}
  */
@@ -22,9 +20,6 @@ public class CheckoutComIdealPaymentInfoDataReversePopulator implements Populato
         Assert.notNull(source, "PaymentDataForm cannot be null.");
         Assert.notNull(target, "IdealPaymentInfoData cannot be null.");
 
-        final Map<String, Object> formAttributes = source.getFormAttributes();
-
         target.setType(CheckoutComPaymentType.IDEAL.name());
-        target.setBic((String) formAttributes.get("bic"));
     }
 }

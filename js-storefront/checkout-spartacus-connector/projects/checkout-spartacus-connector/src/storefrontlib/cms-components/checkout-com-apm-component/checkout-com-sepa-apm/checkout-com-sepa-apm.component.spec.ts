@@ -10,6 +10,14 @@ import { FormErrorsModule } from '@spartacus/storefront';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StoreModule } from '@ngrx/store';
 import { PaymentType } from '../../../../core/model/ApmData';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'cx-spinner',
+  template: '',
+})
+class MockSpinnerComponent {
+}
 
 
 class MockUserPaymentService {
@@ -34,7 +42,7 @@ describe('CheckoutComSepaApmComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckoutComSepaApmComponent],
+      declarations: [CheckoutComSepaApmComponent, MockSpinnerComponent],
       providers: [
         FormBuilder,
         {provide: UserPaymentService, useClass: MockUserPaymentService},

@@ -1,11 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckoutComApmOxxoComponent } from './checkout-com-apm-oxxo.component';
-import { I18nTestingModule, Address } from '@spartacus/core';
+import { Address, I18nTestingModule } from '@spartacus/core';
 import { FormErrorsModule } from '@spartacus/storefront';
-import { ReactiveFormsModule, FormGroup, Validators, FormControl } from '@angular/forms';
-import { PaymentType } from '../../../../core/model/ApmData';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { timeout } from 'rxjs/operators';
+import { CheckoutComBillingAddressComponent } from '../../checkout-com-billing-address/checkout-com-billing-address.component';
+import { PaymentType } from '../../../../core/model/ApmData';
+import { Component, Input, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Component({
+  template: '',
+  selector: 'lib-checkout-com-billing-address',
+})
+class MockLibCheckoutComBillingAddressComponent {
+  @Input() billingAddressForm: FormGroup;
+  @Output() sameAsShippingAddressChange = new BehaviorSubject<boolean>(true);
+}
 
 function expectSubmitButtonIsDisabled(disabled) {
   expect(document.querySelector('button[data-test-id="oxxo-continue-btn"]')['disabled']).toEqual(disabled);
@@ -19,7 +31,7 @@ describe('CheckoutComApmOxxoComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [I18nTestingModule, FormErrorsModule, ReactiveFormsModule],
-      declarations: [CheckoutComApmOxxoComponent]
+      declarations: [CheckoutComApmOxxoComponent, MockLibCheckoutComBillingAddressComponent]
     }).compileComponents();
   });
 
@@ -66,7 +78,10 @@ describe('CheckoutComApmOxxoComponent', () => {
 
     component.setPaymentDetails.subscribe((event) => {
       expect(event.billingAddress).toBeNull();
-      expect(event.paymentDetails).toEqual({type: PaymentType.Oxxo, document: docId});
+      expect(event.paymentDetails).toEqual({
+        type: PaymentType.Oxxo,
+        document: docId
+      });
 
       done();
     });
@@ -94,10 +109,12 @@ describe('CheckoutComApmOxxoComponent', () => {
   it('should not call setPaymentDetails event if billing address is not valid', (done) => {
     component.documentCtrl.setValue(docId);
     component.sameAsShippingAddress = false;
-    component.setPaymentDetails.pipe(timeout(2)).subscribe({error: (err) => {
-      expect(err.message).toEqual('Timeout has occurred');
-      done();
-    }});
+    component.setPaymentDetails.pipe(timeout(2)).subscribe({
+      error: (err) => {
+        expect(err.message).toEqual('Timeout has occurred');
+        done();
+      }
+    });
     const billingAddress = {
       firstName: 'John',
       lastName: '',
@@ -108,19 +125,24 @@ describe('CheckoutComApmOxxoComponent', () => {
   });
 
   it('should detect invalid document ids', (done) => {
-    component.documentCtrl.setValue("222");
+    component.documentCtrl.setValue('222');
 
     component.next();
 
     expectSubmitButtonIsDisabled(true);
 
-    component.setPaymentDetails.pipe(timeout(2)).subscribe({error: (err) => {
+    component.setPaymentDetails.pipe(timeout(2)).subscribe({
+      error: (err) => {
         expect(err.message).toEqual('Timeout has occurred');
         done();
-      }});
+      }
+    });
 
-    const {dirty, touched} = component.form.get('document');
+    const {
+      dirty,
+      touched
+    } = component.form.get('document');
     expect(dirty).toBeTruthy();
     expect(touched).toBeTruthy();
-  })
+  });
 });

@@ -1,17 +1,12 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComCreditCardPaymentInfoModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
-
 import com.checkout.sdk.payments.*;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import de.hybris.platform.core.model.user.AddressModel;
@@ -27,16 +22,12 @@ import static java.lang.String.format;
  */
 public class CheckoutComCardPaymentRequestStrategy extends CheckoutComAbstractPaymentRequestStrategy implements CheckoutComPaymentRequestStrategy {
 
-    public CheckoutComCardPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                 final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                 final CheckoutComCurrencyService checkoutComCurrencyService,
+    public CheckoutComCardPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                  final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                 final CMSSiteService cmsSiteService,
-                                                 final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                 final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper) {
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+            checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesWrapper);
     }
 
     /**
@@ -52,7 +43,8 @@ public class CheckoutComCardPaymentRequestStrategy extends CheckoutComAbstractPa
      */
     @Override
     protected Optional<Boolean> isCapture() {
-        return Optional.of(checkoutComMerchantConfigurationService.getPaymentAction().equals(AUTHORIZE_AND_CAPTURE));
+        return Optional.of(checkoutPaymentRequestServicesWrapper.checkoutComMerchantConfigurationService
+            .getPaymentAction().equals(AUTHORIZE_AND_CAPTURE));
     }
 
     /**
@@ -62,9 +54,8 @@ public class CheckoutComCardPaymentRequestStrategy extends CheckoutComAbstractPa
     protected PaymentRequest<RequestSource> getRequestSourcePaymentRequest(final CartModel cart,
                                                                            final String currencyIsoCode, final Long amount) {
         final PaymentInfoModel paymentInfo = cart.getPaymentInfo();
-        if (paymentInfo instanceof CheckoutComCreditCardPaymentInfoModel) {
+        if (paymentInfo instanceof CheckoutComCreditCardPaymentInfoModel checkoutComCreditCardPaymentInfo) {
 
-            final CheckoutComCreditCardPaymentInfoModel checkoutComCreditCardPaymentInfo = (CheckoutComCreditCardPaymentInfoModel) paymentInfo;
             if (paymentInfo.isSaved() && checkoutComCreditCardPaymentInfo.getSubscriptionId() != null) {
                 return createIdSourcePaymentRequest(checkoutComCreditCardPaymentInfo, currencyIsoCode, amount);
             } else {
@@ -110,8 +101,10 @@ public class CheckoutComCardPaymentRequestStrategy extends CheckoutComAbstractPa
     @Override
     protected Optional<ThreeDSRequest> createThreeDSRequest() {
         final ThreeDSRequest threeDSRequest = new ThreeDSRequest();
-        threeDSRequest.setEnabled(checkoutComMerchantConfigurationService.isThreeDSEnabled());
-        threeDSRequest.setAttemptN3D(checkoutComMerchantConfigurationService.isAttemptNoThreeDSecure());
+        threeDSRequest.setEnabled(checkoutPaymentRequestServicesWrapper
+            .checkoutComMerchantConfigurationService.isThreeDSEnabled());
+        threeDSRequest.setAttemptN3D(checkoutPaymentRequestServicesWrapper
+            .checkoutComMerchantConfigurationService.isAttemptNoThreeDSecure());
         return Optional.of(threeDSRequest);
     }
 }

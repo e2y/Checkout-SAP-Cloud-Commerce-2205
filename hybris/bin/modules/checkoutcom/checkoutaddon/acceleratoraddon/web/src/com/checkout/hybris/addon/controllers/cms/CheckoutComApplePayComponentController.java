@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @Controller("CheckoutComApplePayComponentController")
 @RequestMapping(value = "/view/CheckoutComApplePayComponentController")
-public class CheckoutComApplePayComponentController extends GenericCMSAddOnComponentController {
+public class CheckoutComApplePayComponentController extends CheckoutComGenericCMSAddOnComponentController {
 
     protected static final Logger LOG = LogManager.getLogger(CheckoutComApplePayComponentController.class);
 

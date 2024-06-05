@@ -19,11 +19,11 @@
 	<div class="cx-dialog-body modal-body">
 		<div class="container">
 			<ng-container *ngIf="achAccountList">
-				<ng-container *ngFor="let accountType of achAccountList | keyvalue;">
+				<ng-container *ngFor="let accountType of Object.keys(achAccountList)">
 					<div class="cx-ach-account-list-group">
-						<h4 class="ch-ach-account-type-title text-muted">{{accountType.key}}</h4>
+						<h4 class="ch-ach-account-type-title text-muted">{{accountType}}</h4>
 						<ul class="cx-list-group">
-							<ng-container *ngFor="let account of accountType.value">
+							<ng-container *ngFor="let account of achAccountList[accountType]">
 								<li class="cx-list-group-item" id="item-{{account.id}}">
 									<div class="form-group">
 										<div class="form-check">

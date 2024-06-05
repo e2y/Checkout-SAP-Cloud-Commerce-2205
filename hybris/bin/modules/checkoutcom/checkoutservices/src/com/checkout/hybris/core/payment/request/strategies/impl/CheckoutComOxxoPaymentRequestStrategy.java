@@ -1,8 +1,6 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComAPMConfigurationModel;
 import com.checkout.hybris.core.model.CheckoutComOxxoConfigurationModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
@@ -10,11 +8,9 @@ import com.checkout.hybris.core.payment.oxxo.service.CheckoutComOxxoPaymentReque
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
 import com.checkout.sdk.payments.AlternativePaymentSource;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.payment.PaymentInfoModel;
 import de.hybris.platform.core.model.user.AddressModel;
@@ -29,7 +25,6 @@ import static de.hybris.platform.servicelayer.util.ServicesUtil.validateParamete
 /**
  * specific {@link CheckoutComPaymentRequestStrategy} implementation for Oxxo apm payments
  */
-@SuppressWarnings("java:S107")
 public class CheckoutComOxxoPaymentRequestStrategy extends CheckoutComAbstractApmPaymentRequestStrategy {
 
     protected static final String INTEGRATION_TYPE_KEY = "integration_type";
@@ -39,17 +34,13 @@ public class CheckoutComOxxoPaymentRequestStrategy extends CheckoutComAbstractAp
 
     protected final CheckoutComOxxoPaymentRequestService checkoutComOxxoPaymentRequestService;
 
-    public CheckoutComOxxoPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                 final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                 final CheckoutComCurrencyService checkoutComCurrencyService,
+    public CheckoutComOxxoPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                  final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                 final CMSSiteService cmsSiteService,
-                                                 final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
                                                  final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                 final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper,
                                                  final CheckoutComOxxoPaymentRequestService checkoutComOxxoPaymentRequestService) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+            checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesWrapper);
         this.checkoutComOxxoPaymentRequestService = checkoutComOxxoPaymentRequestService;
     }
 

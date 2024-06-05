@@ -1,21 +1,17 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
 import com.checkout.hybris.core.address.strategies.CheckoutComPhoneNumberStrategy;
-import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
 import com.checkout.hybris.core.klarna.request.KlarnaAddressDto;
 import com.checkout.hybris.core.klarna.session.request.KlarnaProductRequestDto;
-import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComKlarnaAPMPaymentInfoModel;
 import com.checkout.hybris.core.payment.enums.CheckoutComPaymentType;
 import com.checkout.hybris.core.payment.request.mappers.CheckoutComPaymentRequestStrategyMapper;
 import com.checkout.hybris.core.payment.request.strategies.CheckoutComPaymentRequestStrategy;
 import com.checkout.hybris.core.populators.payments.CheckoutComCartModelToPaymentL2AndL3Converter;
-import com.checkout.hybris.core.url.services.CheckoutComUrlService;
 import com.checkout.sdk.payments.AlternativePaymentSource;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
-import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.AddressModel;
 import de.hybris.platform.core.model.user.CustomerModel;
@@ -44,17 +40,13 @@ public class CheckoutComKlarnaPaymentRequestStrategy extends CheckoutComAbstract
 
     protected final Converter<CartModel, List<KlarnaProductRequestDto>> checkoutComKlarnaProductsRequestDtoConverter;
 
-    public CheckoutComKlarnaPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                   final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                   final CheckoutComCurrencyService checkoutComCurrencyService,
+    public CheckoutComKlarnaPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                    final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                   final CMSSiteService cmsSiteService,
-                                                   final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
                                                    final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                   final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper,
                                                    final Converter<CartModel, List<KlarnaProductRequestDto>> checkoutComKlarnaProductsRequestDtoConverter) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+            checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesWrapper);
         this.checkoutComKlarnaProductsRequestDtoConverter = checkoutComKlarnaProductsRequestDtoConverter;
     }
 
@@ -92,7 +84,8 @@ public class CheckoutComKlarnaPaymentRequestStrategy extends CheckoutComAbstract
         source.put(BILLING_ADDRESS_KEY, createAddressDto(billingAddress, customer.getContactEmail()));
         source.put(SHIPPING_ADDRESS_KEY, createAddressDto(cart.getDeliveryAddress(), customer.getContactEmail()));
 
-        source.put(TAX_AMOUNT_KEY, checkoutComCurrencyService.convertAmountIntoPennies(currencyCode, cart.getTotalTax()));
+        source.put(TAX_AMOUNT_KEY, checkoutPaymentRequestServicesWrapper.checkoutComCurrencyService
+            .convertAmountIntoPennies(currencyCode, cart.getTotalTax()));
         source.put(MERCHANT_REFERENCE_KEY, cart.getCheckoutComPaymentReference());
 
         source.put(PRODUCTS_KEY, checkoutComKlarnaProductsRequestDtoConverter.convert(cart));

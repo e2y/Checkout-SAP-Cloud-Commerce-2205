@@ -27,16 +27,12 @@ public class CheckoutComMadaPaymentRequestStrategy extends CheckoutComCardPaymen
 
     protected static final String MADA_VALUE = "mada";
 
-    public CheckoutComMadaPaymentRequestStrategy(final CheckoutComUrlService checkoutComUrlService,
-                                                 final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
-                                                 final CheckoutComCurrencyService checkoutComCurrencyService,
+    public CheckoutComMadaPaymentRequestStrategy(final CheckoutComPhoneNumberStrategy checkoutComPhoneNumberStrategy,
                                                  final CheckoutComPaymentRequestStrategyMapper checkoutComPaymentRequestStrategyMapper,
-                                                 final CMSSiteService cmsSiteService,
-                                                 final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService,
-                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter) {
-        super(checkoutComUrlService, checkoutComPhoneNumberStrategy, checkoutComCurrencyService,
-              checkoutComPaymentRequestStrategyMapper, cmsSiteService, checkoutComMerchantConfigurationService,
-              checkoutComCartModelToPaymentL2AndL3Converter);
+                                                 final CheckoutComCartModelToPaymentL2AndL3Converter checkoutComCartModelToPaymentL2AndL3Converter,
+                                                 final CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapper) {
+        super(checkoutComPhoneNumberStrategy, checkoutComPaymentRequestStrategyMapper,
+            checkoutComCartModelToPaymentL2AndL3Converter, checkoutPaymentRequestServicesWrapper);
     }
 
     /**

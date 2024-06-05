@@ -23,12 +23,10 @@ public class CheckoutComIdealPaymentDetailsDTOToIdealPaymentInfoDataPopulatorTes
 
     @Test
     public void populate_ShouldPopulateTargetCorrectly() {
-        source.setBic("68453120000");
 
         testObj.populate(source, target);
 
         assertEquals(CheckoutComPaymentType.IDEAL.name(), target.getType());
-        assertEquals("68453120000", target.getBic());
     }
 
     @Test(expected = IllegalArgumentException.class)

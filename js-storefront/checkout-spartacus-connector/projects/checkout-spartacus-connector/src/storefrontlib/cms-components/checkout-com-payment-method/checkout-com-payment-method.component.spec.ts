@@ -1,17 +1,8 @@
-import { Component, Input, Type } from '@angular/core';
+import { Component, Input, Output, Type } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import {
-  ActiveCartService,
-  Address,
-  GlobalMessageService,
-  GlobalMessageType,
-  I18nTestingModule,
-  PaymentDetails,
-  UserIdService,
-  UserPaymentService,
-} from '@spartacus/core';
+import { ActiveCartService, Address, GlobalMessageService, GlobalMessageType, I18nTestingModule, PaymentDetails, UserIdService, UserPaymentService, } from '@spartacus/core';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CheckoutComPaymentMethodComponent } from './checkout-com-payment-method.component';
@@ -21,8 +12,8 @@ import { CheckoutComPaymentDetails } from '../../interfaces';
 import { CheckoutComApmService } from '../../../core/services/checkout-com-apm.service';
 import { ApmData, PaymentType } from '../../../core/model/ApmData';
 import { CheckoutStepService } from '@spartacus/checkout/components';
-import createSpy = jasmine.createSpy;
 import { CheckoutDeliveryFacade, CheckoutFacade, CheckoutPaymentFacade } from '@spartacus/checkout/root';
+import createSpy = jasmine.createSpy;
 
 @Component({
   selector: 'cx-icon',
@@ -30,6 +21,15 @@ import { CheckoutDeliveryFacade, CheckoutFacade, CheckoutPaymentFacade } from '@
 })
 class MockCxIconComponent {
   @Input() type: ICON_TYPE;
+}
+
+@Component({
+  selector: 'lib-checkout-com-apm',
+  template: '',
+})
+class MockCheckoutComApmComponent {
+  @Output() setPaymentDetails: any;
+  @Input() processing: any;
 }
 
 const mockPaymentDetails: PaymentDetails = {
@@ -46,7 +46,8 @@ const mockPaymentDetails: PaymentDetails = {
 };
 
 class MockUserPaymentService {
-  loadPaymentMethods(): void {}
+  loadPaymentMethods(): void {
+  }
 
   getPaymentMethods(): Observable<PaymentDetails[]> {
     return of();
@@ -69,13 +70,14 @@ class MockCheckoutPaymentFacade {
     return of(mockPaymentDetails);
   }
 
-  paymentProcessSuccess() {}
+  paymentProcessSuccess() {
+  }
 }
 
 class MockCheckoutComPaymentService {
   setPaymentDetails = createSpy();
   createPaymentDetails = createSpy().and.returnValue(of(mockPaymentDetails));
-  updatePaymentAddress = createSpy().and.returnValue(of({line1: 'test'}));
+  updatePaymentAddress = createSpy().and.returnValue(of({ line1: 'test' }));
 
   getPaymentAddressFromState() {
     return of({});
@@ -85,7 +87,8 @@ class MockCheckoutComPaymentService {
     return of(mockPaymentDetails);
   }
 
-  paymentProcessSuccess() {}
+  paymentProcessSuccess() {
+  }
 }
 
 class MockCheckoutDeliveryFacade {
@@ -128,6 +131,7 @@ class MockUserIdService {
     return of('current');
   }
 }
+
 class MockCheckoutComApmService {
   getSelectedApmFromState() {
     return of({
@@ -144,12 +148,16 @@ const mockAddress: Address = {
   line1: 'Toyosaki 2 create on cart',
   line2: 'line2',
   town: 'town',
-  region: {isocode: 'JP-27'},
+  region: { isocode: 'JP-27' },
   postalCode: 'zip',
-  country: {isocode: 'JP'},
+  country: { isocode: 'JP' },
 };
 
-const mockCheckoutComPaymentDetails: CheckoutComPaymentDetails = {...mockPaymentDetails, cardBin: null, billingAddress: mockAddress};
+const mockCheckoutComPaymentDetails: CheckoutComPaymentDetails = {
+  ...mockPaymentDetails,
+  cardBin: null,
+  billingAddress: mockAddress
+};
 
 @Component({
   selector: 'lib-checkout-com-payment-form',
@@ -168,7 +176,8 @@ class MockPaymentFormComponent {
   selector: 'cx-spinner',
   template: '',
 })
-class MockSpinnerComponent {}
+class MockSpinnerComponent {
+}
 
 describe('CheckoutComPaymentMethodComponent', () => {
   let component: CheckoutComPaymentMethodComponent;
@@ -193,8 +202,14 @@ describe('CheckoutComPaymentMethodComponent', () => {
           MockCxIconComponent,
         ],
         providers: [
-          {provide: UserPaymentService, useClass: MockUserPaymentService},
-          {provide: CheckoutFacade, useClass: MockCheckoutFacade},
+          {
+            provide: UserPaymentService,
+            useClass: MockUserPaymentService
+          },
+          {
+            provide: CheckoutFacade,
+            useClass: MockCheckoutFacade
+          },
           {
             provide: CheckoutDeliveryFacade,
             useClass: MockCheckoutDeliveryFacade,
@@ -215,10 +230,22 @@ describe('CheckoutComPaymentMethodComponent', () => {
             provide: CheckoutComPaymentService,
             useClass: MockCheckoutComPaymentService,
           },
-          {provide: GlobalMessageService, useClass: MockGlobalMessageService},
-          {provide: CheckoutStepService, useClass: MockCheckoutStepService},
-          {provide: ActivatedRoute, useValue: mockActivatedRoute},
-          {provide: CheckoutComApmService, useClass: MockCheckoutComApmService},
+          {
+            provide: GlobalMessageService,
+            useClass: MockGlobalMessageService
+          },
+          {
+            provide: CheckoutStepService,
+            useClass: MockCheckoutStepService
+          },
+          {
+            provide: ActivatedRoute,
+            useValue: mockActivatedRoute
+          },
+          {
+            provide: CheckoutComApmService,
+            useClass: MockCheckoutComApmService
+          },
         ],
       }).compileComponents();
 
@@ -370,11 +397,11 @@ describe('CheckoutComPaymentMethodComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
       fixture.debugElement
-             .queryAll(By.css('button'))
-             .filter(
-               (btn) => btn.nativeElement.innerText === 'paymentForm.addNewPayment'
-             )[0]
-      .nativeElement.click();
+        .queryAll(By.css('button'))
+        .filter(
+          (btn) => btn.nativeElement.innerText === 'paymentForm.addNewPayment'
+        )[0]
+        .nativeElement.click();
       fixture.detectChanges();
 
       expect(fixture.debugElement.queryAll(By.css('cx-card')).length).toEqual(
@@ -389,10 +416,10 @@ describe('CheckoutComPaymentMethodComponent', () => {
     it('should have enabled button when there is selected method', () => {
       const getContinueButton = () => {
         return fixture.debugElement
-                      .queryAll(By.css('button'))
-                      .filter(
-                        (btn) => btn.nativeElement.innerText === 'common.continue'
-                      )[0];
+          .queryAll(By.css('button'))
+          .filter(
+            (btn) => btn.nativeElement.innerText === 'common.continue'
+          )[0];
       };
       const selectedPaymentMethod = new BehaviorSubject<PaymentDetails>(null);
       spyOn(mockUserPaymentService, 'getPaymentMethodsLoading').and.returnValue(
@@ -445,7 +472,10 @@ describe('CheckoutComPaymentMethodComponent', () => {
         textBold: 'Name',
         text: ['123456789', 'Expires'],
         img: 'CREDIT_CARD',
-        actions: [{name: 'Use this payment', event: 'send'}],
+        actions: [{
+          name: 'Use this payment',
+          event: 'send'
+        }],
         header: 'Selected',
       });
     });
@@ -477,9 +507,9 @@ describe('CheckoutComPaymentMethodComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
       fixture.debugElement
-             .queryAll(By.css('cx-card'))[1]
-      .query(By.css('.btn-link'))
-      .nativeElement.click();
+        .queryAll(By.css('cx-card'))[1]
+        .query(By.css('.btn-link'))
+        .nativeElement.click();
 
       expect(mockCheckoutPaymentFacade.setPaymentDetails).toHaveBeenCalledWith(
         mockPayments[1]
@@ -544,13 +574,13 @@ describe('CheckoutComPaymentMethodComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
       fixture.debugElement
-             .queryAll(By.css('button'))
-             .filter((btn) => btn.nativeElement.innerText === 'common.back')[0]
-      .nativeElement.click();
+        .queryAll(By.css('button'))
+        .filter((btn) => btn.nativeElement.innerText === 'common.back')[0]
+        .nativeElement.click();
       fixture.detectChanges();
 
       expect(checkoutStepService.back).toHaveBeenCalledWith(
-        <any> mockActivatedRoute
+        <any>mockActivatedRoute
       );
     });
 
@@ -575,7 +605,7 @@ describe('CheckoutComPaymentMethodComponent', () => {
       expect(mockGlobalMessageService.add).toHaveBeenCalledWith(
         {
           key: 'paymentMethods.invalidField',
-          params: {field: 'cvv'},
+          params: { field: 'cvv' },
         },
         GlobalMessageType.MSG_TYPE_ERROR
       );
@@ -592,6 +622,6 @@ describe('CheckoutComPaymentMethodComponent', () => {
 
       expect(apm.code).toBe(PaymentType.Card);
       expect(component.isCardPayment).toBeTrue();
-    })
+    });
   });
 });

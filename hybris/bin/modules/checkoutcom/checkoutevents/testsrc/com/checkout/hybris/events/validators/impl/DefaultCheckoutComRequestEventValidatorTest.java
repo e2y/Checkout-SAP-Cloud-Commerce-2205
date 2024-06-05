@@ -1,14 +1,15 @@
 package com.checkout.hybris.events.validators.impl;
 
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
+import com.checkout.hybris.events.beans.CheckoutComPaymentEventObject;
 import com.checkout.hybris.events.services.CheckoutComPaymentEventService;
-import com.google.gson.Gson;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.basecommerce.model.site.BaseSiteModel;
 import de.hybris.platform.site.BaseSiteService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -17,7 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.servlet.http.HttpServletRequest;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +60,8 @@ public class DefaultCheckoutComRequestEventValidatorTest {
         eventBody = createEventBody();
         emptyEventBody = createEventBodyEmpty();
 
-        when(checkoutComPaymentEventServiceMock.getSiteIdForTheEvent(new Gson().fromJson(eventBody, Map.class))).thenReturn(SITE_ID);
+        final ArgumentCaptor<CheckoutComPaymentEventObject> objectCaptor = ArgumentCaptor.forClass(CheckoutComPaymentEventObject.class);
+        when(checkoutComPaymentEventServiceMock.getSiteIdForTheEvent(objectCaptor.capture())).thenReturn(SITE_ID);
         when(checkoutComMerchantConfigurationServiceMock.getSecretKey()).thenReturn(SECRET_KEY);
         when(checkoutComMerchantConfigurationServiceMock.getSignatureKey()).thenReturn(SIGNATURE_KEY);
         when(httpServletRequestMock.getHeader(HEADER_CKO_SIGNATURE)).thenReturn(SECRET_KEY_MESSAGE_HASH);

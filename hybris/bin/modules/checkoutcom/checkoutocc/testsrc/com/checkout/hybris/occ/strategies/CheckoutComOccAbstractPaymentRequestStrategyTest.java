@@ -1,5 +1,6 @@
 package com.checkout.hybris.occ.strategies;
 
+import com.checkout.hybris.core.payment.request.strategies.impl.CheckoutPaymentRequestServicesWrapper;
 import com.checkout.hybris.core.url.services.CheckoutComUrlService;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
@@ -29,13 +30,16 @@ public class CheckoutComOccAbstractPaymentRequestStrategyTest {
     private CheckoutComOccAbstractPaymentRequestStrategy testObj;
 
     @Mock
+    private CheckoutPaymentRequestServicesOccWrapper checkoutPaymentRequestServicesOccWrapperMock;
+    @Mock
     private CheckoutComUrlService checkoutComUrlServiceMock;
     @Mock
     private PaymentRequest<RequestSource> requestMock;
 
     @Before
     public void setUp() {
-        ReflectionTestUtils.setField(testObj, "checkoutComUrlService", checkoutComUrlServiceMock);
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesOccWrapper", checkoutPaymentRequestServicesOccWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesOccWrapperMock, "checkoutComOccUrlService", checkoutComUrlServiceMock);
     }
     @Test
     public void populateRedirectUrls_ShouldSetOccRedirectUrls() {

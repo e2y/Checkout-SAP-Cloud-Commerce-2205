@@ -1,8 +1,8 @@
 package com.checkout.hybris.core.payment.request.strategies.impl;
 
-import com.checkout.sdk.common.Address;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComApplePayPaymentInfoModel;
+import com.checkout.sdk.common.Address;
 import com.checkout.sdk.payments.PaymentRequest;
 import com.checkout.sdk.payments.RequestSource;
 import com.checkout.sdk.payments.TokenSource;
@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -37,7 +38,8 @@ public class CheckoutComApplePayPaymentRequestStrategyTest {
     @Spy
     @InjectMocks
     private CheckoutComApplePayPaymentRequestStrategy testObj;
-
+    @Mock
+    private CheckoutPaymentRequestServicesWrapper checkoutPaymentRequestServicesWrapperMock;
     @Mock
     private CartModel cartMock;
     @Mock
@@ -53,6 +55,8 @@ public class CheckoutComApplePayPaymentRequestStrategyTest {
 
     @Before
     public void setUp() {
+        ReflectionTestUtils.setField(testObj, "checkoutPaymentRequestServicesWrapper", checkoutPaymentRequestServicesWrapperMock);
+        ReflectionTestUtils.setField(checkoutPaymentRequestServicesWrapperMock, "checkoutComMerchantConfigurationService", checkoutComMerchantConfigurationServiceMock);
         when(cartMock.getPaymentInfo()).thenReturn(applePayPaymentInfoMock);
         when(applePayPaymentInfoMock.getToken()).thenReturn(PAYMENT_TOKEN_VALUE);
         when(cartMock.getPaymentAddress()).thenReturn(addressModelMock);

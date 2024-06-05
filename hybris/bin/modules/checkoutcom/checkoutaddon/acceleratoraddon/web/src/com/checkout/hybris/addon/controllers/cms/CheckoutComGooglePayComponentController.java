@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @Controller("CheckoutComGooglePayComponentController")
 @RequestMapping(value = "/view/CheckoutComGooglePayComponentController")
-public class CheckoutComGooglePayComponentController extends GenericCMSAddOnComponentController {
+public class CheckoutComGooglePayComponentController extends CheckoutComGenericCMSAddOnComponentController {
 
     protected static final Logger LOG = LogManager.getLogger(CheckoutComGooglePayComponentController.class);
 

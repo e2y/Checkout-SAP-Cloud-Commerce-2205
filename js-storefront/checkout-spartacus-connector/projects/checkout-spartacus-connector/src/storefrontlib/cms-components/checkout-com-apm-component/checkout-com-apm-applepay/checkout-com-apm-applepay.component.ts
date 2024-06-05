@@ -52,7 +52,7 @@ export class CheckoutComApmApplepayComponent implements OnDestroy {
     ).subscribe((paymentRequest: ApplePayPaymentRequest) => {
       const modifiedPaymentRequest = this.modifyPaymentRequest(paymentRequest);
       this.applePaySession = this.checkoutComApplepayService.createSession(modifiedPaymentRequest, cartId, userId);
-    }, err => console.error('placeApplePayOrder err', {err},err => console.log('getPaymentRequestFromState with errors', {err})));
+    }, (err: any) => console.error('placeApplePayOrder err', {err},(err: any) => console.log('getPaymentRequestFromState with errors', {err})));
 
     // handle merchant validation from ApplePay
     this.checkoutComApplepayService.getMerchantSesssionFromState().pipe(
