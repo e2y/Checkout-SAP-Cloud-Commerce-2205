@@ -37,13 +37,6 @@ public interface CheckoutComMerchantConfigurationService {
     String getAuthorizationKey();
 
     /**
-     * Returns whether Nas is used on the merchant configuration of the current site
-     *
-     * @return the activated value
-     */
-    boolean isNasUsed();
-
-    /**
      * Returns whether Nas authorisation header is used on the merchant configuration of the current site to validate
      * incoming notifications
      *
@@ -59,13 +52,6 @@ public interface CheckoutComMerchantConfigurationService {
      */
     boolean isNasSignatureKeyUsedOnNotificationValidation();
 
-    /**
-     * Returns whether the ABC signature key is used on the merchant configuration of the current site to validate
-     * incoming notifications
-     *
-     * @return {@code True} if enabled, {@code False} otherwise
-     */
-    boolean isAbcSignatureKeyUsedOnNotificationValidation();
 
     /**
      * Returns the secret key from the merchant configuration of the current site
@@ -78,7 +64,7 @@ public interface CheckoutComMerchantConfigurationService {
      * Returns the public key from the merchant configuration of the given site
      *
      * @param siteId the site id for which to get the secret
-     * @return the secret key
+     * @return the public key
      */
     String getPublicKeyForSite(String siteId);
 
@@ -182,4 +168,12 @@ public interface CheckoutComMerchantConfigurationService {
      * @return a {@link CheckoutComKlarnaConfigurationModel}
      */
     CheckoutComKlarnaConfigurationModel getKlarnaConfiguration();
+
+    /**
+     * Returns the secret key from the merchant configuration of the given site
+     *
+     * @param siteId the site id for which to get the secret
+     * @return the secret key
+     */
+    String getSecretKeyForSite(String siteId);
 }

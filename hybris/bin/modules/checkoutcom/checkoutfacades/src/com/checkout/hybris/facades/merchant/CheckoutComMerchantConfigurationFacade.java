@@ -31,11 +31,4 @@ public interface CheckoutComMerchantConfigurationFacade {
      */
     Optional<GooglePaySettingsData> getGooglePaySettings();
 
-    /**
-     * Returns true if the merchant is configured as ABC and false if it's NAS.
-     * 
-     * @return  {@link Boolean} the value.
-     * 
-     */
-    Boolean isCheckoutComMerchantABC ();
 }

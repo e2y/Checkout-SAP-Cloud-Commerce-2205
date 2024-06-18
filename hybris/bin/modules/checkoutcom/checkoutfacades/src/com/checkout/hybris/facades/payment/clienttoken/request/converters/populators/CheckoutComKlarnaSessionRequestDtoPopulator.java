@@ -1,8 +1,7 @@
 package com.checkout.hybris.facades.payment.clienttoken.request.converters.populators;
 
 import com.checkout.hybris.core.currency.services.CheckoutComCurrencyService;
-import com.checkout.hybris.core.klarna.session.request.KlarnaProductRequestDto;
-import com.checkout.hybris.core.klarna.session.request.KlarnaSessionRequestDto;
+import com.checkout.hybris.core.klarna.session.request.*;
 import de.hybris.platform.converters.Populator;
 import de.hybris.platform.core.model.c2l.C2LItemModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
@@ -22,6 +21,9 @@ import static de.hybris.platform.servicelayer.util.ServicesUtil.validateParamete
  * Populates the KlarnaSessionRequestDto from the CartModel
  */
 public class CheckoutComKlarnaSessionRequestDtoPopulator implements Populator<CartModel, KlarnaSessionRequestDto> {
+
+    protected static final String KLARNA = "klarna";
+    protected static final String REGULAR = "regular";
 
     protected final CheckoutComCurrencyService checkoutComCurrencyService;
     protected final Converter<CartModel, List<KlarnaProductRequestDto>> checkoutComKlarnaProductsRequestDtoConverter;
@@ -45,17 +47,38 @@ public class CheckoutComKlarnaSessionRequestDtoPopulator implements Populator<Ca
                 .filter(StringUtils::isNotBlank);
         currencyCode.ifPresent(target::setCurrency);
 
-        target.setLocale(Optional.ofNullable(source.getSite().getLocale())
-                .orElse(Locale.UK.toString())
-                .replace("_", "-")
-        );
+        target.setPaymentType(REGULAR);
+
+        currencyCode.ifPresent(currency -> target.setAmount(checkoutComCurrencyService.convertAmountIntoPennies(currency, source.getTotalPrice())));
+        target.setProducts(checkoutComKlarnaProductsRequestDtoConverter.convert(source));
+
+        populateKlarnaSession(source, target);
+        populateKlarnaProcessing(source, target);
+    }
+
+    protected void populateKlarnaSession(final CartModel source, final KlarnaSessionRequestDto target) {
+        final KlarnaSourceRequestDto sourceRequestDto = new KlarnaSourceRequestDto();
+        final KlarnaAccountHolderRequestDto accountHolderRequestDto = new KlarnaAccountHolderRequestDto();
+        final KlarnaBillingAddressRequestDto billingAddress = new KlarnaBillingAddressRequestDto();
+        accountHolderRequestDto.setBillingAddress(billingAddress);
+        sourceRequestDto.setType(KLARNA);
+        sourceRequestDto.setAccountHolder(accountHolderRequestDto);
+        target.setSource(sourceRequestDto);
+
         Optional.ofNullable(source.getPaymentAddress())
                 .map(AddressModel::getCountry)
                 .map(C2LItemModel::getIsocode)
-                .ifPresent(target::setPurchaseCountry);
-
-        currencyCode.ifPresent(currency -> target.setAmount(checkoutComCurrencyService.convertAmountIntoPennies(currency, source.getTotalPrice())));
-        currencyCode.ifPresent(currency -> target.setTaxAmount(checkoutComCurrencyService.convertAmountIntoPennies(currency, source.getTotalTax())));
-        target.setProducts(checkoutComKlarnaProductsRequestDtoConverter.convert(source));
+                .ifPresent(billingAddress::setCountry);
     }
+
+    protected void populateKlarnaProcessing(final CartModel source, final KlarnaSessionRequestDto target) {
+        final KlarnaProcessingRequestDto processing = new KlarnaProcessingRequestDto();
+        processing.setLocale(Optional.ofNullable(source.getSite().getLocale())
+                .orElse(Locale.UK.toString())
+                .replace("_", "-")
+        );
+
+        target.setProcessing(processing);
+    }
+
 }

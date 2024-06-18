@@ -1,21 +1,15 @@
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CheckoutComApmService } from '../../../../core/services/checkout-com-apm.service';
-import { BehaviorSubject, EMPTY, Subject, throwError } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { distinctUntilChanged, filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { KlarnaInitParams } from '../../../../core/interfaces';
-import { ApmPaymentDetails, KlarnaPaymentMethodCategory } from '../../../interfaces';
+import { ApmPaymentDetails } from '../../../interfaces';
 import { Address, GlobalMessageService, GlobalMessageType, WindowRef } from '@spartacus/core';
 import { PaymentType } from '../../../../core/model/ApmData';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { CheckoutComPaymentService } from '../../../../core/services/checkout-com-payment.service';
 import { makeFormErrorsVisible } from '../../../../core/shared/make-form-errors-visible';
 import { CheckoutDeliveryFacade } from '@spartacus/checkout/root';
-
-interface DisplayKlarnaPaymentMethodCategory {
-  code: KlarnaPaymentMethodCategory;
-  key: string;
-  disabled?: boolean;
-}
 
 interface KlarnaLoadError {
   invalid_fields?: string[];
@@ -28,10 +22,22 @@ interface KlarnaLoadResponse {
 
 interface KlarnaAuthResponse {
   authorization_token?: string;
+  payment_context?: string;
   show_form: boolean;
   approved?: boolean;
   finalize_required?: boolean;
   error?: KlarnaLoadError;
+}
+
+export interface KlarnaAddress {
+  given_name?: string;
+  family_name?: string;
+  email?: string;
+  street_address?: string;
+  postal_code?: string;
+  city?: string;
+  phone?: string;
+  country?: string;
 }
 
 @Component({
@@ -42,20 +48,26 @@ interface KlarnaAuthResponse {
 })
 export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
   @Input() billingAddressForm: FormGroup = new FormGroup({});
-  @Output() setPaymentDetails = new EventEmitter<{ paymentDetails: ApmPaymentDetails, billingAddress: Address }>();
+  @Output() setPaymentDetails: EventEmitter<{ paymentDetails: ApmPaymentDetails, billingAddress: Address }> = new EventEmitter<{
+    paymentDetails: ApmPaymentDetails,
+    billingAddress: Address
+  }>();
   @ViewChild('widget') widget: ElementRef;
-  public selectedCategory$ = new BehaviorSubject<DisplayKlarnaPaymentMethodCategory>(null);
-  public categories$ = new BehaviorSubject<DisplayKlarnaPaymentMethodCategory[]>([]);
-  public loadingWidget$ = new BehaviorSubject<boolean>(false);
-  public authorizing$ = new BehaviorSubject<boolean>(false);
-  public initializing$ = new BehaviorSubject<boolean>(false);
-  public sameAsShippingAddress$ = new BehaviorSubject<boolean>(true);
+  public loadingWidget$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public authorizing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public initializing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public sameAsShippingAddress$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   private sameAsShippingAddress: boolean = true;
-  private allCategories: KlarnaPaymentMethodCategory[] = [];
-  private drop = new Subject<void>();
-  private currentCountryCode = new BehaviorSubject<string>(null);
-  private billingAddressHasBeenSet = false;
+  private drop: Subject<void> = new Subject<void>();
+  private currentCountryCode: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private billingAddressHasBeenSet: boolean = false;
+
+  public paymentContext: string = null;
+  public instanceId: string = null;
+  public emailAddress: string = '';
+  public klarnaShippingAddressData: KlarnaAddress;
+  public klarnaBillingAddressData: KlarnaAddress;
 
   constructor(
     protected checkoutComApmSrv: CheckoutComApmService,
@@ -69,37 +81,51 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.addScript();
-    this.listenForCountryCode();
-    this.listenForCountrySelection();
-    this.listenForCategorySelection();
-    this.listenForAddressSourceChange();
   }
 
-  listenForAddressSourceChange() {
+  listenForAddressSourceChange(): void {
     this.sameAsShippingAddress$.pipe(
-      switchMap((sameAsShippingAddress) => {
+      switchMap((sameAsShippingAddress: boolean) => {
         this.sameAsShippingAddress = sameAsShippingAddress;
-        if (sameAsShippingAddress) {
-          return this.checkoutDeliveryFacade.getDeliveryAddress().pipe(
-            take(1),
-            tap((address) => {
-              this.currentCountryCode.next(address?.country?.isocode);
-            })
-          );
-        } else {
-          const countryCtrl = this.billingAddressForm.get('country.isocode');
+        if (!sameAsShippingAddress) {
+          const countryCtrl: AbstractControl = this.billingAddressForm.get('country.isocode');
           if (countryCtrl && countryCtrl.value) {
             this.currentCountryCode.next(countryCtrl.value);
           }
-          return EMPTY;
         }
+        return this.checkoutDeliveryFacade.getDeliveryAddress().pipe(
+          take(1),
+          tap((address: Address): void => {
+            this.currentCountryCode.next(address?.country?.isocode);
+            this.klarnaShippingAddressData = this.normalizeKlarnaAddress(address);
+
+            if (this.sameAsShippingAddress) {
+              this.klarnaBillingAddressData = this.klarnaShippingAddressData;
+            } else {
+              this.klarnaBillingAddressData = this.normalizeKlarnaAddress(this.billingAddressForm.value);
+            }
+          })
+        );
       }),
       takeUntil(this.drop)
     ).subscribe();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.drop.next();
+  }
+
+  normalizeKlarnaAddress(address: Address): KlarnaAddress {
+    return {
+      given_name: address.firstName || '',
+      family_name: address.lastName || '',
+      email: this.emailAddress,
+      street_address: address.line1 || '',
+      postal_code: address.postalCode || '',
+      city: address.town || '',
+      phone: address.phone || '',
+      country: address.country?.isocode || ''
+    };
   }
 
   public authorize(): void {
@@ -108,10 +134,6 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.authorizing$.getValue()) {
-      return;
-    }
-    const category = this.selectedCategory$.getValue();
-    if (!category) {
       return;
     }
 
@@ -126,33 +148,35 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
         billingAddress = this.billingAddressForm.value;
       }
       this.authorizing$.next(true);
-      k.authorize({ payment_method_category: category.code }, this.getKlarnaCountryParams(), (response: KlarnaAuthResponse): void => {
-        this.authorizing$.next(false);
-        if (response != null && response.approved === true && response.authorization_token) {
-          this.setPaymentDetails.next({
-            paymentDetails: {
-              type: PaymentType.Klarna,
-              authorizationToken: response.authorization_token,
-            } as ApmPaymentDetails,
-            billingAddress
-          });
-        }
-      });
+      k.authorize({
+          instance_id: this.instanceId
+        },
+        {
+          billing_address: this.klarnaBillingAddressData,
+          shipping_address: this.klarnaShippingAddressData
+        },
+        (response: KlarnaAuthResponse): void => {
+          this.authorizing$.next(false);
+          if (response != null && response.approved === true && response.authorization_token) {
+            this.setPaymentDetails.next({
+              paymentDetails: {
+                type: PaymentType.Klarna,
+                authorizationToken: response.authorization_token,
+                paymentContextId: this.paymentContext,
+              } as ApmPaymentDetails,
+              billingAddress
+            });
+          }
+        });
     } catch (e) {
       this.authorizing$.next(false);
       console.error('CheckoutComKlarnaComponent::initKlarna', e);
     }
   }
 
-  selectCategory(category: DisplayKlarnaPaymentMethodCategory) {
-    if (category && !category.disabled) {
-      this.selectedCategory$.next(category);
-    }
-  }
-
-  private listenForCountryCode() {
+  private listenForCountryCode(): void {
     this.currentCountryCode.pipe(
-      filter(c => !!c && this.billingAddressHasBeenSet),
+      filter((c: string) => !!c && this.billingAddressHasBeenSet),
       distinctUntilChanged(),
       switchMap(() => {
         this.initializing$.next(true);
@@ -162,12 +186,8 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.drop)
     ).subscribe({
-      next: (params) => {
+      next: (params: KlarnaInitParams): void => {
         this.initKlarna(params);
-        const allSrc = params.paymentMethodCategories ?? [];
-        this.allCategories = allSrc.map(c => c);
-        this.selectedCategory$.next(null);
-        this.renderCategories(this.allCategories);
       },
       error: (error) => {
         console.error(error);
@@ -176,54 +196,73 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
     });
   }
 
-  private listenForCountrySelection() {
+  private listenForCountrySelection(): void {
     this.billingAddressForm.valueChanges.pipe(
       filter(values => values?.country?.isocode), distinctUntilChanged(), takeUntil(this.drop)
-    ).subscribe((values) => {
+    ).subscribe((values): void => {
       this.currentCountryCode.next(values?.country?.isocode);
     }, err => console.error('listenForCountrySelection with errors', { err }));
   }
 
-  private klarnaIsReady() {
+  private klarnaIsReady(): void {
     this.initializing$.next(true);
     this.checkoutDeliveryFacade.getDeliveryAddress().pipe(
-      switchMap((shippingAddress) => {
+      switchMap((shippingAddress: Address) => {
         if (shippingAddress == null || typeof shippingAddress !== 'object') {
           return throwError('Shipping address is required');
         }
         return this.checkoutComPaymentService.updatePaymentAddress(shippingAddress)
-          .pipe(tap(() => this.billingAddressHasBeenSet = true));
+          .pipe(tap((response: Address): void => {
+            this.billingAddressHasBeenSet = true;
+            this.emailAddress = response.email;
+            this.klarnaShippingAddressData = this.normalizeKlarnaAddress(shippingAddress);
+          }));
       }),
       take(1),
-    ).pipe(finalize(() => this.initializing$.next(false)), takeUntil(this.drop)).subscribe({
-      next: (address) => {
+    ).pipe(
+      finalize(
+        () => this.initializing$.next(false)
+      ),
+      takeUntil(this.drop)
+    ).subscribe({
+      next: (address: Address): void => {
         if (address?.country?.isocode) {
           this.currentCountryCode.next(address.country.isocode);
         } else {
           this.msgSrv.add({ key: 'paymentForm.klarna.countryIsRequired' }, GlobalMessageType.MSG_TYPE_ERROR);
         }
+        this.listenForCountryCode();
+        this.listenForCountrySelection();
+        this.listenForAddressSourceChange();
       },
-      error: () => {
+      error: (): void => {
         this.msgSrv.add({ key: 'paymentForm.klarna.countryIsRequired' }, GlobalMessageType.MSG_TYPE_ERROR);
       }
     });
   }
 
-  private initKlarna(params: KlarnaInitParams) {
+  private initKlarna(params: KlarnaInitParams): void {
     try {
       const k = (this.windowRef.nativeWindow as { [key: string]: any })['Klarna']?.Payments;
       if (!k) {
         console.error('Klarna is not set');
         return;
       }
-      k.init({ client_token: params.clientToken });
+
+      this.paymentContext = params.paymentContext;
+      this.instanceId = params.instanceId;
+
+      k.init({
+        client_token: params.clientToken,
+      });
+      this.loadWidget();
     } catch (e) {
       console.error('CheckoutComKlarnaComponent::initKlarna', e);
     }
   }
 
-  private addScript() {
-    if (!(this.windowRef.nativeWindow as { [key: string]: any })['Klarna'] as any) {
+  private addScript(): void {
+    if (this.windowRef && !(this.windowRef?.nativeWindow as { [key: string]: any })['Klarna'] as any) {
       Object.defineProperty(this.windowRef.nativeWindow, 'klarnaAsyncCallback', {
         value: () => {
           this.ngZone.run(() => {
@@ -231,53 +270,18 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
           });
         },
       });
-
       const script = this.windowRef.document.createElement('script');
       script.setAttribute('src', 'https://x.klarnacdn.net/kp/lib/v1/api.js');
       script.setAttribute('async', 'true');
       this.windowRef.document.body.appendChild(script);
     } else {
-      this.ngZone.run(() => {
+      this.ngZone.run((): void => {
         this.klarnaIsReady();
       });
     }
   }
 
-  private getTranslationKeyForCategory(category: KlarnaPaymentMethodCategory): string {
-    switch (category) {
-      case KlarnaPaymentMethodCategory.payNow:
-        return 'paymentForm.klarna.paymentMethodCategory.payNow';
-      case KlarnaPaymentMethodCategory.payLater:
-        return 'paymentForm.klarna.paymentMethodCategory.payLater';
-      case KlarnaPaymentMethodCategory.payOverTime:
-        return 'paymentForm.klarna.paymentMethodCategory.payOverTime';
-    }
-    return null;
-  }
-
-  private listenForCategorySelection() {
-    this.selectedCategory$.pipe(
-      distinctUntilChanged(),
-      debounceTime(1), // let Angular render the widget container
-      takeUntil(this.drop)
-    ).subscribe((category) => {
-      if (this.widget?.nativeElement) {
-        this.loadWidget(category, this.widget.nativeElement);
-      }
-    }, err => console.error('listenForCategorySelection with errors', { err }));
-  }
-
-  private getKlarnaCountryParams(): { purchase_country: string } {
-    if (!this.sameAsShippingAddress) {
-      const ctrlCountryIsoCode = this.billingAddressForm.get('country.isocode');
-      if (ctrlCountryIsoCode && ctrlCountryIsoCode.value) {
-        return { purchase_country: ctrlCountryIsoCode.value };
-      }
-    }
-    return null;
-  }
-
-  private loadWidget(category: DisplayKlarnaPaymentMethodCategory, container: HTMLElement | string) {
+  private loadWidget(): void {
     try {
       const k: any = (this.windowRef.nativeWindow as { [key: string]: any })['Klarna']?.Payments;
       if (!k) {
@@ -285,42 +289,24 @@ export class CheckoutComKlarnaComponent implements OnInit, OnDestroy {
         return;
       }
       this.loadingWidget$.next(true);
-      k.load({
-        container,
-        payment_method_category: category.code
-      }, this.getKlarnaCountryParams(), (response: KlarnaLoadResponse) => {
-        this.loadingWidget$.next(false);
-        if (response != null && typeof response === 'object') {
-          if (response.hasOwnProperty('show_form')) {
-            if (response.show_form === false) {
-              category.disabled = true;
+
+      k.load(
+        {
+          container: '#klarnaContainer',
+          instance_id: this.instanceId
+        },
+        {},
+        (response: KlarnaLoadResponse): void => {
+          this.loadingWidget$.next(false);
+          if (response != null && typeof response === 'object') {
+            if (response.error) {
+              console.error('CheckoutComKlarnaComponent::loadWidget::response', response.error);
             }
           }
-          if (response.error) {
-            console.error('CheckoutComKlarnaComponent::loadWidget::response', response.error);
-          }
-        }
-      });
+        });
     } catch (e) {
       this.loadingWidget$.next(false);
       console.error('CheckoutComKlarnaComponent::loadWidget', e);
     }
   }
-
-  private renderCategories(paymentMethodCategories: KlarnaPaymentMethodCategory[]) {
-    const categories: any[] = [];
-    if (paymentMethodCategories?.length) {
-      paymentMethodCategories.forEach((category: KlarnaPaymentMethodCategory): void => {
-        const key = this.getTranslationKeyForCategory(category);
-        if (key) {
-          categories.push({
-            code: category,
-            key
-          });
-        }
-      });
-    }
-    this.categories$.next(categories);
-  }
 }
-

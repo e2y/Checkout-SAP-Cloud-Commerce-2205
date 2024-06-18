@@ -47,19 +47,7 @@ public class CheckoutComMerchantControllerTest {
     }
 
     @Test
-    public void isMerchantABC_WhenMerchantIsABC_ShouldReturnTrue() {
-        when(checkoutComMerchantConfigurationFacadeMock.isCheckoutComMerchantABC()).thenReturn(Boolean.TRUE);
-
-        final ResponseEntity<String> result = testObj.isMerchantABC();
-
-        assertThat(result).hasFieldOrPropertyWithValue("body", Boolean.TRUE.toString());
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
     public void isMerchantABC_WhenMerchantIsNAS_ShouldReturnFalse() {
-        when(checkoutComMerchantConfigurationFacadeMock.isCheckoutComMerchantABC()).thenReturn(Boolean.FALSE);
-
         final ResponseEntity<String> result = testObj.isMerchantABC();
 
         assertThat(result).hasFieldOrPropertyWithValue("body", IS_ABC_FALSE);
@@ -67,13 +55,11 @@ public class CheckoutComMerchantControllerTest {
     }
 
     @Test
-    public void isMerchantABC_WhenMerchantIsUndefined_ShouldReturnError() {
-        when(checkoutComMerchantConfigurationFacadeMock.isCheckoutComMerchantABC()).thenReturn(null);
-
+    public void isMerchantABC_WhenMerchantIsUndefined_ShouldReturnFalse() {
         final ResponseEntity<String> result = testObj.isMerchantABC();
 
         assertThat(result).hasFieldOrPropertyWithValue("body", IS_ABC_FALSE);
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
     
     

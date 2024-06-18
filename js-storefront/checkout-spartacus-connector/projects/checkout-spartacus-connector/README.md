@@ -95,6 +95,9 @@ If you don't want to fork, you can `extend` components, copy the template and th
 
 ## Release notes
 
+### Release 4.2.8
+* Updated Klarna APM Configuration
+
 ### Release 4.2.7
 * Removed BIC from iDeal APM form
 

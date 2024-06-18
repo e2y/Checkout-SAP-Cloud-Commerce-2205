@@ -21,6 +21,7 @@
            method="POST"
            action="${submitPaymentDataUrl}">
     <form:hidden id="authorizationToken" path="formAttributes['${'authorizationToken'}']" value=""/>
+    <form:hidden id="paymentContextId" path="formAttributes['${'paymentContextId'}']" value=""/>
     <form:hidden id="type" path="formAttributes['${'type'}']" value="${paymentMethod}"/>
 </form:form>
 
@@ -32,19 +33,10 @@
 
     <c:choose>
         <c:when test="${not empty klarnaClientToken and not empty klarnaClientToken.clientToken}">
-            let paymentMethodCategoryList = [
-                <c:forEach items="${klarnaClientToken.paymentMethodCategories}" var="paymentMethodCategory" varStatus="status">
-                '${paymentMethodCategory}'
-                <c:if test="${!status.last}">
-                ,
-                </c:if>
-                </c:forEach>
-            ];
-
             window.klarnaSettings = {
                 klarnaInstanceId:  '${klarnaClientToken.instanceId}',
                 clientToken:  '${klarnaClientToken.clientToken}',
-                paymentMethodCategories: paymentMethodCategoryList,
+                paymentContextId: '${klarnaClientToken.paymentContext}',
                 backButton: '<spring:theme code="checkoutcom.klarna.error.back.button.label"/>',
                 paymentMethod: '${paymentMethod}',
                 billingAddress: {

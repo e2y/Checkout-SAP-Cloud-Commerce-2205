@@ -1,11 +1,13 @@
 <div class="form-control-wrapper">
   <p [hidden]="showTooltip !== true" class="cobadgedTooltip">
-    {{tooltipLabel | cxTranslate}}
-    <cx-icon
-      [type]="iconTypes.INFO"
-      placement="top"
-      [tooltip]="tooltipText | cxTranslate"
-    ></cx-icon>
+    <ng-container *ngIf="tooltipLabel !== ''">{{ tooltipLabel | cxTranslate }}</ng-container>
+    <ng-container *ngIf="tooltipText !== ''">
+      <cx-icon
+        [type]="iconTypes.INFO"
+        placement="top"
+        [tooltip]="tooltipText | cxTranslate"
+      ></cx-icon>
+    </ng-container>
   </p>
   <span [ngClass]="cssClassByFieldType" class="form-control"></span>
   <span [ngClass]="icon" *ngIf="icon" class="form-icon"></span>

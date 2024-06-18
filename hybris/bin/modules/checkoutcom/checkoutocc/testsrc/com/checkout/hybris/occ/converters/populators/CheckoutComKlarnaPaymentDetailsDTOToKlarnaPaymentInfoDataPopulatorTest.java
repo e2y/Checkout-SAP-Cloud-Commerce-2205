@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class CheckoutComKlarnaPaymentDetailsDTOToKlarnaPaymentInfoDataPopulatorTest {
 
     private static final String KLARNA_AUTH_TOKEN_VALUE = "12345678901_abdajkdjal";
+    private static final String KLARNA_PAYMENT_CONTEXT_VALUE = "12345678901_qweqweqw";
 
     @InjectMocks
     private CheckoutComKlarnaPaymentDetailsDTOToKlarnaPaymentInfoDataPopulator testObj;
@@ -26,11 +27,13 @@ public class CheckoutComKlarnaPaymentDetailsDTOToKlarnaPaymentInfoDataPopulatorT
     @Test
     public void populate_ShouldPopulateTargetCorrectly() {
         source.setAuthorizationToken(KLARNA_AUTH_TOKEN_VALUE);
+        source.setPaymentContextId(KLARNA_PAYMENT_CONTEXT_VALUE);
 
         testObj.populate(source, target);
 
         assertEquals(CheckoutComPaymentType.KLARNA.name(), target.getType());
         assertEquals(KLARNA_AUTH_TOKEN_VALUE, target.getAuthorizationToken());
+        assertEquals(KLARNA_PAYMENT_CONTEXT_VALUE, target.getPaymentContextId());
     }
 
     @Test(expected = IllegalArgumentException.class)

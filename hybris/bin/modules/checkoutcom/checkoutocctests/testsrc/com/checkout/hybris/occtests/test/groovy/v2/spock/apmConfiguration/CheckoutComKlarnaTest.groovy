@@ -21,7 +21,6 @@ class CheckoutComKlarnaTest extends AbstractCheckoutComPaymentsTest {
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, JSON)
         createBillingAddress(customer.id, cart.code)
-        useABC()
 
         when: "API call to get klarna token data is made"
         def response = restClient.get(
@@ -33,7 +32,8 @@ class CheckoutComKlarnaTest extends AbstractCheckoutComPaymentsTest {
             if (isNotEmpty(data) && isNotEmpty(data.errors)) println(data)
             status == SC_OK
             isNotEmpty(data.clientToken)
-            isNotEmpty(data.paymentMethodCategories)
+            isNotEmpty(data.paymentContext)
+            isNotEmpty(data.sessionId)
             data.success == true
             data.instanceId == "e2yCheckoutCom"
         }

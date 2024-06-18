@@ -87,21 +87,20 @@ public class CheckoutComOrdersController {
             throws PaymentAuthorizationException, InvalidCartException, NoCheckoutCartException, PlaceOrderException {
 
         validateCartForPlaceOrder();
-        if (!CheckoutComPaymentType.KLARNA.name().equalsIgnoreCase(checkoutFlowFacade.getCurrentPaymentMethodType())) {
 
-            //authorize
-            final AuthorizeResponseData authorizeResponseData = checkoutFlowFacade.authorizePayment();
 
-            if (!authorizeResponseData.getIsSuccess() || Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
-                if (Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
-                    LOG.debug("Redirecting to checkout.com url [{}] for 3d secure.", authorizeResponseData.getRedirectUrl());
-                    final OrderWsDTO orderWsDTO = new OrderWsDTO();
-                    orderWsDTO.setRedirectUrl(authorizeResponseData.getRedirectUrl());
-                    return orderWsDTO;
-                } else {
-                    LOG.error("Error with the authorization process. Redirecting to payment method step.");
-                    throw new PaymentAuthorizationException();
-                }
+        //authorize
+        final AuthorizeResponseData authorizeResponseData = checkoutFlowFacade.authorizePayment();
+
+        if (!authorizeResponseData.getIsSuccess() || Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
+            if (Boolean.TRUE.equals(authorizeResponseData.getIsRedirect())) {
+                LOG.debug("Redirecting to checkout.com url [{}] for 3d secure.", authorizeResponseData.getRedirectUrl());
+                final OrderWsDTO orderWsDTO = new OrderWsDTO();
+                orderWsDTO.setRedirectUrl(authorizeResponseData.getRedirectUrl());
+                return orderWsDTO;
+            } else {
+                LOG.error("Error with the authorization process. Redirecting to payment method step.");
+                throw new PaymentAuthorizationException();
             }
         }
 

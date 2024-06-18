@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Default implementation of {@link CheckoutComRequestEventValidator}
@@ -57,9 +55,7 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
         LOG.debug("Received event signature: [{}]; ", ckoSignature);
         LOG.debug("Received event body: [{}]", eventBody);
 
-        if (!isNasActive()) {
-            return !isAbcSignatureKeyActive() || isCkoSignatureValid(ckoSignature, eventBody);
-        } else if (isNasAuthorizationHeaderActive() && isNasAuthorizationHeaderInvalid(eventAuthorizationHeaderKey)) {
+        if (isNasAuthorizationHeaderActive() && isNasAuthorizationHeaderInvalid(eventAuthorizationHeaderKey)) {
             return false;
         } else {
             return !isNasSignatureKeyActive() || isCkoSignatureValid(ckoSignature, eventBody);
@@ -83,28 +79,17 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
         return new String(convertBytesToHex(bytes));
     }
 
-    private boolean isNasActive() {
-        return checkoutComMerchantConfigurationService.isNasUsed();
-    }
-
     private boolean isNasAuthorizationHeaderInvalid(final String eventAuthorizationHeaderKey) {
         final String authorizationKeyForSite = checkoutComMerchantConfigurationService.getAuthorizationKey();
         return StringUtils.isNotEmpty(eventAuthorizationHeaderKey) && !eventAuthorizationHeaderKey.equals(authorizationKeyForSite);
     }
 
     private boolean isNasAuthorizationHeaderActive() {
-        return checkoutComMerchantConfigurationService.isNasUsed() &&
-                checkoutComMerchantConfigurationService.isNasAuthorisationHeaderUsedOnNotificationValidation();
+        return checkoutComMerchantConfigurationService.isNasAuthorisationHeaderUsedOnNotificationValidation();
     }
 
     private boolean isNasSignatureKeyActive() {
-        return checkoutComMerchantConfigurationService.isNasUsed() &&
-                checkoutComMerchantConfigurationService.isNasSignatureKeyUsedOnNotificationValidation();
-    }
-
-    private boolean isAbcSignatureKeyActive() {
-        return !checkoutComMerchantConfigurationService.isNasUsed() &&
-                checkoutComMerchantConfigurationService.isAbcSignatureKeyUsedOnNotificationValidation();
+        return checkoutComMerchantConfigurationService.isNasSignatureKeyUsedOnNotificationValidation();
     }
 
     private String getSiteIdForTheEvent(final CheckoutComPaymentEventObject eventBody) {
@@ -112,10 +97,7 @@ public class DefaultCheckoutComRequestEventValidator implements CheckoutComReque
     }
 
     private byte[] getSecretPhrase() {
-        if (checkoutComMerchantConfigurationService.isNasUsed()) {
-            return checkoutComMerchantConfigurationService.getSignatureKey().getBytes();
-        }
-        return checkoutComMerchantConfigurationService.getSecretKey().getBytes();
+        return checkoutComMerchantConfigurationService.getSignatureKey().getBytes();
     }
 
     private char[] convertBytesToHex(final byte[] bytes) {

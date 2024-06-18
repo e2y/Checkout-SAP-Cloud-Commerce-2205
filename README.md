@@ -79,7 +79,9 @@ Follow [this guideline](https://help.sap.com/viewer/1be46286b36a4aa48205be5a9624
 Spartacus is a lean, Angular-based JavaScript storefront for SAP Commerce Cloud. Spartacus talks to SAP Commerce Cloud exclusively through the Commerce REST API (OCC). The Connector for SAP Commerce Cloud supports the Spartacus frontend. Check out details and release notes in the Checkout.com repository for Spartacus.  
 
 # Release Notes
-- iDeal updated - BIC removed from the request
+- ABC decommissioned
+- SOFORT payment method not longer supported
+- New Klarna payment method implemented
 
 # Support
 Contact your Checkout.com team if you have any question, technical problem or feature request for the SAP Commerce Cloud Connector.

@@ -148,32 +148,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         format << [XML, JSON]
     }
 
-    def "Authorized customer places an order with MADA 3ds flow card with 3DS Active: #format"() {
-        given: "an authorized customer"
-        def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
-        def customer = customerWithCart[0]
-        def cart = customerWithCart[1]
-        def address = createAddressWithOptions(restClient, customer)
-        setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
-        addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
-        setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
-        createBillingAddress(customer.id, cart.code)
-        createPaymentInfo(restClient, customer, cart.code, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_3DS_GET_CC_TOKEN_JSON)
-        activate3ds()
 
-        when: "authorized customer places order"
-        def response = placeCheckoutComOrder(customer, cart.code, EUR_CURRENCY_CODE, format)
-
-        then: "redirect URL is returned"
-        with(response) {
-            if (isNotEmpty(data) && isNotEmpty(data.errors)) println(data)
-            status == SC_CREATED
-            isNotEmpty(data.redirectUrl)
-        }
-
-        where:
-        format << [XML, JSON]
-    }
 
     def "Authorized customer places an order with MADA card 3DS flow with 3DS Inactive: #format"() {
         given: "an authorized customer"
@@ -185,35 +160,8 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
         setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
         createBillingAddress(customer.id, cart.code)
-        createPaymentInfo(restClient, customer, cart.code, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_3DS_GET_CC_TOKEN_JSON)
+        createPaymentInfo(restClient, customer, cart.code, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_GET_CC_TOKEN_JSON)
         deactivate3ds()
-
-        when: "authorized customer places order"
-        def response = placeCheckoutComOrder(customer, cart.code, EUR_CURRENCY_CODE, format)
-
-        then: "redirect URL is returned"
-        with(response) {
-            if (isNotEmpty(data) && isNotEmpty(data.errors)) println(data)
-            status == SC_CREATED
-            isNotEmpty(data.redirectUrl)
-        }
-
-        where:
-        format << [XML, JSON]
-    }
-
-    def "Authorized customer places an order with MADA frictionless flow card with 3DS Active: #format"() {
-        given: "an authorized customer"
-        def customerWithCart = createAndAuthorizeCustomerWithCart(restClient, format)
-        def customer = customerWithCart[0]
-        def cart = customerWithCart[1]
-        def address = createAddressWithOptions(restClient, customer)
-        setDeliveryAddressForCart(restClient, customer, cart.code, address.id, format)
-        addProductToCartOnline(restClient, customer, cart.code, PRODUCT_POWER_SHOT_A480)
-        setDeliveryModeForCart(restClient, customer, cart.code, DELIVERY_STANDARD, format)
-        createBillingAddress(customer.id, cart.code)
-        createPaymentInfo(restClient, customer, cart.code, MADA_FRICTIONLESS_CHECKOUT_CC_PAYMENT_JSON, MADA_FRICTIONLESS_GET_CC_TOKEN_JSON)
-        activate3ds()
 
         when: "authorized customer places order"
         def response = placeCheckoutComOrder(customer, cart.code, EUR_CURRENCY_CODE, format)
@@ -343,7 +291,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         given: "a guest customer"
         def userGuid = getGuestUid()
         def cart = prepareCartForGuestOrder(restClient, userGuid, format)
-        createPaymentInfo(restClient, ANONYMOUS_USER, cart.guid, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_3DS_GET_CC_TOKEN_JSON)
+        createPaymentInfo(restClient, ANONYMOUS_USER, cart.guid, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_GET_CC_TOKEN_JSON)
         activate3ds()
 
         when: "guest customer places order"
@@ -364,7 +312,7 @@ class CheckoutComCCOrdersTest extends AbstractCheckoutComPaymentsTest {
         given: "a guest customer"
         def userGuid = getGuestUid()
         def cart = prepareCartForGuestOrder(restClient, userGuid, format)
-        createPaymentInfo(restClient, ANONYMOUS_USER, cart.guid, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_3DS_GET_CC_TOKEN_JSON)
+        createPaymentInfo(restClient, ANONYMOUS_USER, cart.guid, MADA_3DS_CHECKOUT_CC_PAYMENT_JSON, MADA_GET_CC_TOKEN_JSON)
         deactivate3ds()
 
         when: "guest customer places order"

@@ -58,24 +58,61 @@
         <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
         <import type="com.fasterxml.jackson.annotation.JsonInclude"/>
         <annotations>@JsonInclude(JsonInclude.Include.NON_NULL)</annotations>
-        <property name="purchaseCountry" type="java.lang.String">
-            <annotations>@JsonProperty("purchase_country")</annotations>
-        </property>
         <property name="currency" type="java.lang.String">
             <annotations>@JsonProperty("currency")</annotations>
-        </property>
-        <property name="locale" type="java.lang.String">
-            <annotations>@JsonProperty("locale")</annotations>
         </property>
         <property name="amount" type="java.lang.Long">
             <annotations>@JsonProperty("amount")</annotations>
         </property>
-        <property name="taxAmount" type="java.lang.Long">
-            <annotations>@JsonProperty("tax_amount")</annotations>
+        <property name="paymentType" type="java.lang.String">
+            <annotations>@JsonProperty("payment_type")</annotations>
+        </property>
+        <property name="source"
+                  type="com.checkout.hybris.core.klarna.session.request.KlarnaSourceRequestDto">
+            <annotations>@JsonProperty("source")</annotations>
         </property>
         <property name="products"
                   type="java.util.List&lt;com.checkout.hybris.core.klarna.session.request.KlarnaProductRequestDto&gt;">
-            <annotations>@JsonProperty("products")</annotations>
+            <annotations>@JsonProperty("items")</annotations>
+        </property>
+        <property name="processing"
+                  type="com.checkout.hybris.core.klarna.session.request.KlarnaProcessingRequestDto">
+            <annotations>@JsonProperty("processing")</annotations>
+        </property>
+        <property name="processingChannelId"
+                  type="java.lang.String">
+            <annotations>@JsonProperty("processing_channel_id")</annotations>
+        </property>
+    </bean>
+
+    <bean class="com.checkout.hybris.core.klarna.session.request.KlarnaProcessingRequestDto">
+        <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
+        <property name="locale" type="java.lang.String">
+            <annotations>@JsonProperty("locale")</annotations>
+        </property>
+    </bean>
+
+    <bean class="com.checkout.hybris.core.klarna.session.request.KlarnaSourceRequestDto">
+        <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
+        <property name="type" type="java.lang.String">
+            <annotations>@JsonProperty("type")</annotations>
+        </property>
+        <property name="accountHolder" type="com.checkout.hybris.core.klarna.session.request.KlarnaAccountHolderRequestDto">
+            <annotations>@JsonProperty("account_holder")</annotations>
+        </property>
+    </bean>
+
+    <bean class="com.checkout.hybris.core.klarna.session.request.KlarnaAccountHolderRequestDto">
+        <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
+        <property name="billingAddress" type="com.checkout.hybris.core.klarna.session.request.KlarnaBillingAddressRequestDto">
+            <annotations>@JsonProperty("billing_address")</annotations>
+        </property>
+    </bean>
+
+    <bean class="com.checkout.hybris.core.klarna.session.request.KlarnaBillingAddressRequestDto">
+        <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
+        <property name="country" type="java.lang.String">
+            <annotations>@JsonProperty("country")</annotations>
         </property>
     </bean>
 
@@ -99,11 +136,8 @@
         <property name="unitPrice" type="java.lang.Long">
             <annotations>@JsonProperty("unit_price")</annotations>
         </property>
-        <property name="taxRate" type="java.lang.Long">
-            <annotations>@JsonProperty("tax_rate")</annotations>
-        </property>
-        <property name="type" type="java.lang.String">
-            <annotations>@JsonProperty("type")</annotations>
+        <property name="reference" type="java.lang.String">
+            <annotations>@JsonProperty("reference")</annotations>
         </property>
     </bean>
 
@@ -111,15 +145,12 @@
         <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
         <import type="com.fasterxml.jackson.annotation.JsonInclude"/>
         <annotations>@JsonInclude(JsonInclude.Include.NON_NULL)</annotations>
-        <property name="sessionId" type="java.lang.String">
-            <annotations>@JsonProperty("session_id")</annotations>
+        <property name="id" type="java.lang.String">
+            <annotations>@JsonProperty("id")</annotations>
         </property>
-        <property name="clientToken" type="java.lang.String">
-            <annotations>@JsonProperty("client_token")</annotations>
-        </property>
-        <property name="paymentMethodCategories"
-                  type="java.util.List&lt;com.checkout.hybris.core.klarna.session.response.KlarnaPaymentMethodCategoryDto&gt;">
-            <annotations>@JsonProperty("payment_method_categories")</annotations>
+        <property name="partnerMetadata"
+                  type="com.checkout.hybris.core.klarna.session.response.KlarnaPartnerMetadataResponseDto">
+            <annotations>@JsonProperty("partner_metadata")</annotations>
         </property>
         <property name="links" type="java.util.Map&lt;java.lang.String,java.lang.Object&gt;">
             <annotations>@JsonProperty("_links")</annotations>
@@ -136,18 +167,18 @@
         </property>
     </bean>
 
-    <bean class="com.checkout.hybris.core.klarna.session.response.KlarnaPaymentMethodCategoryDto">
+    <bean class="com.checkout.hybris.core.klarna.session.response.KlarnaPartnerMetadataResponseDto">
         <import type="com.fasterxml.jackson.annotation.JsonProperty"/>
         <import type="com.fasterxml.jackson.annotation.JsonInclude"/>
         <annotations>@JsonInclude(JsonInclude.Include.NON_NULL)</annotations>
         <property name="assetUrls" type="com.checkout.hybris.core.klarna.session.response.KlarnaAssetUrlDto">
             <annotations>@JsonProperty("asset_urls")</annotations>
         </property>
-        <property name="identifier" type="java.lang.String">
-            <annotations>@JsonProperty("identifier")</annotations>
+        <property name="sessionId" type="java.lang.String">
+            <annotations>@JsonProperty("session_id")</annotations>
         </property>
-        <property name="name" type="java.lang.String">
-            <annotations>@JsonProperty("name")</annotations>
+        <property name="clientToken" type="java.lang.String">
+            <annotations>@JsonProperty("client_token")</annotations>
         </property>
     </bean>
 

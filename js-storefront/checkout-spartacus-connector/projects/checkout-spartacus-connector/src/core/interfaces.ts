@@ -8,7 +8,7 @@ export interface CheckoutComRedirect {
 
 export interface KlarnaInitParams {
   clientToken?: string;
-  paymentMethodCategories?: KlarnaPaymentMethodCategory[];
+  paymentContext?: string;
   instanceId?: string;
   success?: boolean;
   httpError?: HttpErrorResponse;

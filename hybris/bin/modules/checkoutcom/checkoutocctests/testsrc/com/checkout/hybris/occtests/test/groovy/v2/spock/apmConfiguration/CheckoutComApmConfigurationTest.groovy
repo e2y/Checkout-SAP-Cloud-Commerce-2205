@@ -17,6 +17,7 @@ class CheckoutComApmConfigurationTest extends AbstractCheckoutComPaymentsTest {
         def customer = customerWithCart[0]
         def cart = customerWithCart[1]
         createBillingAddress(customer.id, cart.code)
+        //useNAS()
 
         when: "A request to get all available apms for the cart is made"
         def response = restClient.get(
@@ -29,11 +30,11 @@ class CheckoutComApmConfigurationTest extends AbstractCheckoutComPaymentsTest {
             if (isNotEmpty(data) && isNotEmpty(data.errors)) println(data)
             status == SC_OK
             CollectionUtils.isNotEmpty(responseData.availableApmConfigurations)
-            def paypal = responseData.availableApmConfigurations.find { it.code == "PAYPAL" }
-            paypal.name == "PayPal"
-            paypal.isRedirect == true
-            paypal.isUserDataRequired == false
-            paypal.media != null
+            def apm = responseData.availableApmConfigurations.find { it.code == "GIROPAY" }
+            apm.name == "Giropay"
+            apm.isRedirect == true
+            apm.isUserDataRequired == false
+            apm.media != null
         }
     }
 }
