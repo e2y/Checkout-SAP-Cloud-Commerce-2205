@@ -21,6 +21,7 @@ public class CheckoutComKlarnaPaymentDetailsDTOToKlarnaPaymentInfoDataPopulator 
         Assert.notNull(target, "KlarnaPaymentInfoData cannot be null.");
 
         target.setAuthorizationToken(source.getAuthorizationToken());
+        target.setPaymentContextId(source.getPaymentContextId());
         target.setType(CheckoutComPaymentType.KLARNA.name());
     }
 }

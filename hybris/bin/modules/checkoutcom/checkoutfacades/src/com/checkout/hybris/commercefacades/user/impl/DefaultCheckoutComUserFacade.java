@@ -39,43 +39,39 @@ public class DefaultCheckoutComUserFacade implements CheckoutComUserFacade {
 
     @Override
     public void removeCCPaymentInfo(final String id) {
-        if (checkoutComMerchantConfigurationService.isNasUsed()) {
-            validateParameterNotNullStandardMessage("id", id);
-            final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
-            final Optional<CreditCardPaymentInfoModel> creditCard = getCreditCardForCustomer(id, currentCustomer);
-            creditCard.ifPresent(
-                card -> checkoutComCustomerAccountServiceAdapter.deleteCCPaymentInfo(currentCustomer, card));
-        }
+		validateParameterNotNullStandardMessage("id", id);
+		final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
+		final Optional<CreditCardPaymentInfoModel> creditCard = getCreditCardForCustomer(id, currentCustomer);
+		creditCard.ifPresent(
+			card -> checkoutComCustomerAccountServiceAdapter.deleteCCPaymentInfo(currentCustomer, card));
+
         userFacade.removeCCPaymentInfo(id);
     }
 
     @Override
     public void updateCreditCardDetails(final String code, final CCPaymentInfoData ccPaymentInfoData) {
-        if (checkoutComMerchantConfigurationService.isNasUsed()) {
-            validateParameterNotNullStandardMessage("code", code);
-            final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
-            final Optional<CreditCardPaymentInfoModel> creditCard =
-                getCreditCardForCustomer(code, currentCustomer);
-            creditCard.ifPresent(
-                card -> checkoutComCustomerAccountServiceAdapter.updateCreditCardDetails(currentCustomer, card));
-        }
+		validateParameterNotNullStandardMessage("code", code);
+		final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
+		final Optional<CreditCardPaymentInfoModel> creditCard =
+			getCreditCardForCustomer(code, currentCustomer);
+		creditCard.ifPresent(
+			card -> checkoutComCustomerAccountServiceAdapter.updateCreditCardDetails(currentCustomer, card));
     }
 
     @Override
     public void updateCCPaymentInfo(final CCPaymentInfoData paymentInfo) {
-        if (checkoutComMerchantConfigurationService.isNasUsed()) {
-            validateParameterNotNullStandardMessage("paymentInfo", paymentInfo);
-            validateParameterNotNullStandardMessage("paymentInfoID", paymentInfo.getId());
-            final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
-            final Optional<CreditCardPaymentInfoModel> creditCardForCustomer =
-                getCreditCardForCustomer(paymentInfo.getId(),
-                                         currentCustomer);
-            creditCardForCustomer.ifPresent(card -> {
-                cardPaymentInfoReversePopulator.populate(paymentInfo, card);
-                checkoutComCustomerAccountServiceAdapter.updateCreditCardDetails(currentCustomer,
-                                                                                 card);
+		validateParameterNotNullStandardMessage("paymentInfo", paymentInfo);
+		validateParameterNotNullStandardMessage("paymentInfoID", paymentInfo.getId());
+		final CustomerModel currentCustomer = (CustomerModel) userService.getCurrentUser();
+		final Optional<CreditCardPaymentInfoModel> creditCardForCustomer =
+			getCreditCardForCustomer(paymentInfo.getId(),
+									 currentCustomer);
+		creditCardForCustomer.ifPresent(card -> {
+			cardPaymentInfoReversePopulator.populate(paymentInfo, card);
+			checkoutComCustomerAccountServiceAdapter.updateCreditCardDetails(currentCustomer,
+																			 card);
             });
-        }
+
         userFacade.updateCCPaymentInfo(paymentInfo);
     }
 

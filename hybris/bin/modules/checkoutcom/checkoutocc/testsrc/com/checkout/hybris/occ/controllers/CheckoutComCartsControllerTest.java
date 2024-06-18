@@ -70,7 +70,7 @@ public class CheckoutComCartsControllerTest {
     @Mock
     private AddressData addressDataMock;
     @Mock
-    private AddressWsDTO addressWsDTOMock;
+    private AddressWsDTO addressWsDTOMock, addressWsDTOTwoMock;
     @Mock
     private CustomerModel customerModelMock;
     @Mock
@@ -131,18 +131,21 @@ public class CheckoutComCartsControllerTest {
 
     @Test
     public void addBillingAddressToCart_ShouldPopulateFieldsWithDataMapperAddingAddressWithUserFacadeAndSetBillingDetails() {
-        when(dataMapperMock.map(addressWsDTOMock, AddressData.class)).thenReturn(addressDataMock);
+        when(dataMapperMock.map(addressWsDTOMock, AddressData.class, DEFAULT_FIELD_SET)).thenReturn(addressDataMock);
         when(checkoutCustomerStrategyMock.getCurrentUserForCheckout()).thenReturn(customerModelMock);
         when(customerModelMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL);
+        when(dataMapperMock.map(addressDataMock, AddressWsDTO.class, DEFAULT_FIELD_SET)).thenReturn(addressWsDTOTwoMock);
 
-        testObj.addBillingAddressToCart(addressWsDTOMock);
+
+        testObj.addBillingAddressToCart(addressWsDTOMock, DEFAULT_FIELD_SET);
 
         final InOrder inOrder = Mockito.inOrder(addressWsDTOMock, addressDataMock, dataMapperMock, userFacadeMock, checkoutComAddressFacadeMock);
         inOrder.verify(addressWsDTOMock).setEmail(CUSTOMER_EMAIL);
         inOrder.verify(addressWsDTOMock).setVisibleInAddressBook(Boolean.FALSE);
-        inOrder.verify(dataMapperMock).map(addressWsDTOMock, AddressData.class);
+        inOrder.verify(dataMapperMock, times(1)).map(eq(addressWsDTOMock), eq(AddressData.class), anyString());
         inOrder.verify(userFacadeMock).addAddress(addressDataMock);
         inOrder.verify(checkoutComAddressFacadeMock).setCartBillingDetails(addressDataMock);
+        inOrder.verify(dataMapperMock, times(1)).map(eq(addressDataMock), eq(AddressWsDTO.class), anyString());
     }
 
     @Test
@@ -171,6 +174,8 @@ public class CheckoutComCartsControllerTest {
         when(dataMapperMock.map(addressWsDTOMock, AddressData.class, DEFAULT_FIELD_SET)).thenReturn(addressDataMock);
         when(addressDataMock.isDefaultAddress()).thenReturn(Boolean.TRUE);
         when(dataMapperMock.map(addressDataMock, AddressWsDTO.class, DEFAULT_FIELD_SET)).thenReturn(addressWsDTOMock);
+        when(checkoutCustomerStrategyMock.getCurrentUserForCheckout()).thenReturn(customerModelMock);
+        when(customerModelMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL);
 
         final AddressWsDTO result = testObj.createCartDeliveryAndBillingAddress(addressWsDTOMock, DEFAULT_FIELD_SET);
 
@@ -189,6 +194,8 @@ public class CheckoutComCartsControllerTest {
         when(dataMapperMock.map(addressWsDTOMock, AddressData.class, DEFAULT_FIELD_SET)).thenReturn(addressDataMock);
         when(addressDataMock.isDefaultAddress()).thenReturn(Boolean.FALSE);
         when(dataMapperMock.map(addressDataMock, AddressWsDTO.class, DEFAULT_FIELD_SET)).thenReturn(addressWsDTOMock);
+        when(checkoutCustomerStrategyMock.getCurrentUserForCheckout()).thenReturn(customerModelMock);
+        when(customerModelMock.getContactEmail()).thenReturn(CUSTOMER_EMAIL);
 
         final AddressWsDTO result = testObj.createCartDeliveryAndBillingAddress(addressWsDTOMock, DEFAULT_FIELD_SET);
 

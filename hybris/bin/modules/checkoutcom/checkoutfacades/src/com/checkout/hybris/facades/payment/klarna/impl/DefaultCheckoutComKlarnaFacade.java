@@ -1,9 +1,9 @@
 package com.checkout.hybris.facades.payment.klarna.impl;
 
 import com.checkout.hybris.core.klarna.session.request.KlarnaSessionRequestDto;
-import com.checkout.hybris.core.klarna.session.response.KlarnaPaymentMethodCategoryDto;
 import com.checkout.hybris.core.klarna.session.response.KlarnaSessionResponseDto;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
+import com.checkout.hybris.core.model.CheckoutComKlarnaAPMPaymentInfoModel;
 import com.checkout.hybris.core.model.CheckoutComKlarnaConfigurationModel;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentIntegrationService;
 import com.checkout.hybris.facades.beans.KlarnaClientTokenData;
@@ -11,6 +11,7 @@ import com.checkout.hybris.facades.payment.klarna.CheckoutComKlarnaFacade;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.dto.converter.Converter;
+import de.hybris.platform.servicelayer.model.ModelService;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -61,13 +62,10 @@ public class DefaultCheckoutComKlarnaFacade implements CheckoutComKlarnaFacade {
      */
     protected void populateKlarnaTokenData(final KlarnaClientTokenData klarnaClientTokenData, final KlarnaSessionResponseDto klarnaSessionResponse) {
         final CheckoutComKlarnaConfigurationModel klarnaConfiguration = checkoutComMerchantConfigurationService.getKlarnaConfiguration();
-        klarnaClientTokenData.setClientToken(klarnaSessionResponse.getClientToken());
+        klarnaClientTokenData.setClientToken(klarnaSessionResponse.getPartnerMetadata().getClientToken());
+        klarnaClientTokenData.setSessionId(klarnaSessionResponse.getPartnerMetadata().getSessionId());
         klarnaClientTokenData.setSuccess(Boolean.TRUE);
+        klarnaClientTokenData.setPaymentContext(klarnaSessionResponse.getId());
         klarnaClientTokenData.setInstanceId(klarnaConfiguration.getInstanceId());
-
-        final Set<String> paymentMethodCategories = klarnaSessionResponse.getPaymentMethodCategories().stream()
-                .map(KlarnaPaymentMethodCategoryDto::getIdentifier)
-                .collect(Collectors.toSet());
-        klarnaClientTokenData.setPaymentMethodCategories(paymentMethodCategories);
     }
 }

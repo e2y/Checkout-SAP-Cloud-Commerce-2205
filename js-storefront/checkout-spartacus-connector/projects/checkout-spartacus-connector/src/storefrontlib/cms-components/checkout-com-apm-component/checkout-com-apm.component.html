@@ -5,7 +5,6 @@
       <div class="col-4 col-md-3 my-2 cc" *ngIf="card$ | async as apm">
         <lib-checkout-com-apm-tile [apm]="apm"></lib-checkout-com-apm-tile>
       </div>
-
       <div class="col-4 col-md-3 my-2" *ngFor="let apm of (availableApms$ | async)">
         <lib-checkout-com-apm-tile [apm]="apm"></lib-checkout-com-apm-tile>
       </div>

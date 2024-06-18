@@ -6,8 +6,6 @@ import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurati
 import com.checkout.hybris.core.model.CheckoutComAPMConfigurationModel;
 import com.checkout.hybris.core.model.CheckoutComFawryConfigurationModel;
 import com.checkout.hybris.core.model.CheckoutComGlobalAPMConfigurationModel;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.c2l.CountryModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
@@ -25,14 +23,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import static com.checkout.hybris.core.payment.enums.CheckoutComPaymentType.FAWRY;
 import static com.checkout.sdk.common.Currency.EUR;
 import static com.checkout.sdk.common.Currency.GBP;
-import static com.checkout.hybris.core.payment.enums.CheckoutComPaymentType.FAWRY;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Locale.FRANCE;
@@ -96,8 +91,8 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
         when(restrictedCountryMock.getIsocode()).thenReturn(FRANCE.getCountry());
         when(restrictedCurrencyMock.getIsocode()).thenReturn(EUR);
-        when(apmConfiguration1Mock.getRestrictedCountries()).thenReturn(ImmutableSet.of(restrictedCountryMock));
-        when(apmConfiguration1Mock.getRestrictedCurrencies()).thenReturn(ImmutableSet.of(restrictedCurrencyMock));
+        when(apmConfiguration1Mock.getRestrictedCountries()).thenReturn(Set.of(restrictedCountryMock));
+        when(apmConfiguration1Mock.getRestrictedCurrencies()).thenReturn(Set.of(restrictedCurrencyMock));
         when(checkoutComAPMConfigurationSettingsMock.containsKey(APM_CODE)).thenReturn(Boolean.TRUE);
         when(checkoutComAPMConfigurationSettingsMock.get(APM_CODE)).thenReturn(apmConfigurationSettingsMock);
 
@@ -113,7 +108,6 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
         when(component2Mock.getApmConfiguration()).thenReturn(apmConfiguration2Mock);
         when(component1Mock.getVisible()).thenReturn(Boolean.TRUE);
         when(component2Mock.getVisible()).thenReturn(Boolean.TRUE);
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
         when(globalAPMConfigurationDaoMock.find()).thenReturn(List.of(checkoutComGlobalAPMConfigurationMock));
     }
 
@@ -141,18 +135,6 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
         final boolean result = testObj.isApmAvailable(apmConfiguration1Mock, UK.getCountry(), GBP);
 
         assertFalse(result);
-    }
-
-    @Test
-    public void isApmAvailable_WhenSiteConfigurationAndAPMAreNotEnabledForNAS_andAPMOrBaseSiteDoNotHaveRestrictions_ShouldReturnTrue() {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(false);
-        when(checkoutComGlobalAPMConfigurationMock.getAbcAPMs()).thenReturn(List.of(apmConfiguration1Mock));
-        when(apmConfiguration1Mock.getRestrictedCountries()).thenReturn(emptySet());
-        when(apmConfiguration1Mock.getRestrictedCurrencies()).thenReturn(emptySet());
-
-        final boolean result = testObj.isApmAvailable(apmConfiguration1Mock, UK.getCountry(), GBP);
-
-        assertTrue(result);
     }
 
     @Test
@@ -191,7 +173,7 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void getApmConfigurationByCode_WhenConfigurationIsFound_ShouldReturnIt() {
-        when(checkoutComApmConfigurationDaoMock.find(ImmutableMap.of(CheckoutComAPMConfigurationModel.CODE, FAWRY.name()))).thenReturn(List.of(fawryConfigurationModelMock));
+        when(checkoutComApmConfigurationDaoMock.find(Map.of(CheckoutComAPMConfigurationModel.CODE, FAWRY.name()))).thenReturn(List.of(fawryConfigurationModelMock));
 
         final Optional<CheckoutComAPMConfigurationModel> result = testObj.getApmConfigurationByCode(FAWRY.name());
 
@@ -201,7 +183,7 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void getApmConfigurationByCode_WhenConfigurationIsNotFound_ShouldReturnOptionalEmpty() {
-        when(checkoutComApmConfigurationDaoMock.find(ImmutableMap.of(CheckoutComAPMConfigurationModel.CODE, FAWRY.name()))).thenReturn(emptyList());
+        when(checkoutComApmConfigurationDaoMock.find(Map.of(CheckoutComAPMConfigurationModel.CODE, FAWRY.name()))).thenReturn(emptyList());
 
         final Optional<CheckoutComAPMConfigurationModel> result = testObj.getApmConfigurationByCode(FAWRY.name());
 
@@ -314,7 +296,7 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void getApmConfigurationMedia_WhenNoApmComponentFound_ShouldReturnOptionalEmpty() {
-        when(checkoutComApmComponentDaoMock.find(ImmutableMap.of(CheckoutComAPMComponentModel.APMCONFIGURATION, apmConfiguration1Mock))).thenReturn(Collections.emptyList());
+        when(checkoutComApmComponentDaoMock.find(Map.of(CheckoutComAPMComponentModel.APMCONFIGURATION, apmConfiguration1Mock))).thenReturn(Collections.emptyList());
 
         final Optional<MediaModel> result = testObj.getApmConfigurationMedia(apmConfiguration1Mock);
 
@@ -323,7 +305,7 @@ public class DefaultCheckoutComAPMConfigurationServiceTest {
 
     @Test
     public void getApmConfigurationMedia_WhenApmComponentFound_ShouldReturnMedia() {
-        when(checkoutComApmComponentDaoMock.find(ImmutableMap.of(CheckoutComAPMComponentModel.APMCONFIGURATION, apmConfiguration1Mock))).thenReturn(List.of(component1Mock));
+        when(checkoutComApmComponentDaoMock.find(Map.of(CheckoutComAPMComponentModel.APMCONFIGURATION, apmConfiguration1Mock))).thenReturn(List.of(component1Mock));
         when(component1Mock.getMedia()).thenReturn(mediaMock);
 
         final Optional<MediaModel> result = testObj.getApmConfigurationMedia(apmConfiguration1Mock);

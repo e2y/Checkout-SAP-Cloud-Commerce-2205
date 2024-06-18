@@ -62,46 +62,15 @@ public class DefaultCheckoutComRequestEventValidatorTest {
 
         final ArgumentCaptor<CheckoutComPaymentEventObject> objectCaptor = ArgumentCaptor.forClass(CheckoutComPaymentEventObject.class);
         when(checkoutComPaymentEventServiceMock.getSiteIdForTheEvent(objectCaptor.capture())).thenReturn(SITE_ID);
-        when(checkoutComMerchantConfigurationServiceMock.getSecretKey()).thenReturn(SECRET_KEY);
         when(checkoutComMerchantConfigurationServiceMock.getSignatureKey()).thenReturn(SIGNATURE_KEY);
         when(httpServletRequestMock.getHeader(HEADER_CKO_SIGNATURE)).thenReturn(SECRET_KEY_MESSAGE_HASH);
         when(httpServletRequestMock.getHeader(HEADER_AUTHORIZATION)).thenReturn(SECRET_KEY);
         when(baseSiteServiceMock.getBaseSiteForUID(SITE_ID)).thenReturn(baseSiteModelMock);
     }
 
-    @Test
-    public void isRequestEventValid_whenABCIsActive_andAbcSignatureIsEnabled_andCKOSignatureIsValid_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(false);
-        when(checkoutComMerchantConfigurationServiceMock.isAbcSignatureKeyUsedOnNotificationValidation()).thenReturn(true);
-        doReturn(true).when(testObj).isCkoSignatureValid(SECRET_KEY_MESSAGE_HASH, eventBody);
-
-        assertTrue(testObj.isRequestEventValid(httpServletRequestMock, eventBody));
-        verify(baseSiteServiceMock).setCurrentBaseSite(baseSiteModelMock, false);
-    }
 
     @Test
-    public void isRequestEventValid_whenABCIsActive_andAbcSignatureIsEnabled_andCKOSignatureIsInvalid_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(false);
-        when(checkoutComMerchantConfigurationServiceMock.isAbcSignatureKeyUsedOnNotificationValidation()).thenReturn(true);
-        doReturn(false).when(testObj).isCkoSignatureValid(SECRET_KEY_MESSAGE_HASH, eventBody);
-
-        assertFalse(testObj.isRequestEventValid(httpServletRequestMock, eventBody));
-        verify(baseSiteServiceMock).setCurrentBaseSite(baseSiteModelMock, false);
-    }
-
-    @Test
-    public void isRequestEventValid_whenABCIsActive_andAbcSignatureIsDisabled_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(false);
-        when(checkoutComMerchantConfigurationServiceMock.isAbcSignatureKeyUsedOnNotificationValidation()).thenReturn(false);
-
-        assertTrue(testObj.isRequestEventValid(httpServletRequestMock, eventBody));
-        verify(baseSiteServiceMock).setCurrentBaseSite(baseSiteModelMock, false);
-        verify(testObj, never()).isCkoSignatureValid(SECRET_KEY_MESSAGE_HASH, eventBody);
-    }
-
-    @Test
-    public void isRequestEventValid_whenNASIsActive_andAuthorizationHeaderIsActive_andAuthorizationHeaderIsInvalid_shouldReturnFalse() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
+    public void isRequestEventValid_whenAuthorizationHeaderIsActive_andAuthorizationHeaderIsInvalid_shouldReturnFalse() throws NoSuchAlgorithmException, InvalidKeyException {
         when(checkoutComMerchantConfigurationServiceMock.isNasAuthorisationHeaderUsedOnNotificationValidation()).thenReturn(true);
         when(checkoutComMerchantConfigurationServiceMock.getAuthorizationKey()).thenReturn(ANOTHER_KEY);
 
@@ -110,8 +79,7 @@ public class DefaultCheckoutComRequestEventValidatorTest {
     }
 
     @Test
-    public void isRequestEventValid_whenNASIsActive_andAuthorizationHeaderIsNotActive_andNasSignatureKeyIsInactive_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
+    public void isRequestEventValid_whenAuthorizationHeaderIsNotActive_andNasSignatureKeyIsInactive_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
         when(checkoutComMerchantConfigurationServiceMock.isNasSignatureKeyUsedOnNotificationValidation()).thenReturn(false);
 
         assertTrue(testObj.isRequestEventValid(httpServletRequestMock, eventBody));
@@ -119,8 +87,7 @@ public class DefaultCheckoutComRequestEventValidatorTest {
     }
 
     @Test
-    public void isRequestEventValid_whenNASIsActive_andAuthorizationHeaderIsNotActive_andNasSignatureKeyIsActive_andCKOSignatureIsValid_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
+    public void isRequestEventValid_whenAuthorizationHeaderIsNotActive_andNasSignatureKeyIsActive_andCKOSignatureIsValid_shouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
         when(checkoutComMerchantConfigurationServiceMock.isNasSignatureKeyUsedOnNotificationValidation()).thenReturn(true);
         doReturn(true).when(testObj).isCkoSignatureValid(SECRET_KEY_MESSAGE_HASH, eventBody);
 
@@ -129,8 +96,7 @@ public class DefaultCheckoutComRequestEventValidatorTest {
     }
 
     @Test
-    public void isRequestEventValid_whenNASIsActive_andAuthorizationHeaderIsNotActive_andNasSignatureKeyIsActive_andCKOSignatureIsValid_shouldReturnFalse() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
+    public void isRequestEventValid_whenAuthorizationHeaderIsNotActive_andNasSignatureKeyIsActive_andCKOSignatureIsValid_shouldReturnFalse() throws NoSuchAlgorithmException, InvalidKeyException {
         when(checkoutComMerchantConfigurationServiceMock.isNasSignatureKeyUsedOnNotificationValidation()).thenReturn(true);
         when(httpServletRequestMock.getHeader(HEADER_CKO_SIGNATURE)).thenReturn(ANOTHER_KEY);
         doReturn(false).when(testObj).isCkoSignatureValid(ANOTHER_KEY, eventBody);
@@ -155,14 +121,7 @@ public class DefaultCheckoutComRequestEventValidatorTest {
     }
 
     @Test
-    public void isCkoSignatureValid_whenABCIsUsed_andEverythingMatches_ShouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        assertTrue(testObj.isCkoSignatureValid(SECRET_KEY_MESSAGE_HASH, eventBody));
-    }
-
-    @Test
     public void isCkoSignatureValid_whenNASIsUsed_andEverythingMatches_ShouldReturnTrue() throws NoSuchAlgorithmException, InvalidKeyException {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
-
         assertTrue(testObj.isCkoSignatureValid(SIGNATURE_KEY_MESSAGE_HASH, eventBody));
     }
 

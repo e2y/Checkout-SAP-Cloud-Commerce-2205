@@ -71,12 +71,7 @@ public class DefaultCheckoutComAPMConfigurationService implements CheckoutComAPM
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("No CheckoutComAPMConfiguration has been found in the system"));
 
-        final Collection<CheckoutComAPMConfigurationModel> allowedAPMs;
-        if (Boolean.TRUE.equals(checkoutComMerchantConfigurationService.isNasUsed())) {
-            allowedAPMs = globalAPMConfig.getNasAPMs();
-        } else {
-            allowedAPMs = globalAPMConfig.getAbcAPMs();
-        }
+        final Collection<CheckoutComAPMConfigurationModel> allowedAPMs = globalAPMConfig.getNasAPMs();
 
         if (!allowedAPMs.contains(apmConfiguration)) {
             return false;

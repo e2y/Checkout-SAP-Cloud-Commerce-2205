@@ -17,11 +17,10 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 public class PaymentRequest<T extends RequestSource> {
-    private final T source;
-    private final T destination;
-    private final Long amount;
-    @NonNull
-    private final String currency;
+    private T source;
+    private T destination;
+    private Long amount;
+    private String currency;
     private String paymentType;
     private Boolean merchantInitiated;
     private String reference;
@@ -46,6 +45,7 @@ public class PaymentRequest<T extends RequestSource> {
     private String processingChannelId;
     private AuthorizationType authorizationType;
     private MarketplaceData marketplace;
+    private String paymentContextId;
 
     private PaymentSender sender;
 
@@ -68,11 +68,19 @@ public class PaymentRequest<T extends RequestSource> {
         this.metadata = new HashMap<>();
     }
 
+    private PaymentRequest(String paymentContextId) {
+        this.paymentContextId = paymentContextId;
+    }
+
     public static <T extends RequestSource> PaymentRequest<T> fromSource(T source, String currency, Long amount) {
         return new PaymentRequest<>(source, currency, amount, true);
     }
 
     public static <T extends RequestSource> PaymentRequest<T> fromDestination(T destination, String currency, Long amount) {
         return new PaymentRequest<>(destination, currency, amount, false);
+    }
+
+    public static <T extends RequestSource> PaymentRequest<T> forKlarna(String paymentContextId) {
+        return new PaymentRequest<>(paymentContextId);
     }
 }

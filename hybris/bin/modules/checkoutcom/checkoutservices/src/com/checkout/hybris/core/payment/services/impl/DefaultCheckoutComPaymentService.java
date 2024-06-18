@@ -230,7 +230,7 @@ public class DefaultCheckoutComPaymentService extends DefaultPaymentServiceImpl 
         if (paymentInfo instanceof CheckoutComCreditCardPaymentInfoModel) {
             return ((CheckoutComCreditCardPaymentInfoModel) order.getPaymentInfo()).getAutoCapture();
         } else {
-            return order.getSite().getCheckoutComMerchantConfiguration().getUseNas();
+            return Boolean.TRUE;
         }
     }
 

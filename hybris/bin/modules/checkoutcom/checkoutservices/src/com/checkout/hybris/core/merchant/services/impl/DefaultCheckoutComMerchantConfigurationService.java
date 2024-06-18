@@ -31,8 +31,7 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
      */
     @Override
     public String getSecretKey() {
-        final CheckoutComMerchantConfigurationModel currentConfiguration = getCurrentConfiguration();
-        return currentConfiguration.getUseNas() ? currentConfiguration.getNasSecretKey() : currentConfiguration.getSecretKey();
+        return getCurrentConfiguration().getNasSecretKey();
     }
 
     /**
@@ -55,14 +54,6 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
      * {@inheritDoc}
      */
     @Override
-    public boolean isNasUsed() {
-        return getCurrentConfiguration().getUseNas();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean isNasAuthorisationHeaderUsedOnNotificationValidation() {
         return getCurrentConfiguration().getUseNasAuthorisationKeyOnNotifications();
     }
@@ -75,21 +66,13 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
         return getCurrentConfiguration().getUseNasSignatureKeyOnNotifications();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isAbcSignatureKeyUsedOnNotificationValidation() {
-        return getCurrentConfiguration().getUseAbcSignatureKeyOnNotifications();
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String getPublicKey() {
-        final CheckoutComMerchantConfigurationModel currentConfiguration = getCurrentConfiguration();
-        return currentConfiguration.getUseNas() ? currentConfiguration.getNasPublicKey() : currentConfiguration.getPublicKey();
+        return getCurrentConfiguration().getNasPublicKey();
     }
 
     /**
@@ -97,8 +80,7 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
      */
     @Override
     public String getPublicKeyForSite(final String siteId) {
-        final CheckoutComMerchantConfigurationModel currentConfiguration = getConfigurationForSiteId(siteId);
-        return currentConfiguration.getUseNas() ? currentConfiguration.getNasPublicKey() : currentConfiguration.getPublicKey();
+        return getConfigurationForSiteId(siteId).getNasPublicKey();
     }
 
     /**
@@ -106,8 +88,7 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
      */
     @Override
     public String getPrivateSharedKey() {
-        final CheckoutComMerchantConfigurationModel currentConfiguration = getCurrentConfiguration();
-        return currentConfiguration.getUseNas() ? currentConfiguration.getNasSignatureKey() : currentConfiguration.getPrivateSharedKey();
+        return getCurrentConfiguration().getNasSignatureKey();
     }
 
     /**
@@ -222,6 +203,14 @@ public class DefaultCheckoutComMerchantConfigurationService implements CheckoutC
     public Double getAuthorisationAmountValidationThreshold(final String siteId) {
         final Double authorisationAmountValidationTolerance = getConfigurationForSiteId(siteId).getAuthorisationAmountValidationThreshold();
         return authorisationAmountValidationTolerance != null ? authorisationAmountValidationTolerance : Double.valueOf(0.0d);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getSecretKeyForSite(final String siteId) {
+        return getConfigurationForSiteId(siteId).getNasSecretKey();
     }
 
     protected CheckoutComMerchantConfigurationModel getCurrentConfiguration() {

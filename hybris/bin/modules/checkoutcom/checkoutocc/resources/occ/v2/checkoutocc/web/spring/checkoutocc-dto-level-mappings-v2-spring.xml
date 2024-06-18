@@ -61,12 +61,24 @@
         </property>
     </bean>
 
-    <bean parent="fieldSetLevelMapping" id="addressWsDTOFieldSetLevelMapping">
+    <bean parent="fieldSetLevelMapping" id="addressDataFieldSetLevelMapping">
         <property name="dtoClass"
                   value="de.hybris.platform.commercefacades.user.data.AddressData"/>
         <property name="levelMapping">
             <map>
                 <entry key="BASIC" value="firstName,lastName,titleCode,phone,line1,line2,town,postalCode,country(isocode),region(isocode),defaultAddress"/>
+                <entry key="DEFAULT" value="firstName,lastName,titleCode,phone,line1,line2,town,postalCode,country(isocode),region(isocode),defaultAddress,email"/>
+                <entry key="FULL" value="DEFAULT"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean parent="fieldSetLevelMapping" id="addressWsDTOFieldSetLevelMapping">
+        <property name="dtoClass"
+                  value="de.hybris.platform.commercewebservicescommons.dto.user.AddressWsDTO"/>
+        <property name="levelMapping">
+            <map>
+                <entry key="BASIC" value="id,firstName,lastName,titleCode,phone,line1,line2,town,postalCode,country(isocode),region(isocode),defaultAddress,email"/>
                 <entry key="DEFAULT" value="BASIC"/>
                 <entry key="FULL" value="DEFAULT"/>
             </map>

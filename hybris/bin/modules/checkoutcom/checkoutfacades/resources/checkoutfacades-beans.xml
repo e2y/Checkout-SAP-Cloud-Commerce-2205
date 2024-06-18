@@ -75,6 +75,7 @@
     <bean class="com.checkout.hybris.facades.beans.KlarnaPaymentInfoData"
           extends="com.checkout.hybris.facades.beans.APMPaymentInfoData">
         <property name="authorizationToken" type="java.lang.String"/>
+        <property name="paymentContextId" type="java.lang.String"/>
     </bean>
 
     <bean class="com.checkout.hybris.facades.beans.WalletPaymentInfoData"
@@ -262,8 +263,8 @@
         <property name="success" type="java.lang.Boolean"/>
         <property name="clientToken" type="java.lang.String"/>
         <property name="instanceId" type="java.lang.String"/>
-        <property name="paymentMethodCategories"
-                  type="java.util.Set&lt;java.lang.String&gt;"/>
+        <property name="paymentContext" type="java.lang.String"/>
+        <property name="sessionId" type="java.lang.String"/>
     </bean>
 
     <bean class="com.checkout.data.apm.CheckoutComAPMConfigurationData">

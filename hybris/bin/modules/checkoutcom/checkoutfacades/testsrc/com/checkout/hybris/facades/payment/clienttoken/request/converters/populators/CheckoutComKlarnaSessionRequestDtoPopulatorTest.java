@@ -64,7 +64,6 @@ public class CheckoutComKlarnaSessionRequestDtoPopulatorTest {
     public void setUp() {
         when(checkoutComCurrencyServiceMock.convertAmountIntoPennies(CURRENCY_CODE, CHECKOUTCOM_AMOUNT_DOUBLE)).thenReturn(CHECKOUTCOM_AMOUNT_LONG);
         when(sourceMock.getTotalPrice()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
-        when(sourceMock.getTotalTax()).thenReturn(CHECKOUTCOM_AMOUNT_DOUBLE);
         when(sourceMock.getCurrency()).thenReturn(currencyModelMock);
         when(currencyModelMock.getIsocode()).thenReturn(CURRENCY_CODE);
         when(sourceMock.getSite()).thenReturn(cmsSiteMock);
@@ -80,10 +79,7 @@ public class CheckoutComKlarnaSessionRequestDtoPopulatorTest {
         testObj.populate(sourceMock, target);
 
         assertEquals(CHECKOUTCOM_AMOUNT_LONG, target.getAmount());
-        assertEquals(CHECKOUTCOM_AMOUNT_LONG, target.getTaxAmount());
         assertEquals(CURRENCY_CODE, target.getCurrency());
-        assertEquals(COUNTRY_CODE, target.getPurchaseCountry());
-        assertEquals(LOCALE_CODE, target.getLocale());
         verify(checkoutComKlarnaProductsRequestDtoConverterMock).convert(sourceMock);
         assertEquals(2, target.getProducts().size());
         assertEquals(product1Mock, target.getProducts().get(0));

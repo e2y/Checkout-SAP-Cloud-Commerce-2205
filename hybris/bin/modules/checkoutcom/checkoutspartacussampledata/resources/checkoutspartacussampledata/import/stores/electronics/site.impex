@@ -5,8 +5,8 @@ $catalogVersion=catalogversion(catalog(id[default=$productCatalog]),version[defa
 # Merchant keys
 "#% if: de.hybris.platform.jalo.extension.ExtensionManager.getInstance().isExtensionInstalled(""spartacussampledata"")"
 UPDATE GenericItem[processor = de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor]; pk[unique = true]
-$secretKey = $config-checkout.secret.key
-$publicKey = $config-checkout.public.key
+$secretKey = $config-checkout.nas.secret.key
+$publicKey = $config-checkout.nas.public.key
 $privateSharedKey = $config-checkout.private.shared.key
 $nasSecretKey = Bearer $config-checkout.nas.secret.key
 $nasPublicKey = Bearer $config-checkout.nas.public.key
@@ -24,17 +24,17 @@ INSERT_UPDATE CheckoutComApplePayConfiguration; &applePayConfigurationId; certif
                                               ; applePayConfig          ; $applePayCertificate      ; $applePayPrivateKey ; amex, cartesBancaires, chinaUnionPay, discover, eftpos, electron, elo, interac, jcb, mada, maestro, masterCard, privateLabel, visa, vPay ; GB         ; supportsCredit, supportsDebit, supports3DS, supportsEMV ; merchant.com.checkout.sandbox.e2y ; e2yCheckoutCom
 
 INSERT_UPDATE CheckoutComGooglePayConfiguration; &googlePayConfigurationId; merchantId[unique = true]; merchantName   ; environment(code); type ; gateway     ; gatewayMerchantId; allowedCardNetworks(code)                      ; allowedCardAuthMethods(code); threeDSEnabled[default = true]
-                                               ; googlePayConfig          ; 01234567890123456789     ; e2yCheckoutCom ; test             ; CARD ; checkoutltd ; $publicKey       ; AMEX, DISCOVER, INTERAC, JCB, MASTERCARD, VISA ; PAN_ONLY, CRYPTOGRAM_3DS
+                                               ; googlePayConfig          ; 01234567890123456789     ; e2yCheckoutCom ; test             ; CARD ; checkoutltd ; $publicKey       ; AMEX, DISCOVER, INTERAC, JCB, MASTERCARD, VISA ; PAN_ONLY, CRYPTOGRAM_3DS ;
 
 INSERT_UPDATE CheckoutComMerchantConfiguration; code[unique = true]               ; applePayConfiguration(&applePayConfigurationId); googlePayConfiguration(&googlePayConfigurationId); klarnaConfiguration(&klarnaConfigurationId)
                                               ; merchantConfiguration-$spaSiteUid ; applePayConfig                                 ; googlePayConfig                                  ; klarnaConfig
 
 # Merchant configuration
-INSERT_UPDATE CheckoutComMerchantConfiguration; code[unique = true]               ; secretKey  ; publicKey  ; privateSharedKey  ; nasSecretKey  ; nasPublicKey  ; nasSignatureKey  ; nasAuthorisationHeaderKey  ; environment(code); paymentAction(code)   ; reviewTransactionsAtRisk; klarnaConfiguration(&klarnaConfigurationId); authorisationAmountValidationThreshold; threeDSEnabled; noThreeDSAttempt; checkoutComPaymentEventTypes(code)                                                                                                                                                                                                            ; includeBillingDescriptor; billingDescriptorName; billingDescriptorCity; achConfiguration(code)
-                                              ; merchantConfiguration-$spaSiteUid ; $secretKey ; $publicKey ; $privateSharedKey ; $nasSecretKey ; $nasPublicKey ; $nasSignatureKey ; $nasAuthorizationHeaderKey ; test ; authorize_and_capture ; true ; klarnaConfig ; 0.01 ; true ; true ; payment_approved, payment_voided, payment_void_declined, payment_captured, payment_capture_declined, payment_refunded, payment_refund_declined, payment_pending, payment_declined, payment_expired, payment_canceled, payment_capture_pending, payment_returned ; true ; $spaSiteUid ; INTERNET ; checkoutComACHConfiguration-spa
+INSERT_UPDATE CheckoutComMerchantConfiguration; code[unique = true]               ; secretKey  ; publicKey  ; privateSharedKey  ; nasSecretKey  ; nasPublicKey  ; nasSignatureKey  ; nasAuthorisationHeaderKey  ; environment(code); paymentAction(code)   ; reviewTransactionsAtRisk; klarnaConfiguration(&klarnaConfigurationId); authorisationAmountValidationThreshold; threeDSEnabled; noThreeDSAttempt; checkoutComPaymentEventTypes(code)                                                                                                                                                       ; includeBillingDescriptor; billingDescriptorName; billingDescriptorCity; achConfiguration(code)
+                                              ; merchantConfiguration-$spaSiteUid ; $nasSecretKey ; $nasPublicKey ; $privateSharedKey ; $nasSecretKey ; $nasPublicKey ; $nasSignatureKey ; $nasAuthorizationHeaderKey ; test ; authorize_and_capture ; true ; klarnaConfig ; 0.01 ; true ; true ; payment_approved, payment_voided, payment_void_declined, payment_captured, payment_capture_declined, payment_refunded, payment_refund_declined, payment_pending, payment_declined, payment_expired, payment_canceled, payment_capture_pending, payment_returned ; true                    ; $spaSiteUid          ; INTERNET             ; checkoutComACHConfiguration-spa
 
-INSERT_UPDATE CheckoutComMerchantConfiguration; code[unique = true]               ; useNas; useNasAuthorisationKeyOnNotifications; useNasSignatureKeyOnNotifications; useAbcSignatureKeyOnNotifications
-                                              ; merchantConfiguration-$spaSiteUid ; true  ; true                                 ; true                             ; true
+INSERT_UPDATE CheckoutComMerchantConfiguration; code[unique = true]               ; useNasAuthorisationKeyOnNotifications; useNasSignatureKeyOnNotifications;
+                                              ; merchantConfiguration-$spaSiteUid ; true                                 ; true                             ;
 
 INSERT_UPDATE CheckoutComACHConfiguration; code[unique = true]             ; clientId                 ; clientName ; linkCustomizationName ; redirectUri ; name ; language(isocode); secret                         ; webhook
                                          ; checkoutComACHConfiguration-spa ; 639a5791eb85d80013b0a14f ; clientName ; linkCustomizationName ; redirectUri ; name ; en               ; a829b3a6e0b2d927287e28fb11af2b ; webhook
