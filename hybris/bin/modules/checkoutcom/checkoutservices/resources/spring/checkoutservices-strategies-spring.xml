@@ -179,7 +179,6 @@
     <bean id="defaultCheckoutComKlarnaPaymentRequestStrategy"
           class="com.checkout.hybris.core.payment.request.strategies.impl.CheckoutComKlarnaPaymentRequestStrategy"
           parent="checkoutComAbstractApmPaymentRequestStrategy">
-        <constructor-arg ref="checkoutComKlarnaProductsRequestDtoConverter"/>
     </bean>
 
     <alias name="defaultCheckoutComOxxoPaymentRequestStrategy" alias="checkoutComOxxoPaymentRequestStrategy"/>
@@ -237,6 +236,13 @@
     <alias name="defaultCheckoutComSepaPaymentResponseStrategy" alias="checkoutComSepaPaymentResponseStrategy"/>
     <bean id="defaultCheckoutComSepaPaymentResponseStrategy"
           class="com.checkout.hybris.core.payment.response.strategies.impl.CheckoutComSepaPaymentResponseStrategy"
+          parent="checkoutComAbstractPaymentResponseStrategy">
+        <constructor-arg ref="paymentInfoService"/>
+    </bean>
+
+    <alias name="defaultCheckoutComKlarnaPaymentResponseStrategy" alias="checkoutComKlarnaPaymentResponseStrategy"/>
+    <bean id="defaultCheckoutComKlarnaPaymentResponseStrategy"
+          class="com.checkout.hybris.core.payment.response.strategies.impl.CheckoutComKlarnaPaymentResponseStrategy"
           parent="checkoutComAbstractPaymentResponseStrategy">
         <constructor-arg ref="paymentInfoService"/>
     </bean>

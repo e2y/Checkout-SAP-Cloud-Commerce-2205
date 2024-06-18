@@ -25,6 +25,7 @@
         <property name="authorizationToken" type="java.lang.String"/>
         <property name="document" type="java.lang.String"/>
         <property name="scheme" type="java.lang.String"/>
+        <property name="paymentContextId" type="java.lang.String"/>
     </bean>
 
     <bean class="com.checkout.dto.apm.CheckoutComAPMConfigurationWsDTO">

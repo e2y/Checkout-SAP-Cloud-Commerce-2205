@@ -61,9 +61,4 @@ public class DefaultCheckoutComMerchantConfigurationFacade implements CheckoutCo
         }
     }
 
-    @Override
-    public Boolean isCheckoutComMerchantABC() {
-        boolean isNasUsed = checkoutComMerchantConfigurationService.isNasUsed();
-        return (isNasUsed ? Boolean.FALSE : Boolean.TRUE);
-    }
 }

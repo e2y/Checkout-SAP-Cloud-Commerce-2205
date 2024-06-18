@@ -385,6 +385,11 @@
                         <modifiers optional="true"/>
                         <description>The generated Payment Token from checkout.com</description>
                     </attribute>
+                    <attribute qualifier="paymentContext" type="java.lang.String">
+                        <persistence type="property"/>
+                        <modifiers optional="true"/>
+                        <description>The Payment Context from checkout.com</description>
+                    </attribute>
                 </attributes>
             </itemtype>
 
@@ -583,8 +588,7 @@
                     </attribute>
                     <attribute qualifier="secretKey" type="java.lang.String">
                         <persistence type="property"/>
-                        <description>Use the valid secret key of your Checkout.com account. You can find this in the
-                            Hub.
+                        <description>Use the valid secret key of your Checkout.com account. You can find this in the Hub.
                         </description>
                     </attribute>
                     <attribute qualifier="publicKey" type="java.lang.String">
@@ -613,12 +617,6 @@
                         <persistence type="property"/>
                         <description>Your NAS Authorisation header key. You can find it in the Hub, Notifications settings.</description>
                     </attribute>
-                    <attribute qualifier="useNas" type="java.lang.Boolean">
-                        <persistence type="property"/>
-                        <modifiers optional="false"/>
-                        <defaultvalue>java.lang.Boolean.FALSE</defaultvalue>
-                        <description>Determines whether to use NAS or ABC.</description>
-                    </attribute>
                     <attribute qualifier="useNasAuthorisationKeyOnNotifications" type="java.lang.Boolean">
                         <persistence type="property"/>
                         <modifiers optional="false"/>
@@ -629,12 +627,6 @@
                         <persistence type="property"/>
                         <modifiers optional="false"/>
                         <defaultvalue>java.lang.Boolean.FALSE</defaultvalue>
-                        <description>Determines whether to use signature key to verify NAS Notifications</description>
-                    </attribute>
-                    <attribute qualifier="useAbcSignatureKeyOnNotifications" type="java.lang.Boolean">
-                        <persistence type="property"/>
-                        <modifiers optional="false"/>
-                        <defaultvalue>java.lang.Boolean.TRUE</defaultvalue>
                         <description>Determines whether to use signature key to verify NAS Notifications</description>
                     </attribute>
                     <attribute qualifier="environment" type="EnvironmentType">
@@ -902,10 +894,6 @@
             <itemtype code="CheckoutComGlobalAPMConfiguration" singleton="true">
                 <deployment table="ChkoGlobAPMConfig" typecode="23348"/>
                 <attributes>
-                    <attribute qualifier="abcAPMs" type="CheckoutComAPMs">
-                        <persistence type="property"/>
-                        <description>APMs that are enabled for ABC</description>
-                    </attribute>
                     <attribute qualifier="nasAPMs" type="CheckoutComAPMs">
                         <persistence type="property"/>
                         <description>APMs that are enabled for NAS</description>

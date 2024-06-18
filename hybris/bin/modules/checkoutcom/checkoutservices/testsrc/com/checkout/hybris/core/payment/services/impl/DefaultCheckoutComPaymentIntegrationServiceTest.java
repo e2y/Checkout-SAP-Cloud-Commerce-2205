@@ -1,5 +1,6 @@
 package com.checkout.hybris.core.payment.services.impl;
 
+import com.checkout.hybris.core.klarna.session.response.KlarnaPartnerMetadataResponseDto;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentInfoService;
 import com.checkout.sdk.CheckoutApi;
 import com.checkout.hybris.core.enums.EnvironmentType;
@@ -71,6 +72,7 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     private static final String KLARNA_VOID_URL = "https://prod.url/%s/void";
     private static final String SITE_ID = "siteId";
     private static final Long CHECKOUTCOM_AMOUNT_LONG = 12312L;
+    private static final String ID = "id";
 
     @Spy
     @InjectMocks
@@ -172,8 +174,8 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     @Before
     public void setUp() throws ExecutionException, InterruptedException {
         when(checkoutComMerchantConfigurationServiceMock.getEnvironment()).thenReturn(EnvironmentType.TEST);
-        when(checkoutComMerchantConfigurationServiceMock.getPublicKey()).thenReturn(PUBLIC_KEY);
-        when(checkoutComMerchantConfigurationServiceMock.getPublicKeyForSite(SITE_ID)).thenReturn(PUBLIC_KEY);
+         when(checkoutComMerchantConfigurationServiceMock.getSecretKey()).thenReturn(SECRET_KEY);
+        when(checkoutComMerchantConfigurationServiceMock.getSecretKeyForSite(SITE_ID)).thenReturn(SECRET_KEY);
         when(checkoutApiMock.paymentsClient()).thenReturn(paymentsClientMock);
         when(checkoutApiMock.tokensClient()).thenReturn(tokensClientMock);
         when(paymentsClientMock.requestAsync(paymentRequestMock)).thenReturn(completableFutureAuthMock);
@@ -380,8 +382,11 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     @Test
     public void createKlarnaSession_ShouldGiveBackTheKlarnaSessionResponse() throws ExecutionException {
         final KlarnaSessionResponseDto klarnaSessionResponseDto = new KlarnaSessionResponseDto();
-        klarnaSessionResponseDto.setClientToken(CLIENT_TOKEN);
-        klarnaSessionResponseDto.setSessionId(SESSION_ID);
+        final KlarnaPartnerMetadataResponseDto klarnaPartnerMetadataResponseDto = new KlarnaPartnerMetadataResponseDto();
+        klarnaSessionResponseDto.setPartnerMetadata(klarnaPartnerMetadataResponseDto);
+        klarnaPartnerMetadataResponseDto.setClientToken(CLIENT_TOKEN);
+        klarnaPartnerMetadataResponseDto.setSessionId(SESSION_ID);
+        klarnaSessionResponseDto.setId(ID);
 
         doReturn(KLARNA_SESSION_URL).when(testObj).getKlarnaApiUrlForEnvironment(null, "checkoutservices.klarna.createsession.api.url");
         when(restTemplateMock.postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class))).thenReturn(klarnaSessionResponseEntityMock);
@@ -389,23 +394,20 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
 
         final KlarnaSessionResponseDto result = testObj.createKlarnaSession(klarnaSessionRequestDtoMock);
 
-        assertEquals(CLIENT_TOKEN, result.getClientToken());
-        assertEquals(SESSION_ID, result.getSessionId());
+        assertEquals(CLIENT_TOKEN, result.getPartnerMetadata().getClientToken());
+        assertEquals(SESSION_ID, result.getPartnerMetadata().getSessionId());
+        assertEquals(ID, result.getId());
 
         verify(restTemplateMock).postForEntity(eq(KLARNA_SESSION_URL), klarnaHttpEntityCaptor.capture(), eq(KlarnaSessionResponseDto.class));
 
         final HttpEntity entityCaptorValue = klarnaHttpEntityCaptor.getValue();
         assertEquals(MediaType.APPLICATION_JSON, entityCaptorValue.getHeaders().getContentType());
-        assertEquals(Collections.singletonList(PUBLIC_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
+        assertEquals(Collections.singletonList(SECRET_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
         assertSame(klarnaSessionRequestDtoMock, entityCaptorValue.getBody());
     }
 
     @Test(expected = ExecutionException.class)
     public void createKlarnaSession_WhenHttpStatusCodeException_ShouldThrowExecutionException() throws ExecutionException {
-        final KlarnaSessionResponseDto klarnaSessionResponseDto = new KlarnaSessionResponseDto();
-        klarnaSessionResponseDto.setClientToken(CLIENT_TOKEN);
-        klarnaSessionResponseDto.setSessionId(SESSION_ID);
-
         doReturn(KLARNA_SESSION_URL).when(testObj).getKlarnaApiUrlForEnvironment(null, "checkoutservices.klarna.createsession.api.url");
         when(restTemplateMock.postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class))).thenReturn(klarnaSessionResponseEntityMock);
         doThrow(new HttpClientErrorException(HttpStatus.CONFLICT)).when(restTemplateMock).postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class));
@@ -416,8 +418,6 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
     @Test(expected = MockitoException.class)
     public void createKlarnaSession_WhenConnectException_ShouldThrowExecutionException() throws ExecutionException {
         final KlarnaSessionResponseDto klarnaSessionResponseDto = new KlarnaSessionResponseDto();
-        klarnaSessionResponseDto.setClientToken(CLIENT_TOKEN);
-        klarnaSessionResponseDto.setSessionId(SESSION_ID);
 
         doThrow(ConnectException.class).when(restTemplateMock).postForEntity(eq(KLARNA_SESSION_URL), any(HttpEntity.class), eq(KlarnaSessionResponseDto.class));
         when(klarnaSessionResponseEntityMock.getBody()).thenReturn(klarnaSessionResponseDto);
@@ -444,7 +444,7 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
 
         final HttpEntity entityCaptorValue = klarnaHttpEntityCaptor.getValue();
         assertEquals(MediaType.APPLICATION_JSON, entityCaptorValue.getHeaders().getContentType());
-        assertEquals(Collections.singletonList(PUBLIC_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
+        assertEquals(Collections.singletonList(SECRET_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
         assertSame(klarnaCaptureRequestMock, entityCaptorValue.getBody());
 
         final String klarnaCaptureUrl = klarnaUrlCaptor.getValue();
@@ -494,7 +494,7 @@ public class DefaultCheckoutComPaymentIntegrationServiceTest {
 
         final HttpEntity entityCaptorValue = klarnaHttpEntityCaptor.getValue();
         assertEquals(MediaType.APPLICATION_JSON, entityCaptorValue.getHeaders().getContentType());
-        assertEquals(Collections.singletonList(PUBLIC_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
+        assertEquals(Collections.singletonList(SECRET_KEY), entityCaptorValue.getHeaders().get(HttpHeaders.AUTHORIZATION));
         assertSame(klarnaVoidRequestMock, entityCaptorValue.getBody());
 
         final String klarnaVoidUrl = klarnaUrlCaptor.getValue();

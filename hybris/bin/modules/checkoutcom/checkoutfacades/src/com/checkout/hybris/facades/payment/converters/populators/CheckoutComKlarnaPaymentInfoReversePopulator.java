@@ -20,6 +20,7 @@ public class CheckoutComKlarnaPaymentInfoReversePopulator implements Populator<K
         Assert.notNull(target, "Parameter CheckoutComKlarnaAPMPaymentInfoModel cannot be null.");
 
         target.setAuthorizationToken(source.getAuthorizationToken());
+        target.setPaymentContext(source.getPaymentContextId());
         target.setDeferred(false);
     }
 }

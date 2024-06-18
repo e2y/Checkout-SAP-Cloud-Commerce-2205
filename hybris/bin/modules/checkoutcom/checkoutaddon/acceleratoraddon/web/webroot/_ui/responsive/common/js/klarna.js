@@ -30,7 +30,6 @@ ACC.klarna = {
                 try {
                     Klarna.Payments.load({
                             container: "#klarnaContainer",
-                            payment_method_categories: ACC.klarna.paymentMethodCategories,
                             instance_id: ACC.klarna.klarnaInstanceId
                         },
                         // data
@@ -111,6 +110,7 @@ ACC.klarna = {
                             if (response.approved === true && response.show_form === true) {
                                 console.log(response.authorization_token);
                                 $('#authorizationToken').val(response.authorization_token);
+                                $('#paymentContextId').val(ACC.klarna.paymentContextId);
                                 $('#checkoutComPaymentTokenForm').attr('action', ACC.config.encodedContextPath + '/checkout/multi/checkout-com/payment/submit-payment-data');
                                 $('#checkoutComPaymentTokenForm').submit();
                                 resolve();

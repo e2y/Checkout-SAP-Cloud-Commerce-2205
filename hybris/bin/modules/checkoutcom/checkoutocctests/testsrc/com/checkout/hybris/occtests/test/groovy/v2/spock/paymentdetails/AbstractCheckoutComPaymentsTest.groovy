@@ -35,9 +35,9 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
 
     protected static final String DEFAULT_CHECKOUT_CC_PAYMENT_JSON = "{\"accountHolderName\" : \"John Doe\", \"cardNumber\" : \"4242424242424242\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"2\", \"expiryYear\" : \"2050\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"424242\", \"paymentToken\" : \"paymentToken-mock\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
     protected static final String DEFAULT_CHECKOUT_CC_PAYMENT_XML = "<paymentDetails><accountHolderName>John Doe</accountHolderName><cardNumber>4242424242424242</cardNumber><cardType><code>visa</code></cardType><expiryMonth>2</expiryMonth><expiryYear>2050</expiryYear><defaultPayment>true</defaultPayment><saved>true</saved><cardBin>4111111</cardBin><paymentToken>paymentToken-mock</paymentToken><type>CARD</type><saved>true</saved></paymentDetails>"
-    protected static final String INVALID_CHECKOUT_CC_PAYMENT_JSON = "{\"accountHolderName\" : \"John Doe\", \"cardNumber\" : \"4111111111111111\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"2\", \"expiryYear\" : \"2050\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"424242\", \"paymentToken\" : \"paymentToken-mock\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
-    protected static final String BAD_CHECKOUT_CC_PAYMENT_JSON = "{\"cardNumber\" : \"4111111111111111\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"01\", \"expiryYear\" : \"2117\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"424242\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
-    protected static final String BAD_CHECKOUT_CC_PAYMENT_XML = "<paymentDetails><accountHolderName>John Doe</accountHolderName><cardNumber>4111111111111111</cardNumber><cardType><code>visa</code></cardType><expiryMonth>1</expiryMonth><expiryYear>2117</expiryYear><defaultPayment>true</defaultPayment><saved>true</saved><cardBin>4111111</cardBin><type>CARD</type><saved>true</saved></paymentDetails>"
+    protected static final String INVALID_CHECKOUT_CC_PAYMENT_JSON = "{\"accountHolderName\" : \"John Doe\", \"cardNumber\" : \"4024007103573027\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"2\", \"expiryYear\" : \"2050\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"424242\", \"paymentToken\" : \"paymentToken-mock\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
+    protected static final String BAD_CHECKOUT_CC_PAYMENT_JSON = "{\"cardNumber\" : \"4024007103573027\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"01\", \"expiryYear\" : \"2117\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"424242\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
+    protected static final String BAD_CHECKOUT_CC_PAYMENT_XML = "<paymentDetails><accountHolderName>John Doe</accountHolderName><cardNumber>4024007103573027</cardNumber><cardType><code>visa</code></cardType><expiryMonth>1</expiryMonth><expiryYear>2117</expiryYear><defaultPayment>true</defaultPayment><saved>true</saved><cardBin>4111111</cardBin><type>CARD</type><saved>true</saved></paymentDetails>"
     protected static final String MADA_3DS_CHECKOUT_CC_PAYMENT_JSON = "{\"accountHolderName\" : \"John Doe\", \"cardNumber\" : \"5385308360135181\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"2\", \"expiryYear\" : \"2050\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"538530\", \"paymentToken\" : \"paymentToken-mock\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
     protected static final String MADA_FRICTIONLESS_CHECKOUT_CC_PAYMENT_JSON = "{\"accountHolderName\" : \"John Doe\", \"cardNumber\" : \"4485040371536584\", \"cardType\" : {\"code\":\"visa\"}, \"expiryMonth\" : \"2\", \"expiryYear\" : \"2050\", \"defaultPayment\" : true, \"saved\" : true, \"cardBin\" : \"448504\", \"paymentToken\" : \"paymentToken-mock\", \"type\" : \"CARD\", \"saved\" : \"true\"}"
 
@@ -131,9 +131,9 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
     protected static final String EMPTY_CKO_SESSION_ID_JSON = "{}"
 
     protected static final String DEFAULT_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"4242424242424242\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"100\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
-    protected static final String MADA_3DS_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"5385308360135181\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"100\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
-    protected static final String MADA_FRICTIONLESS_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"4485040371536584\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"100\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
-    protected static final String INVALID_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"4111111111111111\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"321\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
+    protected static final String MADA_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"5541805721646120\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"100\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
+    protected static final String MADA_FRICTIONLESS_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"4407954943022953\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"100\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
+    protected static final String INVALID_GET_CC_TOKEN_JSON = "{\"type\":\"card\",\"number\":\"4024007103573027\",\"expiry_month\":02,\"expiry_year\":2050,\"cvv\":\"321\",\"name\":\"Sven Haiges\",\"billing_address\":{},\"phone\":{},\"requestSource\":\"JS\"}"
 
     protected static final String SITE_UID = "wsTest"
 
@@ -245,7 +245,7 @@ abstract class AbstractCheckoutComPaymentsTest extends AbstractCartTest {
         def response = client.post(
                 path: getConfigurationProperty('checkoutocctests.checkout.sandbox.tokens.path'),
                 body: paymentInfo,
-                headers: ["Authorization": getConfigurationProperty("checkout.public.key")],
+                headers: ["Authorization": getConfigurationProperty("checkout.nas.public.key")],
                 requestContentType: JSON)
         with(response) {
             if (isNotEmpty(data) && isNotEmpty(data.errors)) println(data)

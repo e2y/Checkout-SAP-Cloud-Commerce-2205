@@ -38,8 +38,6 @@ public class CheckoutComMerchantController {
     @Secured({"ROLE_CUSTOMERGROUP", "ROLE_CUSTOMERMANAGERGROUP", "ROLE_GUEST", "ROLE_TRUSTED_CLIENT", "ROLE_CLIENT"})
     @GetMapping(value = "/isABC", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> isMerchantABC() {
-        Boolean isABC = checkoutComMerchantConfigurationFacade.isCheckoutComMerchantABC();
-        return isABC == null ? ResponseEntity.status(INTERNAL_SERVER_ERROR).body(IS_ABC_FALSE) :
-                ResponseEntity.ok().body(isABC.toString());
+        return ResponseEntity.ok().body(IS_ABC_FALSE);
     }
 }

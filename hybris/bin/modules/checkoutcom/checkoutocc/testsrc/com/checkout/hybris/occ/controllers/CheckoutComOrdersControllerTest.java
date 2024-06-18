@@ -185,14 +185,12 @@ public class CheckoutComOrdersControllerTest {
     }
 
     @Test
-    public void placeDirectOrder_WhenKlarna_ShouldNotAuthorize() throws InvalidCartException, PaymentAuthorizationException, PlaceOrderException, NoCheckoutCartException {
-        when(checkoutFlowFacadeMock.getCurrentPaymentMethodType()).thenReturn("KLARNA");
-
+    public void placeDirectOrder_WhenKlarna_ShouldAuthorize() throws InvalidCartException, PaymentAuthorizationException, PlaceOrderException, NoCheckoutCartException {
         final OrderWsDTO result = testObj.placeDirectOrder(DEFAULT_FIELD_SET);
 
         assertThat(result).isEqualTo(orderWsDTOMock);
         verify(acceleratorCheckoutFacadeCheckoutFacadeMock).placeOrder();
-        verify(checkoutFlowFacadeMock, never()).authorizePayment();
+        verify(checkoutFlowFacadeMock).authorizePayment();
     }
 
     @Test

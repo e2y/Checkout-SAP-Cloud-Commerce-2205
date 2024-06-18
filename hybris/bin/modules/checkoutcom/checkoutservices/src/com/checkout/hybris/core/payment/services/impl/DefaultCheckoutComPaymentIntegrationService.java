@@ -258,7 +258,7 @@ public class DefaultCheckoutComPaymentIntegrationService implements CheckoutComP
     public KlarnaSessionResponseDto createKlarnaSession(final KlarnaSessionRequestDto klarnaSessionRequestDto) throws ExecutionException {
         final String createSessionUrl = getKlarnaApiUrlForEnvironment(null, PREFIX_KLARNA_CREATE_SESSION_URL);
 
-        final HttpEntity<KlarnaSessionRequestDto> request = new HttpEntity<>(klarnaSessionRequestDto, createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getPublicKey()));
+        final HttpEntity<KlarnaSessionRequestDto> request = new HttpEntity<>(klarnaSessionRequestDto, createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getSecretKey()));
 
         try {
             return restTemplate.postForEntity(createSessionUrl, request, KlarnaSessionResponseDto.class).getBody();
@@ -282,7 +282,7 @@ public class DefaultCheckoutComPaymentIntegrationService implements CheckoutComP
     protected CaptureResponse captureKlarnaPayment(final CaptureRequest captureRequest, final String paymentId, final String siteId) throws ExecutionException {
         final String capturePaymentUrl = getKlarnaApiUrlForEnvironment(siteId, PREFIX_KLARNA_CAPTURE_URL);
 
-        final HttpEntity<KlarnaCaptureRequestDto> request = new HttpEntity<>(createKlarnaCaptureRequest(captureRequest), createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getPublicKeyForSite(siteId)));
+        final HttpEntity<KlarnaCaptureRequestDto> request = new HttpEntity<>(createKlarnaCaptureRequest(captureRequest), createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getSecretKeyForSite(siteId)));
 
         final String url = String.format(capturePaymentUrl, paymentId);
 
@@ -309,7 +309,7 @@ public class DefaultCheckoutComPaymentIntegrationService implements CheckoutComP
     protected VoidResponse voidKlarnaPayment(final VoidRequest voidRequest, final String paymentId, final String siteId) throws ExecutionException {
         final String voidPaymentUrl = getKlarnaApiUrlForEnvironment(siteId, PREFIX_KLARNA_VOID_URL);
 
-        final HttpEntity<KlarnaVoidRequestDto> request = new HttpEntity<>(createKlarnaVoidRequest(voidRequest), createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getPublicKeyForSite(siteId)));
+        final HttpEntity<KlarnaVoidRequestDto> request = new HttpEntity<>(createKlarnaVoidRequest(voidRequest), createKlarnaRequestHeaders(checkoutComMerchantConfigurationService.getSecretKeyForSite(siteId)));
 
         final String url = String.format(voidPaymentUrl, paymentId);
 

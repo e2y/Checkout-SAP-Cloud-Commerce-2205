@@ -11,21 +11,16 @@ import com.checkout.hybris.core.payment.response.strategies.impl.CheckoutComMult
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentReturnedService;
 import com.checkout.hybris.core.payment.services.CheckoutComPaymentTransactionService;
 import com.checkout.hybris.events.model.CheckoutComPaymentEventModel;
-import com.checkout.sdk.payments.CardSourceResponse;
 import com.checkout.sdk.payments.PaymentPending;
 import de.hybris.bootstrap.annotations.UnitTest;
-import de.hybris.platform.commerceservices.order.CommercePaymentProviderStrategy;
 import de.hybris.platform.core.enums.OrderStatus;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
-import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.OrderModel;
-import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.payment.dto.TransactionStatus;
 import de.hybris.platform.payment.enums.PaymentTransactionType;
 import de.hybris.platform.payment.model.PaymentTransactionEntryModel;
 import de.hybris.platform.payment.model.PaymentTransactionModel;
 import de.hybris.platform.servicelayer.model.ModelService;
-import de.hybris.platform.servicelayer.time.TimeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,13 +59,9 @@ public class DefaultCheckoutComPaymentServiceTest {
     private DefaultCheckoutComPaymentService testObj;
 
     @Mock
-    private TimeService timeServiceMock;
-    @Mock
     private ModelService modelServiceMock;
     @Mock
     private CheckoutComPaymentTypeResolver checkoutComPaymentTypeResolverMock;
-    @Mock
-    private CommercePaymentProviderStrategy commercePaymentProviderStrategyMock;
     @Mock
     private CheckoutComPaymentTransactionService checkoutComPaymentTransactionServiceMock;
     @Mock
@@ -82,14 +73,8 @@ public class DefaultCheckoutComPaymentServiceTest {
     @Mock
     private CheckoutComPaymentReturnedService checkoutComPaymentReturnedServiceMock;
 
-    @Mock
-    private CartModel cartMock;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private OrderModel orderMock;
-    @Mock
-    private CustomerModel userMock;
-    @Mock
-    private CardSourceResponse sourceMock;
     @Mock
     private CurrencyModel currencyModelMock;
     @Mock
@@ -105,13 +90,12 @@ public class DefaultCheckoutComPaymentServiceTest {
     @Mock
     private CheckoutComApplePayPaymentInfoModel nonCardPaymentInfoMock;
     @Mock
-    private CheckoutComCreditCardPaymentInfoModel cardPaymentInfoMock, userPaymentInfo1Mock, userPaymentInfo2Mock;
+    private CheckoutComCreditCardPaymentInfoModel cardPaymentInfoMock;
     @Mock
     private PaymentTransactionEntryModel paymentTransactionEntryMock, capturePaymentTransactionEntryMock,
             capturePendingPaymentTransactionEntryMock, rejectedAuthorizationPaymentTransactionEntryMock,
             acceptedAuthorizationPaymentTransactionEntryMock, reviewAuthorizationPaymentTransactionEntryMock,
-            refundPaymentTransactionEntry1Mock, refundPaymentTransactionEntry2Mock,
-            cancelPaymentTransactionEntryMock, authorizationPendingPaymentTransactionEntryMock;
+            refundPaymentTransactionEntry1Mock, cancelPaymentTransactionEntryMock;
 
     @Before
     public void setUp() {
@@ -304,24 +288,14 @@ public class DefaultCheckoutComPaymentServiceTest {
     }
 
     @Test
-    public void isAutoCapture_When_WhenPaymentInfoIsNotCardPayment_andSiteIsUsingNAS_ShouldReturnTrue() {
+    public void isAutoCapture_When_WhenPaymentInfoIsNotCardPayment_ShouldReturnTrue() {
         when(orderMock.getPaymentInfo()).thenReturn(nonCardPaymentInfoMock);
-        when(orderMock.getSite().getCheckoutComMerchantConfiguration().getUseNas()).thenReturn(true);
 
         final boolean result = testObj.isAutoCapture(orderMock);
 
         assertTrue(result);
     }
 
-    @Test
-    public void isAutoCapture_When_WhenPaymentInfoIsNotCardPayment_andSiteIsNotUsingNAS_ShouldReturnFalse() {
-        when(orderMock.getPaymentInfo()).thenReturn(nonCardPaymentInfoMock);
-        when(orderMock.getSite().getCheckoutComMerchantConfiguration().getUseNas()).thenReturn(false);
-
-        final boolean result = testObj.isAutoCapture(orderMock);
-
-        assertFalse(result);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void captureExists_WhenTransactionIsNull_ShouldThrowException() {

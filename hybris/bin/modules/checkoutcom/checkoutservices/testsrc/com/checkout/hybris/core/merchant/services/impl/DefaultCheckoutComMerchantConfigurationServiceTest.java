@@ -22,9 +22,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCheckoutComMerchantConfigurationServiceTest {
 
-    private static final String SECRET_KEY = "secretKey";
-    private static final String PUBLIC_KEY = "publicKey";
-    private static final String PRIVATE_SHARED_KEY = "privateSharedKey";
     private static final String NAS_SECRET_KEY = "nasSecretKey";
     private static final String NAS_PUBLIC_KEY = "nasPublicKey";
     private static final String NAS_AUTH_HEADER_KEY = "nasAuthHeaderKey";
@@ -63,45 +60,9 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
         when(baseSiteMock.getCheckoutComMerchantConfiguration()).thenReturn(merchantConfigurationMock);
     }
 
+
     @Test
     public void getSecretKey_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getSecretKey()).thenReturn(SECRET_KEY);
-
-        final String result = testObj.getSecretKey();
-
-        assertEquals(SECRET_KEY, result);
-    }
-
-    @Test
-    public void getPublicKey_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getPublicKey()).thenReturn(PUBLIC_KEY);
-
-        final String result = testObj.getPublicKey();
-
-        assertEquals(PUBLIC_KEY, result);
-    }
-
-    @Test
-    public void getPublicKeyForSite_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getPublicKey()).thenReturn(PUBLIC_KEY);
-
-        final String result = testObj.getPublicKeyForSite(BASE_SITE_ID);
-
-        assertEquals(PUBLIC_KEY, result);
-    }
-
-    @Test
-    public void getPrivateSharedKey_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getPrivateSharedKey()).thenReturn(PRIVATE_SHARED_KEY);
-
-        final String result = testObj.getPrivateSharedKey();
-
-        assertEquals(PRIVATE_SHARED_KEY, result);
-    }
-
-    @Test
-    public void getSecretKey_WhenNASEnabled_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getUseNas()).thenReturn(Boolean.TRUE);
         when(merchantConfigurationMock.getNasSecretKey()).thenReturn(NAS_SECRET_KEY);
 
         final String result = testObj.getSecretKey();
@@ -110,8 +71,7 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
     }
 
     @Test
-    public void getPublicKey_WhenNASEnabled_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getUseNas()).thenReturn(Boolean.TRUE);
+    public void getPublicKey_ShouldReturnTheValueAsExpected() {
         when(merchantConfigurationMock.getNasPublicKey()).thenReturn(NAS_PUBLIC_KEY);
 
         final String result = testObj.getPublicKey();
@@ -120,8 +80,7 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
     }
 
     @Test
-    public void getPublicKeyForSite_WhenNASEnabled_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getUseNas()).thenReturn(Boolean.TRUE);
+    public void getPublicKeyForSite_ShouldReturnTheValueAsExpected() {
         when(merchantConfigurationMock.getNasPublicKey()).thenReturn(NAS_PUBLIC_KEY);
 
         final String result = testObj.getPublicKeyForSite(BASE_SITE_ID);
@@ -130,8 +89,7 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
     }
 
     @Test
-    public void getPrivateSharedKey_WhenNASEnabled_ShouldReturnTheValueAsExpected() {
-        when(merchantConfigurationMock.getUseNas()).thenReturn(Boolean.TRUE);
+    public void getPrivateSharedKey_ShouldReturnTheValueAsExpected() {
         when(merchantConfigurationMock.getNasSignatureKey()).thenReturn(NAS_SIGNATURE_KEY);
 
         final String result = testObj.getPrivateSharedKey();
@@ -319,13 +277,6 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
     }
 
     @Test
-    public void isNasUsed_shouldReturnConfigurationNASFlag() {
-        when(merchantConfigurationMock.getUseNas()).thenReturn(true);
-
-        assertTrue(testObj.isNasUsed());
-    }
-
-    @Test
     public void isNasAuthorisationHeaderUsedOnNotificationValidation_shouldReturnConfigurationFlag() {
         when(merchantConfigurationMock.getUseNasAuthorisationKeyOnNotifications()).thenReturn(true);
 
@@ -340,18 +291,20 @@ public class DefaultCheckoutComMerchantConfigurationServiceTest {
     }
 
     @Test
-    public void isAbcSignatureKeyUsedOnNotificationValidation_shouldReturnConfigurationFlag() {
-        when(merchantConfigurationMock.getUseAbcSignatureKeyOnNotifications()).thenReturn(true);
-
-        assertTrue(testObj.isAbcSignatureKeyUsedOnNotificationValidation());
-    }
-
-    @Test
     public void getAchConfiguration_shouldReturnAchConfiguration() {
         when(merchantConfigurationMock.getAchConfiguration()).thenReturn(achConfigurationMock);
 
         final CheckoutComACHConfigurationModel result = testObj.getACHConfiguration();
 
         assertThat(result).isSameAs(achConfigurationMock);
+    }
+
+    @Test
+    public void getSecretKeyForSite_ShouldReturnTheValueAsExpected() {
+        when(merchantConfigurationMock.getNasSecretKey()).thenReturn(NAS_SECRET_KEY);
+
+        final String result = testObj.getSecretKeyForSite(BASE_SITE_ID);
+
+        assertEquals(NAS_SECRET_KEY, result);
     }
 }

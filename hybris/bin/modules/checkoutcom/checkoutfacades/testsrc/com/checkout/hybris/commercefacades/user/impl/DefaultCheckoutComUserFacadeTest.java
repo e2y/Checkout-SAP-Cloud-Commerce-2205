@@ -54,11 +54,6 @@ public class DefaultCheckoutComUserFacadeTest {
     private CreditCardPaymentInfoModel creditCardPaymentInfoModelMock;
     private final CCPaymentInfoData ccPaymentInfoData = new CCPaymentInfoData();
 
-    @Before
-    public void setUp() throws Exception {
-        when(checkoutComMerchantConfigurationServiceMock.isNasUsed()).thenReturn(true);
-    }
-
     @Test
     public void removeCCPaymentInfo_shouldCallCheckoutComCustomerAccountServiceAdapterAndRemoveCCPaymentInfo_WhenCreditCardExistsForCurrentCustomer() {
         ensureCurrentUserExists();

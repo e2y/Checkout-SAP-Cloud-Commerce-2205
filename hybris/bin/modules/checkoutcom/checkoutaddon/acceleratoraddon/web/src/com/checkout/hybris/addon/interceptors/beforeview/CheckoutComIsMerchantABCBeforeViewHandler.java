@@ -13,14 +13,13 @@ public class CheckoutComIsMerchantABCBeforeViewHandler implements BeforeViewHand
     private static final Logger LOG = Logger.getLogger(CheckoutComIsMerchantABCBeforeViewHandler.class);
     protected final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService;
 
-    public CheckoutComIsMerchantABCBeforeViewHandler(CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService) {
+    public CheckoutComIsMerchantABCBeforeViewHandler(final CheckoutComMerchantConfigurationService checkoutComMerchantConfigurationService) {
         this.checkoutComMerchantConfigurationService = checkoutComMerchantConfigurationService;
     }
 
     @Override
-    public void beforeView(HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView) throws Exception {
-        Boolean isMerchantABC = !checkoutComMerchantConfigurationService.isNasUsed();
-        modelAndView.addObject("isABC", isMerchantABC);
-        LOG.debug("The configuration of this merchant is " + (Boolean.TRUE.equals(isMerchantABC) ? "ABC" : "NAS"));
+    public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView) {
+        modelAndView.addObject("isABC", Boolean.FALSE);
+        LOG.debug("The configuration of this merchant is NAS");
     }
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 public class CheckoutComKlarnaPaymentInfoDataReversePopulator implements Populator<PaymentDataForm, KlarnaPaymentInfoData> {
 
     protected static final String AUTHORIZATION_TOKEN_KEY = "authorizationToken";
+    protected static final String PAYMENT_CONTEXT_ID = "paymentContextId";
 
     /**
      * {@inheritDoc}
@@ -27,6 +28,7 @@ public class CheckoutComKlarnaPaymentInfoDataReversePopulator implements Populat
         final Map<String, Object> formAttributes = source.getFormAttributes();
 
         target.setAuthorizationToken((String) formAttributes.get(AUTHORIZATION_TOKEN_KEY));
+        target.setPaymentContextId((String) formAttributes.get(PAYMENT_CONTEXT_ID));
         target.setType(CheckoutComPaymentType.KLARNA.name());
     }
 }

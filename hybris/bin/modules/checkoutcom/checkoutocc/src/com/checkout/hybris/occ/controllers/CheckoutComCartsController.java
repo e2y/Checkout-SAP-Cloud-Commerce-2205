@@ -145,8 +145,9 @@ public class CheckoutComCartsController {
     @PostMapping(value = "/{cartId}/checkoutoccbillingaddress", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void addBillingAddressToCart(@RequestBody final AddressWsDTO address) {
-        saveBillingAddress(address);
+    @ApiBaseSiteIdUserIdAndCartIdParam
+    public AddressWsDTO addBillingAddressToCart(@RequestBody final AddressWsDTO address, @ApiFieldsParam @RequestParam(defaultValue = DEFAULT_FIELD_SET, required = false) final String fields) {
+       return saveBillingAddress(address, fields);
     }
 
     @Secured({"ROLE_CUSTOMERGROUP", "ROLE_CUSTOMERMANAGERGROUP", "ROLE_GUEST", "ROLE_TRUSTED_CLIENT"})
@@ -167,6 +168,7 @@ public class CheckoutComCartsController {
         validate(address, OBJECT_NAME_ADDRESS, addressDTOValidator);
         AddressData addressData = dataMapper.map(address, AddressData.class, DEFAULT_FIELD_SET);
         addressData = createAddressInternal(addressData);
+        addressData.setEmail(checkoutCustomerStrategy.getCurrentUserForCheckout().getContactEmail());
         setCartDeliveryAddressInternal(addressData.getId());
         checkoutComAddressFacade.setCartBillingDetails(addressData);
         return dataMapper.map(addressData, AddressWsDTO.class, fields);
@@ -189,12 +191,13 @@ public class CheckoutComCartsController {
      *
      * @param address The billing address
      */
-    protected void saveBillingAddress(final AddressWsDTO address) {
+    protected AddressWsDTO saveBillingAddress(final AddressWsDTO address, final String fields) {
         address.setEmail(checkoutCustomerStrategy.getCurrentUserForCheckout().getContactEmail());
         address.setVisibleInAddressBook(Boolean.FALSE);
-        final AddressData addressData = dataMapper.map(address, AddressData.class);
+        final AddressData addressData = dataMapper.map(address, AddressData.class, fields);
         userFacade.addAddress(addressData);
         checkoutComAddressFacade.setCartBillingDetails(addressData);
+        return dataMapper.map(addressData, AddressWsDTO.class, fields);
     }
 
     /**

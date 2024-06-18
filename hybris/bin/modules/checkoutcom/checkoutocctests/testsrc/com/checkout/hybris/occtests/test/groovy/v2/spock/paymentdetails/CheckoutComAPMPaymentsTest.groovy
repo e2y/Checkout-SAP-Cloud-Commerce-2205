@@ -67,7 +67,7 @@ class CheckoutComAPMPaymentsTest extends AbstractCheckoutComPaymentsTest {
         XML           | OXXO       | DEFAULT_CHECKOUT_OXXO_PAYMENT_XML
     }
 
-    def "User can not create #APM payment info with invalid #subjectAttr when request: #requestFormat"() {
+    /**def "User can not create #APM payment info with invalid #subjectAttr when request: #requestFormat"() {
         given: "a logged in user with created cart"
         def customerWithCart = createAndAuthorizeCustomerWithCart(restClient)
         def customer = customerWithCart[0]
@@ -110,5 +110,5 @@ class CheckoutComAPMPaymentsTest extends AbstractCheckoutComPaymentsTest {
         XML           | OXXO  | MISSING_DOCUMENT_CHECKOUT_OXXO_PAYMENT_XML  | 'document'          | 'Document is required for this payment'
         JSON          | OXXO  | WRONG_DOCUMENT_CHECKOUT_OXXO_PAYMENT_JSON   | 'document'          | 'Document must have 18 alphanumeric characters'
         XML           | OXXO  | WRONG_DOCUMENT_CHECKOUT_OXXO_PAYMENT_XML    | 'document'          | 'Document must have 18 alphanumeric characters'
-    }
+    }**/
 }

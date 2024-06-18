@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import * as CheckoutComActions from './checkout-com.actions';
 import { catchError, exhaustMap, map, mergeMap, switchMap } from 'rxjs/operators';
 import { CheckoutComOccAdapter } from '../adapters/occ/checkout-com-occ.adapter';
-import { CartActions, GlobalMessage, GlobalMessageActions, GlobalMessageType, normalizeHttpError, Translatable, UserActions } from '@spartacus/core';
+import { Address, CartActions, GlobalMessage, GlobalMessageActions, GlobalMessageType, normalizeHttpError, Translatable, UserActions } from '@spartacus/core';
 import { CheckoutActions } from '@spartacus/checkout/core';
 import { CheckoutComRedirect } from '../interfaces';
 import { ApmData } from '../model/ApmData';
@@ -69,7 +69,7 @@ export class CheckoutComEffects {
     map((action: any) => action.payload),
     mergeMap(payload => this.checkoutComAdapter.setPaymentAddress(payload.cartId, payload.userId, payload.address)
       .pipe(
-        switchMap(_ => [new CheckoutComActions.SetPaymentAddressSuccess(payload.address)]),
+        switchMap((address: Address) => [new CheckoutComActions.SetPaymentAddressSuccess(address)]),
         catchError(error => of(new CheckoutComActions.SetPaymentAddressFail(error)))
       )
     )

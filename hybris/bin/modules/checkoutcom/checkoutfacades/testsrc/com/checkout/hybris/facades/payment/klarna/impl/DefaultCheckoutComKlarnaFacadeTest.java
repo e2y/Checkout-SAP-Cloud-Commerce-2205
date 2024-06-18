@@ -1,7 +1,8 @@
+
 package com.checkout.hybris.facades.payment.klarna.impl;
 
 import com.checkout.hybris.core.klarna.session.request.KlarnaSessionRequestDto;
-import com.checkout.hybris.core.klarna.session.response.KlarnaPaymentMethodCategoryDto;
+import com.checkout.hybris.core.klarna.session.response.KlarnaPartnerMetadataResponseDto;
 import com.checkout.hybris.core.klarna.session.response.KlarnaSessionResponseDto;
 import com.checkout.hybris.core.merchant.services.CheckoutComMerchantConfigurationService;
 import com.checkout.hybris.core.model.CheckoutComKlarnaConfigurationModel;
@@ -18,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -29,9 +29,9 @@ import static org.mockito.Mockito.when;
 public class DefaultCheckoutComKlarnaFacadeTest {
 
     private static final String CLIENT_TOKEN = "client_token";
-    private static final String PAY_LATER = "pay_later";
-    private static final String PAY_OVER_TIME = "pay_over_time";
     private static final String INSTANCE_ID = "instance_id";
+    private static final String ID = "id";
+    private static final String SESSION_ID = "session_id";
 
     @InjectMocks
     private DefaultCheckoutComKlarnaFacade testObj;
@@ -53,7 +53,7 @@ public class DefaultCheckoutComKlarnaFacadeTest {
     @Mock
     private CheckoutComKlarnaConfigurationModel klarnaConfigurationMock;
     @Mock
-    private KlarnaPaymentMethodCategoryDto klarnaPaymentMethodCategory1Mock, klarnaPaymentMethodCategory2Mock;
+    private KlarnaPartnerMetadataResponseDto klarnaPartnerMetadataResponseDtoMock;
 
     @Before
     public void setUp() throws ExecutionException {
@@ -61,10 +61,10 @@ public class DefaultCheckoutComKlarnaFacadeTest {
         when(cartServiceMock.hasSessionCart()).thenReturn(true);
         when(checkoutComKlarnaSessionRequestDtoConverterMock.convert(cartModelMock)).thenReturn(klarnaRequestSessionMock);
         when(checkoutComPaymentIntegrationServiceMock.createKlarnaSession(klarnaRequestSessionMock)).thenReturn(klarnaSessionResponseMock);
-        when(klarnaSessionResponseMock.getClientToken()).thenReturn(CLIENT_TOKEN);
-        when(klarnaSessionResponseMock.getPaymentMethodCategories()).thenReturn(Arrays.asList(klarnaPaymentMethodCategory1Mock, klarnaPaymentMethodCategory2Mock));
-        when(klarnaPaymentMethodCategory1Mock.getIdentifier()).thenReturn(PAY_OVER_TIME);
-        when(klarnaPaymentMethodCategory2Mock.getIdentifier()).thenReturn(PAY_LATER);
+        when(klarnaSessionResponseMock.getPartnerMetadata()).thenReturn(klarnaPartnerMetadataResponseDtoMock);
+        when(klarnaPartnerMetadataResponseDtoMock.getClientToken()).thenReturn(CLIENT_TOKEN);
+        when(klarnaPartnerMetadataResponseDtoMock.getSessionId()).thenReturn(SESSION_ID);
+        when(klarnaSessionResponseMock.getId()).thenReturn(ID);
         when(checkoutComMerchantConfigurationServiceMock.getKlarnaConfiguration()).thenReturn(klarnaConfigurationMock);
         when(klarnaConfigurationMock.getInstanceId()).thenReturn(INSTANCE_ID);
     }
@@ -89,7 +89,8 @@ public class DefaultCheckoutComKlarnaFacadeTest {
 
         assertThat(result.getClientToken()).isEqualTo(CLIENT_TOKEN);
         assertThat(result.getInstanceId()).isEqualTo(INSTANCE_ID);
-        assertThat(result.getPaymentMethodCategories()).containsExactlyInAnyOrder(PAY_LATER, PAY_OVER_TIME);
+        assertThat(result.getPaymentContext()).isEqualTo(ID);
+        assertThat(result.getSessionId()).isEqualTo(SESSION_ID);
         assertThat(result.getSuccess()).isTrue();
     }
 }
